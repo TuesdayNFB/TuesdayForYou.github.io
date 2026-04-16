@@ -4,439 +4,286 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TuesdayForYou</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg: #faf8f4;
-      --surface: #ffffff;
-      --surface2: #f3f0ea;
-      --border: #e5e0d5;
-      --text: #1a1714;
-      --muted: #9c9488;
-      --sub: #b8b0a4;
-      --gold: #c4963a;
-      --gold-light: #f5edd8;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #141210;
-        --surface: #1e1b18;
-        --surface2: #252119;
-        --border: #302c26;
-        --text: #f0ece4;
-        --muted: #6b6358;
-        --sub: #504945;
-        --gold: #d4a84b;
-        --gold-light: #2a2318;
-      }
-    }
-
-    html, body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+    body {
+      background: #fff;
+      color: #111;
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #111; color: #fff; }
+      .player { border-color: #222; }
+      .progress-track { background: #2a2a2a; }
+      .ctrl svg { fill: #555; }
+      .ctrl:hover { background: #1a1a1a; }
+      .ctrl:hover svg { fill: #fff; }
+      .ctrl.on svg { fill: #fff; }
+      .play-btn { border-color: #333; }
+      .play-btn svg { fill: #fff; }
+      .play-btn:hover { background: #fff; border-color: #fff; }
+      .play-btn:hover svg { fill: #111; }
+      input[type=range] { background: linear-gradient(to right, #fff var(--fill,80%), #2a2a2a var(--fill,80%)); }
+      input[type=range]::-webkit-slider-thumb { background: #fff; }
+      input[type=range]::-moz-range-thumb { background: #fff; }
+      .status-dot.on { background: #fff; }
+      .verse-box { border-color: #1e1e1e; }
+      .verse-text { color: #555; }
+      .verse-ref { color: #3a3a3a; }
+      .verse-btn:hover { color: #fff; }
+      .progress-fill { background: #fff; }
+      .progress-thumb { background: #fff; }
     }
 
     .page {
       width: 100%;
-      max-width: 560px;
-      padding: 60px 20px 60px;
+      max-width: 380px;
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      gap: 10px;
+    }
+
+    .top-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
       gap: 12px;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 12px;
-    }
-    .cross {
-      width: 32px; height: 32px;
-      margin: 0 auto 16px;
-      position: relative;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .cross::before, .cross::after {
-      content: '';
-      position: absolute;
-      background: var(--gold);
-      border-radius: 2px;
-    }
-    .cross::before { width: 3px; height: 100%; }
-    .cross::after { width: 100%; height: 3px; }
-
     .brand {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(24px, 6vw, 38px);
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--text);
-    }
-    .brand-tagline {
-      font-size: 11px;
-      letter-spacing: 4px;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-top: 6px;
-    }
-
-    .divider {
-      width: 40px; height: 1px;
-      background: var(--gold);
-      margin: 20px auto 0;
-    }
-
-    .socials {
-      display: flex;
-      gap: 10px;
-      margin: 4px 0 8px;
-    }
-    .social-btn {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      text-decoration: none;
-    }
-    .social-btn:hover { border-color: var(--gold); background: var(--gold-light); }
-    .social-btn svg { width: 16px; height: 16px; fill: var(--muted); transition: fill 0.2s; }
-    .social-btn:hover svg { fill: var(--gold); }
-
-    .verse-card {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 36px 32px 30px;
-      position: relative;
-      overflow: hidden;
-    }
-    .verse-card::before {
-      content: '\201C';
-      font-family: 'Playfair Display', serif;
-      font-size: 120px;
-      color: var(--gold);
-      opacity: 0.12;
-      position: absolute;
-      top: -20px; left: 12px;
-      line-height: 1;
-      pointer-events: none;
-    }
-    .verse-label {
-      font-size: 10px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--gold);
-      text-align: center;
-      margin-bottom: 22px;
+      font-size: 20px;
       font-weight: 500;
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+      padding-top: 2px;
     }
-    .verse-body {
-      font-family: 'Playfair Display', serif;
-      font-size: 17px;
-      line-height: 1.85;
-      color: var(--text);
+
+    .verse-box {
+      border: 1px solid #ebebeb;
+      border-radius: 10px;
+      padding: 10px 12px;
+      max-width: 170px;
+    }
+    .verse-text {
+      font-size: 10px;
+      line-height: 1.65;
+      color: #999;
       font-style: italic;
-      text-align: center;
-      margin-bottom: 22px;
-      transition: opacity 0.35s;
+      transition: opacity 0.25s;
     }
     .verse-ref {
-      text-align: center;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--gold);
-      font-weight: 500;
-      transition: opacity 0.35s;
+      font-size: 9px;
+      color: #ccc;
+      margin-top: 5px;
+      letter-spacing: 0.3px;
+      transition: opacity 0.25s;
     }
-    .verse-bottom {
-      margin-top: 22px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: center;
-    }
-    .new-verse-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      color: var(--muted);
-      font-size: 12px;
-      font-family: 'DM Sans', sans-serif;
+    .verse-btn {
+      display: block;
+      margin-top: 7px;
+      background: none;
+      border: none;
+      font-size: 9px;
       letter-spacing: 1px;
-      padding: 10px 20px;
+      text-transform: uppercase;
+      color: #ccc;
       cursor: pointer;
-      display: flex; align-items: center; gap: 7px;
-      transition: color 0.2s, border-color 0.2s, background 0.2s;
-      text-transform: uppercase;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      transition: color 0.2s;
     }
-    .new-verse-btn:hover { color: var(--gold); border-color: var(--gold); background: var(--gold-light); }
-    .new-verse-btn svg { width: 12px; height: 12px; fill: currentColor; }
+    .verse-btn:hover { color: #111; }
 
-    .player-card {
+    .player {
       width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      overflow: hidden;
-    }
-
-    .player-header {
-      padding: 16px 24px;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
-    .player-title {
-      font-size: 10px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .live-pill {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 10px; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--muted);
-    }
-    .live-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--border);
-      transition: background 0.3s;
-    }
-    .live-dot.active { background: var(--gold); }
-
-    .player-art {
-      padding: 28px 28px 0;
+      border: 1px solid #e8e8e8;
+      border-radius: 14px;
+      padding: 18px;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
     }
-    .canvas-wrap {
-      width: 140px; height: 140px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      overflow: visible;
-      position: relative;
-    }
-    #visualizer { border-radius: 50%; display: block; }
 
-    .player-info {
-      padding: 20px 28px 0;
-      text-align: center;
+    .track-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
     .track-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .track-artist {
-      font-size: 11px;
-      letter-spacing: 3px;
+    .status-pill {
+      display: flex; align-items: center; gap: 5px;
+      flex-shrink: 0;
+    }
+    .status-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #ddd;
+      transition: background 0.3s;
+    }
+    .status-dot.on { background: #111; }
+    .status-text {
+      font-size: 10px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
-      color: var(--muted);
+      color: #bbb;
     }
 
-    .progress-section {
-      padding: 20px 28px 0;
-    }
-    .progress-row {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .t-label {
-      font-size: 11px;
-      color: var(--sub);
-      min-width: 28px;
-      font-variant-numeric: tabular-nums;
-    }
-    .t-label:last-child { text-align: right; }
+    .vis-wrap { display: flex; justify-content: center; }
+    #visualizer { display: block; }
+
     .progress-track {
-      flex: 1; height: 2px;
-      background: var(--border);
+      width: 100%; height: 2px;
+      background: #ebebeb;
       border-radius: 99px;
       position: relative;
       cursor: pointer;
     }
     .progress-fill {
       height: 100%; width: 0%;
-      background: var(--gold);
+      background: #111;
       border-radius: 99px;
       transition: width 0.1s linear;
       pointer-events: none;
     }
     .progress-thumb {
       position: absolute; top: 50%; left: 0;
-      width: 10px; height: 10px;
+      width: 9px; height: 9px;
       border-radius: 50%;
-      background: var(--gold);
+      background: #111;
       transform: translate(-50%, -50%);
       pointer-events: none; opacity: 0;
       transition: opacity 0.2s;
     }
     .progress-track:hover .progress-thumb { opacity: 1; }
 
-    .controls-row {
-      padding: 16px 28px;
-      display: flex; align-items: center; justify-content: center; gap: 16px;
+    .time-row {
+      display: flex; justify-content: space-between;
+      margin-top: -6px;
     }
-    .ctl {
-      background: transparent; border: none;
-      cursor: pointer; padding: 8px;
-      border-radius: 50%;
+    .t { font-size: 10px; color: #bbb; font-variant-numeric: tabular-nums; }
+
+    .controls {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .ctrl {
+      background: none; border: none; cursor: pointer;
+      padding: 7px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       transition: background 0.15s;
     }
-    .ctl:hover { background: var(--surface2); }
-    .ctl svg { width: 18px; height: 18px; fill: var(--sub); transition: fill 0.15s; }
-    .ctl:hover svg { fill: var(--text); }
-    .ctl.on svg { fill: var(--gold); }
+    .ctrl:hover { background: #f4f4f4; }
+    .ctrl svg { width: 16px; height: 16px; fill: #bbb; transition: fill 0.15s; }
+    .ctrl:hover svg { fill: #111; }
+    .ctrl.on svg { fill: #111; }
 
     .play-btn {
-      width: 52px; height: 52px;
+      width: 38px; height: 38px;
       border-radius: 50%;
-      border: 1px solid var(--gold);
-      background: var(--gold-light);
+      border: 1px solid #ccc;
+      background: none;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s, border-color 0.2s;
+      transition: background 0.15s, border-color 0.15s;
     }
-    .play-btn:hover { background: var(--gold); }
+    .play-btn:hover { background: #111; border-color: #111; }
     .play-btn:hover svg { fill: #fff; }
-    .play-btn svg { width: 20px; height: 20px; fill: var(--gold); transition: fill 0.2s; }
+    .play-btn svg { width: 15px; height: 15px; fill: #111; transition: fill 0.15s; }
 
     .vol-row {
-      padding: 0 28px 24px;
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 8px;
     }
-    .vol-icon { width: 14px; height: 14px; fill: var(--sub); flex-shrink: 0; }
+    .vol-icon { width: 12px; height: 12px; fill: #bbb; flex-shrink: 0; }
     input[type=range] {
       flex: 1; -webkit-appearance: none; appearance: none;
       height: 2px;
-      background: linear-gradient(to right, var(--gold) var(--fill, 80%), var(--border) var(--fill, 80%));
+      background: linear-gradient(to right, #111 var(--fill,80%), #ebebeb var(--fill,80%));
       border-radius: 99px; outline: none; cursor: pointer;
     }
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 12px; height: 12px;
-      border-radius: 50%; background: var(--gold); cursor: pointer;
+      width: 11px; height: 11px;
+      border-radius: 50%; background: #111; cursor: pointer;
     }
     input[type=range]::-moz-range-thumb {
-      width: 12px; height: 12px;
-      border-radius: 50%; background: var(--gold); border: none; cursor: pointer;
+      width: 11px; height: 11px;
+      border-radius: 50%; background: #111; border: none; cursor: pointer;
     }
-    .vol-pct {
-      font-size: 11px; color: var(--sub);
-      min-width: 30px; text-align: right;
-    }
+    .vol-pct { font-size: 10px; color: #bbb; min-width: 26px; text-align: right; }
 
     .no-track {
-      padding: 0 28px 20px;
-      font-size: 12px;
-      color: var(--sub);
-      text-align: center;
-      line-height: 1.6;
-      display: none;
-    }
-
-    .footer {
-      font-size: 11px;
-      letter-spacing: 2px;
-      color: var(--sub);
-      text-transform: uppercase;
-      text-align: center;
-      margin-top: 8px;
+      font-size: 11px; color: #bbb; text-align: center;
+      line-height: 1.6; display: none;
     }
   </style>
 </head>
 <body>
 <div class="page">
 
-  <div class="header">
-    <div class="cross"></div>
+  <div class="top-row">
     <div class="brand">TuesdayForYou</div>
-    <div class="brand-tagline">Faith &amp; Music</div>
-    <div class="divider"></div>
-  </div>
-
-  <div class="socials">
-    <a class="social-btn" href="#" target="_blank" rel="noopener" title="YouTube">
-      <svg viewBox="0 0 24 24"><path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.2 5 12 5 12 5s-4.2 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.8C6.6 19 12 19 12 19s4.2 0 7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8zM9.7 14.5V9l5.4 2.8-5.4 2.7z"/></svg>
-    </a>
-    <a class="social-btn" href="#" target="_blank" rel="noopener" title="Spotify">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.6 14.4c-.2.3-.6.4-.9.2-2.5-1.5-5.6-1.9-9.3-1-.3.1-.7-.1-.8-.5-.1-.3.1-.7.5-.8 4-.9 7.5-.5 10.3 1.2.3.2.4.6.2.9zm1.2-2.8c-.2.4-.7.5-1.1.3-2.8-1.7-7.1-2.2-10.5-1.2-.4.1-.9-.1-1-.5-.1-.4.1-.9.5-1 3.8-1.1 8.5-.6 11.7 1.3.4.2.5.7.4 1.1zm.1-2.9c-3.4-2-8.9-2.2-12.1-1.2-.5.1-1-.2-1.1-.7-.1-.5.2-1 .7-1.1 3.7-1.1 9.8-.9 13.7 1.4.4.3.6.8.3 1.3-.3.4-.9.6-1.5.3z"/></svg>
-    </a>
-  </div>
-
-  <div class="verse-card">
-    <div class="verse-label">Word for Today</div>
-    <div class="verse-body" id="verseBody"></div>
-    <div class="verse-ref" id="verseRef"></div>
-    <div class="verse-bottom">
-      <button class="new-verse-btn" onclick="loadVerse()">
-        <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.96 7.96 0 0 0 12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-        New verse
-      </button>
+    <div class="verse-box">
+      <div class="verse-text" id="verseText"></div>
+      <div class="verse-ref" id="verseRef"></div>
+      <button class="verse-btn" onclick="loadVerse()">↻ new verse</button>
     </div>
   </div>
 
-  <div class="player-card">
-    <div class="player-header">
-      <span class="player-title">Now Playing</span>
-      <div class="live-pill">
-        <div class="live-dot" id="liveDot"></div>
-        <span id="liveStatus">Ready</span>
-      </div>
-    </div>
-
-    <div class="player-art">
-      <canvas id="visualizer" width="140" height="140"></canvas>
-    </div>
-
-    <div class="player-info">
+  <div class="player">
+    <div class="track-row">
       <div class="track-name" id="trackName">—</div>
-      <div class="track-artist">TuesdayForYou</div>
-    </div>
-
-    <div class="progress-section">
-      <div class="progress-row">
-        <span class="t-label" id="curTime">0:00</span>
-        <div class="progress-track" id="progressBar">
-          <div class="progress-fill" id="progressFill"></div>
-          <div class="progress-thumb"></div>
-        </div>
-        <span class="t-label" id="durTime">0:00</span>
+      <div class="status-pill">
+        <div class="status-dot" id="statusDot"></div>
+        <span class="status-text" id="statusText">Ready</span>
       </div>
     </div>
 
-    <div class="controls-row">
-      <button class="ctl" id="btnLoop" title="Loop" onclick="toggleLoop()">
+    <div class="vis-wrap">
+      <canvas id="visualizer" width="120" height="52"></canvas>
+    </div>
+
+    <div>
+      <div class="progress-track" id="progressBar">
+        <div class="progress-fill" id="progressFill"></div>
+        <div class="progress-thumb"></div>
+      </div>
+      <div class="time-row">
+        <span class="t" id="curTime">0:00</span>
+        <span class="t" id="durTime">0:00</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl" id="btnLoop" title="Loop" onclick="toggleLoop()">
         <svg viewBox="0 0 24 24"><path d="M17 17H7V14L3 18l4 4v-3h12v-6h-2v4zM7 7h10v3l4-4-4-4v3H5v6h2V7z"/></svg>
       </button>
-      <button class="play-btn" onclick="togglePlay()" id="playBtn">
+      <button class="play-btn" onclick="togglePlay()">
         <svg id="iconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
       </button>
-      <button class="ctl" title="Mute" onclick="toggleMute()">
+      <button class="ctrl" onclick="toggleMute()">
         <svg id="iconVol" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
         <svg id="iconMute" viewBox="0 0 24 24" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
       </button>
     </div>
 
     <div class="vol-row">
-      <svg class="vol-icon" viewBox="0 0 24 24"><path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/></svg>
+      <svg class="vol-icon" viewBox="0 0 24 24"><path d="M5 9v6h4l5 5V4L9 9H5z"/></svg>
       <input type="range" id="volSlider" min="0" max="1" step="0.01" value="0.8" oninput="setVolume(this.value)"/>
       <span class="vol-pct" id="volPct">80%</span>
     </div>
@@ -446,24 +293,22 @@
     </div>
   </div>
 
-  <div class="footer">TuesdayForYou &copy; 2025</div>
-
 </div>
 
 <audio id="audioEl" preload="auto"></audio>
 
 <script>
   const verses = [
-    { text: "How great you are, Sovereign Lord! There is no one like you, and there is no God but you, as we have heard with our own ears.", ref: "2 Samuel 7:22" },
+    { text: "How great you are — there is no one like you.", ref: "2 Samuel 7:22" },
     { text: "I can do all this through him who gives me strength.", ref: "Philippians 4:13" },
-    { text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.", ref: "John 3:16" },
-    { text: "Trust in the Lord with all your heart and lean not on your own understanding.", ref: "Proverbs 3:5" },
+    { text: "For God so loved the world that he gave his one and only Son.", ref: "John 3:16" },
+    { text: "Trust in the Lord with all your heart.", ref: "Proverbs 3:5" },
     { text: "The Lord is my shepherd, I lack nothing.", ref: "Psalm 23:1" },
-    { text: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", ref: "Joshua 1:9" },
-    { text: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.", ref: "Romans 8:28" },
-    { text: "But those who hope in the Lord will renew their strength. They will soar on wings like eagles.", ref: "Isaiah 40:31" },
-    { text: "Give thanks to the Lord, for he is good; his love endures forever.", ref: "Psalm 107:1" },
-    { text: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.", ref: "Jeremiah 29:11" },
+    { text: "Do not be afraid, for the Lord your God will be with you.", ref: "Joshua 1:9" },
+    { text: "In all things God works for the good of those who love him.", ref: "Romans 8:28" },
+    { text: "Those who hope in the Lord will renew their strength.", ref: "Isaiah 40:31" },
+    { text: "Give thanks to the Lord, for he is good.", ref: "Psalm 107:1" },
+    { text: "I know the plans I have for you — plans to give you hope and a future.", ref: "Jeremiah 29:11" },
   ];
 
   let lastIdx = -1;
@@ -472,14 +317,14 @@
     do { idx = Math.floor(Math.random() * verses.length); } while (idx === lastIdx && verses.length > 1);
     lastIdx = idx;
     const v = verses[idx];
-    const b = document.getElementById('verseBody');
+    const t = document.getElementById('verseText');
     const r = document.getElementById('verseRef');
-    b.style.opacity = 0; r.style.opacity = 0;
+    t.style.opacity = 0; r.style.opacity = 0;
     setTimeout(() => {
-      b.textContent = '\u201c' + v.text + '\u201d';
-      r.textContent = '\u2014 ' + v.ref;
-      b.style.opacity = 1; r.style.opacity = 1;
-    }, 200);
+      t.textContent = v.text;
+      r.textContent = v.ref;
+      t.style.opacity = 1; r.style.opacity = 1;
+    }, 180);
   }
   loadVerse();
 
@@ -490,9 +335,8 @@
   function initAudio() {
     audio.src = 'Pass Out (Slowed).mp3';
     document.getElementById('trackName').textContent = 'Pass Out (Slowed)';
-
     audio.addEventListener('canplay', () => {
-      setupVisualizer();
+      setupVis();
       audio.volume = 0.8;
       audio.play().catch(() => setStatus('Click play'));
     });
@@ -502,16 +346,16 @@
     audio.addEventListener('timeupdate', updateProgress);
     audio.addEventListener('error', () => {
       setStatus('No track');
-      document.getElementById('trackName').textContent = 'Track not found';
+      document.getElementById('trackName').textContent = 'No track found';
       document.getElementById('noTrack').style.display = 'block';
     });
   }
 
-  function setupVisualizer() {
+  function setupVis() {
     if (audioCtx) return;
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 256;
+    analyser.fftSize = 128;
     source = audioCtx.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
@@ -520,49 +364,33 @@
 
   const canvas = document.getElementById('visualizer');
   const ctx = canvas.getContext('2d');
-  const CX = 70, CY = 70, INNER = 32;
-
-  const goldColor = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim() || '#c4963a';
+  const dark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   function drawLoop() {
     requestAnimationFrame(drawLoop);
-    ctx.clearRect(0, 0, 140, 140);
-
-    if (analyser) {
-      analyser.getByteFrequencyData(dataArr);
-      const bars = dataArr.length;
-      for (let i = 0; i < bars; i++) {
-        const angle = (i / bars) * Math.PI * 2 - Math.PI / 2;
-        const val = dataArr[i] / 255;
-        const h = val * 36 + 2;
-        const x1 = CX + Math.cos(angle) * INNER;
-        const y1 = CY + Math.sin(angle) * INNER;
-        const x2 = CX + Math.cos(angle) * (INNER + h);
-        const y2 = CY + Math.sin(angle) * (INNER + h);
-        ctx.strokeStyle = 'rgba(196,150,58,' + (0.25 + val * 0.75) + ')';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
+    ctx.clearRect(0, 0, 120, 52);
+    const bars = 24, bw = 3, gap = 2;
+    const totalW = bars * (bw + gap) - gap;
+    const startX = (120 - totalW) / 2;
+    const col = dark() ? '255,255,255' : '0,0,0';
+    for (let i = 0; i < bars; i++) {
+      let val = 0;
+      if (analyser) {
+        analyser.getByteFrequencyData(dataArr);
+        val = dataArr[Math.floor(i * dataArr.length / bars)] / 255;
       }
-      const avg = dataArr.reduce((a, b) => a + b, 0) / dataArr.length / 255;
+      const h = Math.max(2, val * 44);
+      const x = startX + i * (bw + gap);
+      ctx.fillStyle = 'rgba(' + col + ',' + (analyser ? (0.15 + val * 0.85) : 0.08) + ')';
       ctx.beginPath();
-      ctx.arc(CX, CY, 5 + avg * 14, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(196,150,58,' + (0.3 + avg * 0.5) + ')';
+      ctx.roundRect(x, 52 - h, bw, h, 1);
       ctx.fill();
     }
-
-    ctx.beginPath();
-    ctx.arc(CX, CY, INNER - 1, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(196,150,58,0.15)';
-    ctx.lineWidth = 1;
-    ctx.stroke();
   }
   drawLoop();
 
   function togglePlay() {
-    if (!audioCtx) setupVisualizer();
+    if (!audioCtx) setupVis();
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     if (audio.paused) audio.play(); else audio.pause();
   }
@@ -584,21 +412,21 @@
   }
   document.getElementById('volSlider').style.setProperty('--fill', '80%');
 
-  function setStatus(t) { document.getElementById('liveStatus').textContent = t; }
+  function setStatus(t) { document.getElementById('statusText').textContent = t; }
   function onPlay() {
     document.getElementById('iconPlay').style.display = 'none';
     document.getElementById('iconPause').style.display = '';
-    document.getElementById('liveDot').classList.add('active');
+    document.getElementById('statusDot').classList.add('on');
     setStatus('Playing');
   }
   function onPause() {
     document.getElementById('iconPlay').style.display = '';
     document.getElementById('iconPause').style.display = 'none';
-    document.getElementById('liveDot').classList.remove('active');
+    document.getElementById('statusDot').classList.remove('on');
     setStatus('Paused');
   }
   function onEnded() {
-    document.getElementById('liveDot').classList.remove('active');
+    document.getElementById('statusDot').classList.remove('on');
     setStatus('Ended');
     document.getElementById('iconPlay').style.display = '';
     document.getElementById('iconPause').style.display = 'none';
