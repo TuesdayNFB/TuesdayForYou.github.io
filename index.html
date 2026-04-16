@@ -4,301 +4,372 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TuesdayForYou</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0a0a0a;
-      --card: #111111;
-      --border: #1f1f1f;
-      --border2: #2a2a2a;
-      --text: #ffffff;
-      --muted: #555555;
-      --sub: #888888;
-      --green: #1DB954;
+      --bg: #faf8f4;
+      --surface: #ffffff;
+      --surface2: #f3f0ea;
+      --border: #e5e0d5;
+      --text: #1a1714;
+      --muted: #9c9488;
+      --sub: #b8b0a4;
+      --gold: #c4963a;
+      --gold-light: #f5edd8;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141210;
+        --surface: #1e1b18;
+        --surface2: #252119;
+        --border: #302c26;
+        --text: #f0ece4;
+        --muted: #6b6358;
+        --sub: #504945;
+        --gold: #d4a84b;
+        --gold-light: #2a2318;
+      }
     }
 
     html, body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Inter', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      opacity: 0.025;
-      pointer-events: none;
-      z-index: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
-
     .page {
-      position: relative;
-      z-index: 1;
       width: 100%;
-      max-width: 600px;
-      padding: 56px 24px 48px;
+      max-width: 560px;
+      padding: 60px 20px 60px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 12px;
     }
 
-    .logo {
-      font-family: 'Orbitron', monospace;
-      font-size: clamp(28px, 7vw, 46px);
-      font-weight: 900;
-      letter-spacing: 1px;
+    .header {
       text-align: center;
-      color: #fff;
-      margin-bottom: 8px;
-      line-height: 1;
+      margin-bottom: 12px;
     }
-    .logo-sub {
-      font-size: 10px;
-      letter-spacing: 5px;
+    .cross {
+      width: 32px; height: 32px;
+      margin: 0 auto 16px;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cross::before, .cross::after {
+      content: '';
+      position: absolute;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+    .cross::before { width: 3px; height: 100%; }
+    .cross::after { width: 100%; height: 3px; }
+
+    .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 6vw, 38px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .brand-tagline {
+      font-size: 11px;
+      letter-spacing: 4px;
       color: var(--muted);
       text-transform: uppercase;
-      text-align: center;
-      margin-bottom: 30px;
+      margin-top: 6px;
+    }
+
+    .divider {
+      width: 40px; height: 1px;
+      background: var(--gold);
+      margin: 20px auto 0;
     }
 
     .socials {
       display: flex;
-      gap: 14px;
-      margin-bottom: 36px;
+      gap: 10px;
+      margin: 4px 0 8px;
     }
     .social-btn {
-      width: 38px; height: 38px;
+      width: 36px; height: 36px;
       border-radius: 50%;
-      border: 1px solid var(--border2);
-      background: transparent;
+      border: 1px solid var(--border);
+      background: var(--surface);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       transition: border-color 0.2s, background 0.2s;
       text-decoration: none;
     }
-    .social-btn:hover { border-color: #444; background: #1a1a1a; }
-    .social-btn svg { width: 17px; height: 17px; fill: var(--sub); }
+    .social-btn:hover { border-color: var(--gold); background: var(--gold-light); }
+    .social-btn svg { width: 16px; height: 16px; fill: var(--muted); transition: fill 0.2s; }
+    .social-btn:hover svg { fill: var(--gold); }
 
-    .cards {
+    .verse-card {
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .card {
-      background: var(--card);
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 28px 28px 24px;
-    }
-    .card-title {
-      font-family: 'Orbitron', monospace;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: #fff;
-      text-align: center;
-      margin-bottom: 20px;
-      text-transform: uppercase;
-    }
-    .verse-text {
-      font-size: 15px;
-      line-height: 1.8;
-      color: #bbb;
-      font-style: italic;
-      text-align: center;
-      margin-bottom: 16px;
-      transition: opacity 0.4s;
-    }
-    .verse-ref {
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      color: var(--muted);
-      text-align: center;
-      transition: opacity 0.4s;
-    }
-
-    .reload-btn {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      color: var(--sub);
-      font-size: 13px;
-      font-family: 'Inter', sans-serif;
-      letter-spacing: 0.5px;
-      padding: 18px;
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s, background 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .reload-btn:hover { border-color: #333; color: #fff; background: #161616; }
-    .reload-btn svg { width: 13px; height: 13px; fill: currentColor; opacity: 0.6; }
-
-    .player-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 18px;
+      padding: 36px 32px 30px;
+      position: relative;
       overflow: hidden;
     }
-    .player-top {
-      padding: 18px 24px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .verse-card::before {
+      content: '\201C';
+      font-family: 'Playfair Display', serif;
+      font-size: 120px;
+      color: var(--gold);
+      opacity: 0.12;
+      position: absolute;
+      top: -20px; left: 12px;
+      line-height: 1;
+      pointer-events: none;
     }
-    .player-label {
-      font-family: 'Orbitron', monospace;
-      font-size: 9px;
-      letter-spacing: 3px;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-    .status-pill {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .verse-label {
       font-size: 10px;
-      letter-spacing: 1.5px;
-      color: var(--muted);
+      letter-spacing: 4px;
       text-transform: uppercase;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 22px;
+      font-weight: 500;
     }
-    .status-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--border2);
-      transition: background 0.3s, box-shadow 0.3s;
+    .verse-body {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      line-height: 1.85;
+      color: var(--text);
+      font-style: italic;
+      text-align: center;
+      margin-bottom: 22px;
+      transition: opacity 0.35s;
     }
-    .status-dot.playing {
-      background: var(--green);
-      box-shadow: 0 0 8px #1DB95466;
+    .verse-ref {
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      transition: opacity 0.35s;
     }
-
-    .player-body {
-      padding: 24px 24px 26px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .vis-wrap {
+    .verse-bottom {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
       display: flex;
       justify-content: center;
+    }
+    .new-verse-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--muted);
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 1px;
+      padding: 10px 20px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 7px;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      text-transform: uppercase;
+    }
+    .new-verse-btn:hover { color: var(--gold); border-color: var(--gold); background: var(--gold-light); }
+    .new-verse-btn svg { width: 12px; height: 12px; fill: currentColor; }
+
+    .player-card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .player-header {
+      padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .player-title {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .live-pill {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 10px; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .live-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    .live-dot.active { background: var(--gold); }
+
+    .player-art {
+      padding: 28px 28px 0;
+      display: flex;
+      justify-content: center;
+    }
+    .canvas-wrap {
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      overflow: visible;
+      position: relative;
     }
     #visualizer { border-radius: 50%; display: block; }
 
-    .track-info { text-align: center; }
+    .player-info {
+      padding: 20px 28px 0;
+      text-align: center;
+    }
     .track-name {
-      font-family: 'Orbitron', monospace;
-      font-size: 14px;
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
       font-weight: 700;
-      letter-spacing: 1px;
-      color: #fff;
+      color: var(--text);
       margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .track-meta { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
-
-    .progress-wrap { display: flex; align-items: center; gap: 10px; }
-    .time-label {
+    .track-artist {
       font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
       color: var(--muted);
-      font-variant-numeric: tabular-nums;
-      min-width: 30px;
-      letter-spacing: 0.5px;
     }
-    .time-label:last-child { text-align: right; }
-    .progress-bar {
-      flex: 1; height: 3px;
-      background: var(--border2);
+
+    .progress-section {
+      padding: 20px 28px 0;
+    }
+    .progress-row {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .t-label {
+      font-size: 11px;
+      color: var(--sub);
+      min-width: 28px;
+      font-variant-numeric: tabular-nums;
+    }
+    .t-label:last-child { text-align: right; }
+    .progress-track {
+      flex: 1; height: 2px;
+      background: var(--border);
       border-radius: 99px;
       position: relative;
       cursor: pointer;
     }
     .progress-fill {
-      height: 100%; background: #fff;
-      border-radius: 99px; width: 0%;
+      height: 100%; width: 0%;
+      background: var(--gold);
+      border-radius: 99px;
       transition: width 0.1s linear;
       pointer-events: none;
     }
     .progress-thumb {
-      position: absolute; top: 50%; left: 0%;
-      transform: translate(-50%, -50%);
+      position: absolute; top: 50%; left: 0;
       width: 10px; height: 10px;
-      border-radius: 50%; background: #fff;
+      border-radius: 50%;
+      background: var(--gold);
+      transform: translate(-50%, -50%);
       pointer-events: none; opacity: 0;
       transition: opacity 0.2s;
     }
-    .progress-bar:hover .progress-thumb { opacity: 1; }
+    .progress-track:hover .progress-thumb { opacity: 1; }
 
-    .controls {
-      display: flex; align-items: center;
-      justify-content: center; gap: 20px;
+    .controls-row {
+      padding: 16px 28px;
+      display: flex; align-items: center; justify-content: center; gap: 16px;
     }
-    .ctrl-btn {
+    .ctl {
       background: transparent; border: none;
-      cursor: pointer; padding: 6px;
-      border-radius: 50%; display: flex;
-      align-items: center; justify-content: center;
+      cursor: pointer; padding: 8px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
       transition: background 0.15s;
     }
-    .ctrl-btn:hover { background: #1e1e1e; }
-    .ctrl-btn svg { width: 20px; height: 20px; fill: var(--sub); transition: fill 0.15s; }
-    .ctrl-btn:hover svg { fill: #fff; }
-    .ctrl-btn.active svg { fill: #fff; }
-    .ctrl-btn.big {
-      width: 52px; height: 52px;
-      border: 1px solid var(--border2);
-      border-radius: 50%;
-    }
-    .ctrl-btn.big:hover { border-color: #444; background: #1a1a1a; }
-    .ctrl-btn.big svg { width: 22px; height: 22px; fill: #fff; }
+    .ctl:hover { background: var(--surface2); }
+    .ctl svg { width: 18px; height: 18px; fill: var(--sub); transition: fill 0.15s; }
+    .ctl:hover svg { fill: var(--text); }
+    .ctl.on svg { fill: var(--gold); }
 
-    .vol-wrap { display: flex; align-items: center; gap: 10px; }
-    .vol-label { font-size: 10px; letter-spacing: 2px; color: var(--muted); min-width: 24px; }
-    .vol-pct { font-size: 10px; color: var(--muted); min-width: 30px; text-align: right; }
+    .play-btn {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 1px solid var(--gold);
+      background: var(--gold-light);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .play-btn:hover { background: var(--gold); }
+    .play-btn:hover svg { fill: #fff; }
+    .play-btn svg { width: 20px; height: 20px; fill: var(--gold); transition: fill 0.2s; }
+
+    .vol-row {
+      padding: 0 28px 24px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .vol-icon { width: 14px; height: 14px; fill: var(--sub); flex-shrink: 0; }
     input[type=range] {
       flex: 1; -webkit-appearance: none; appearance: none;
-      height: 3px;
-      background: linear-gradient(to right, #fff var(--fill, 80%), var(--border2) var(--fill, 80%));
+      height: 2px;
+      background: linear-gradient(to right, var(--gold) var(--fill, 80%), var(--border) var(--fill, 80%));
       border-radius: 99px; outline: none; cursor: pointer;
     }
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 12px; height: 12px;
-      border-radius: 50%; background: #fff; cursor: pointer;
+      border-radius: 50%; background: var(--gold); cursor: pointer;
     }
     input[type=range]::-moz-range-thumb {
       width: 12px; height: 12px;
-      border-radius: 50%; background: #fff; border: none; cursor: pointer;
+      border-radius: 50%; background: var(--gold); border: none; cursor: pointer;
+    }
+    .vol-pct {
+      font-size: 11px; color: var(--sub);
+      min-width: 30px; text-align: right;
     }
 
-    .error-hint {
-      font-size: 11px; color: var(--muted);
-      text-align: center; letter-spacing: 0.5px; line-height: 1.7;
+    .no-track {
+      padding: 0 28px 20px;
+      font-size: 12px;
+      color: var(--sub);
+      text-align: center;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .footer {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--sub);
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 8px;
     }
   </style>
 </head>
 <body>
 <div class="page">
 
-  <div class="logo">TuesdayForYou</div>
-  <div class="logo-sub">Music</div>
+  <div class="header">
+    <div class="cross"></div>
+    <div class="brand">TuesdayForYou</div>
+    <div class="brand-tagline">Faith &amp; Music</div>
+    <div class="divider"></div>
+  </div>
 
   <div class="socials">
     <a class="social-btn" href="#" target="_blank" rel="noopener" title="YouTube">
@@ -309,68 +380,74 @@
     </a>
   </div>
 
-  <div class="cards">
-
-    <div class="card">
-      <div class="card-title">Verse of the Day</div>
-      <div class="verse-text" id="verseText"></div>
-      <div class="verse-ref" id="verseRef"></div>
+  <div class="verse-card">
+    <div class="verse-label">Word for Today</div>
+    <div class="verse-body" id="verseBody"></div>
+    <div class="verse-ref" id="verseRef"></div>
+    <div class="verse-bottom">
+      <button class="new-verse-btn" onclick="loadVerse()">
+        <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.96 7.96 0 0 0 12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+        New verse
+      </button>
     </div>
-
-    <button class="reload-btn" onclick="loadVerse()">
-      <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.96 7.96 0 0 0 12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-      New verse of the day
-    </button>
-
-    <div class="player-card">
-      <div class="player-top">
-        <span class="player-label">Now Playing</span>
-        <div class="status-pill">
-          <div class="status-dot" id="statusDot"></div>
-          <span id="statusText">Ready</span>
-        </div>
-      </div>
-      <div class="player-body">
-        <div class="vis-wrap">
-          <canvas id="visualizer" width="160" height="160"></canvas>
-        </div>
-        <div class="track-info">
-          <div class="track-name" id="trackName">—</div>
-          <div class="track-meta">TUESDAYFORYOU</div>
-        </div>
-        <div class="progress-wrap">
-          <span class="time-label" id="curTime">0:00</span>
-          <div class="progress-bar" id="progressBar">
-            <div class="progress-fill" id="progressFill"></div>
-            <div class="progress-thumb" id="progressThumb"></div>
-          </div>
-          <span class="time-label" id="durTime">0:00</span>
-        </div>
-        <div class="controls">
-          <button class="ctrl-btn" id="btnLoop" title="Loop" onclick="toggleLoop()">
-            <svg viewBox="0 0 24 24"><path d="M17 17H7V14L3 18l4 4v-3h12v-6h-2v4zM7 7h10v3l4-4-4-4v3H5v6h2V7z"/></svg>
-          </button>
-          <button class="ctrl-btn big" onclick="togglePlay()">
-            <svg id="iconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-          </button>
-          <button class="ctrl-btn" title="Mute" onclick="toggleMute()">
-            <svg id="iconVol" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-            <svg id="iconMute" viewBox="0 0 24 24" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-          </button>
-        </div>
-        <div class="vol-wrap">
-          <span class="vol-label">VOL</span>
-          <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" oninput="setVolume(this.value)"/>
-          <span class="vol-pct" id="volPct">80%</span>
-        </div>
-        <div class="error-hint" id="errorHint" style="display:none">
-          Add your MP3 to a <strong>Songs/</strong> folder and list it in <strong>songs-manifest.json</strong>
-        </div>
-      </div>
-    </div>
-
   </div>
+
+  <div class="player-card">
+    <div class="player-header">
+      <span class="player-title">Now Playing</span>
+      <div class="live-pill">
+        <div class="live-dot" id="liveDot"></div>
+        <span id="liveStatus">Ready</span>
+      </div>
+    </div>
+
+    <div class="player-art">
+      <canvas id="visualizer" width="140" height="140"></canvas>
+    </div>
+
+    <div class="player-info">
+      <div class="track-name" id="trackName">—</div>
+      <div class="track-artist">TuesdayForYou</div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-row">
+        <span class="t-label" id="curTime">0:00</span>
+        <div class="progress-track" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+          <div class="progress-thumb"></div>
+        </div>
+        <span class="t-label" id="durTime">0:00</span>
+      </div>
+    </div>
+
+    <div class="controls-row">
+      <button class="ctl" id="btnLoop" title="Loop" onclick="toggleLoop()">
+        <svg viewBox="0 0 24 24"><path d="M17 17H7V14L3 18l4 4v-3h12v-6h-2v4zM7 7h10v3l4-4-4-4v3H5v6h2V7z"/></svg>
+      </button>
+      <button class="play-btn" onclick="togglePlay()" id="playBtn">
+        <svg id="iconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+      <button class="ctl" title="Mute" onclick="toggleMute()">
+        <svg id="iconVol" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        <svg id="iconMute" viewBox="0 0 24 24" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+      </button>
+    </div>
+
+    <div class="vol-row">
+      <svg class="vol-icon" viewBox="0 0 24 24"><path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/></svg>
+      <input type="range" id="volSlider" min="0" max="1" step="0.01" value="0.8" oninput="setVolume(this.value)"/>
+      <span class="vol-pct" id="volPct">80%</span>
+    </div>
+
+    <div class="no-track" id="noTrack">
+      Place <strong>Pass Out (Slowed).mp3</strong> in the same folder as this file.
+    </div>
+  </div>
+
+  <div class="footer">TuesdayForYou &copy; 2025</div>
+
 </div>
 
 <audio id="audioEl" preload="auto"></audio>
@@ -395,13 +472,13 @@
     do { idx = Math.floor(Math.random() * verses.length); } while (idx === lastIdx && verses.length > 1);
     lastIdx = idx;
     const v = verses[idx];
-    const t = document.getElementById('verseText');
+    const b = document.getElementById('verseBody');
     const r = document.getElementById('verseRef');
-    t.style.opacity = 0; r.style.opacity = 0;
+    b.style.opacity = 0; r.style.opacity = 0;
     setTimeout(() => {
-      t.textContent = '\u201c' + v.text + '\u201d';
-      r.textContent = v.ref;
-      t.style.opacity = 1; r.style.opacity = 1;
+      b.textContent = '\u201c' + v.text + '\u201d';
+      r.textContent = '\u2014 ' + v.ref;
+      b.style.opacity = 1; r.style.opacity = 1;
     }, 200);
   }
   loadVerse();
@@ -410,25 +487,9 @@
   let audioCtx, analyser, source, dataArr;
   let isLooping = false, isMuted = false;
 
-  async function initAudio() {
-    let src = null, name = null;
-    try {
-      const res = await fetch('songs-manifest.json');
-      if (res.ok) {
-        const manifest = await res.json();
-        if (manifest.songs && manifest.songs.length > 0) {
-          src = 'Songs/' + manifest.songs[0].file;
-          name = manifest.songs[0].name;
-        }
-      }
-    } catch(e) {}
-
-    if (!src) { src = 'Songs/track.mp3'; name = null; }
-
-    audio.src = src;
-    document.getElementById('trackName').textContent = name
-      ? name.toUpperCase()
-      : src.split('/').pop().replace(/\.mp3$/i,'').toUpperCase();
+  function initAudio() {
+    audio.src = 'Pass Out (Slowed).mp3';
+    document.getElementById('trackName').textContent = 'Pass Out (Slowed)';
 
     audio.addEventListener('canplay', () => {
       setupVisualizer();
@@ -441,8 +502,8 @@
     audio.addEventListener('timeupdate', updateProgress);
     audio.addEventListener('error', () => {
       setStatus('No track');
-      document.getElementById('trackName').textContent = 'NO TRACK FOUND';
-      document.getElementById('errorHint').style.display = 'block';
+      document.getElementById('trackName').textContent = 'Track not found';
+      document.getElementById('noTrack').style.display = 'block';
     });
   }
 
@@ -455,16 +516,17 @@
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
     dataArr = new Uint8Array(analyser.frequencyBinCount);
-    drawVisualizer();
   }
 
-  const vCanvas = document.getElementById('visualizer');
-  const vCtx = vCanvas.getContext('2d');
+  const canvas = document.getElementById('visualizer');
+  const ctx = canvas.getContext('2d');
+  const CX = 70, CY = 70, INNER = 32;
 
-  function drawVisualizer() {
-    requestAnimationFrame(drawVisualizer);
-    vCtx.clearRect(0, 0, 160, 160);
-    const cx = 80, cy = 80, innerR = 36;
+  const goldColor = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim() || '#c4963a';
+
+  function drawLoop() {
+    requestAnimationFrame(drawLoop);
+    ctx.clearRect(0, 0, 140, 140);
 
     if (analyser) {
       analyser.getByteFrequencyData(dataArr);
@@ -472,32 +534,32 @@
       for (let i = 0; i < bars; i++) {
         const angle = (i / bars) * Math.PI * 2 - Math.PI / 2;
         const val = dataArr[i] / 255;
-        const barH = val * 44 + 3;
-        const x1 = cx + Math.cos(angle) * innerR;
-        const y1 = cy + Math.sin(angle) * innerR;
-        const x2 = cx + Math.cos(angle) * (innerR + barH);
-        const y2 = cy + Math.sin(angle) * (innerR + barH);
-        vCtx.strokeStyle = 'rgba(255,255,255,' + (0.3 + val * 0.7) + ')';
-        vCtx.lineWidth = 1.5;
-        vCtx.beginPath();
-        vCtx.moveTo(x1, y1);
-        vCtx.lineTo(x2, y2);
-        vCtx.stroke();
+        const h = val * 36 + 2;
+        const x1 = CX + Math.cos(angle) * INNER;
+        const y1 = CY + Math.sin(angle) * INNER;
+        const x2 = CX + Math.cos(angle) * (INNER + h);
+        const y2 = CY + Math.sin(angle) * (INNER + h);
+        ctx.strokeStyle = 'rgba(196,150,58,' + (0.25 + val * 0.75) + ')';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
       }
-      const avg = dataArr.reduce((a,b)=>a+b,0) / dataArr.length / 255;
-      vCtx.beginPath();
-      vCtx.arc(cx, cy, 6 + avg * 16, 0, Math.PI * 2);
-      vCtx.fillStyle = 'rgba(255,255,255,' + (0.4 + avg * 0.6) + ')';
-      vCtx.fill();
+      const avg = dataArr.reduce((a, b) => a + b, 0) / dataArr.length / 255;
+      ctx.beginPath();
+      ctx.arc(CX, CY, 5 + avg * 14, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(196,150,58,' + (0.3 + avg * 0.5) + ')';
+      ctx.fill();
     }
 
-    vCtx.beginPath();
-    vCtx.arc(cx, cy, innerR - 2, 0, Math.PI * 2);
-    vCtx.strokeStyle = 'rgba(255,255,255,0.08)';
-    vCtx.lineWidth = 1;
-    vCtx.stroke();
+    ctx.beginPath();
+    ctx.arc(CX, CY, INNER - 1, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(196,150,58,0.15)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
   }
-  drawVisualizer();
+  drawLoop();
 
   function togglePlay() {
     if (!audioCtx) setupVisualizer();
@@ -507,7 +569,7 @@
   function toggleLoop() {
     isLooping = !isLooping;
     audio.loop = isLooping;
-    document.getElementById('btnLoop').classList.toggle('active', isLooping);
+    document.getElementById('btnLoop').classList.toggle('on', isLooping);
   }
   function toggleMute() {
     isMuted = !isMuted;
@@ -518,42 +580,43 @@
   function setVolume(v) {
     audio.volume = parseFloat(v);
     document.getElementById('volPct').textContent = Math.round(v * 100) + '%';
-    document.getElementById('volumeSlider').style.setProperty('--fill', (v * 100) + '%');
+    document.getElementById('volSlider').style.setProperty('--fill', (v * 100) + '%');
   }
-  document.getElementById('volumeSlider').style.setProperty('--fill', '80%');
+  document.getElementById('volSlider').style.setProperty('--fill', '80%');
 
-  function setStatus(txt) { document.getElementById('statusText').textContent = txt; }
+  function setStatus(t) { document.getElementById('liveStatus').textContent = t; }
   function onPlay() {
     document.getElementById('iconPlay').style.display = 'none';
     document.getElementById('iconPause').style.display = '';
-    document.getElementById('statusDot').classList.add('playing');
+    document.getElementById('liveDot').classList.add('active');
     setStatus('Playing');
   }
   function onPause() {
     document.getElementById('iconPlay').style.display = '';
     document.getElementById('iconPause').style.display = 'none';
-    document.getElementById('statusDot').classList.remove('playing');
+    document.getElementById('liveDot').classList.remove('active');
     setStatus('Paused');
   }
   function onEnded() {
-    document.getElementById('statusDot').classList.remove('playing');
+    document.getElementById('liveDot').classList.remove('active');
     setStatus('Ended');
+    document.getElementById('iconPlay').style.display = '';
+    document.getElementById('iconPause').style.display = 'none';
   }
   function updateProgress() {
     const cur = audio.currentTime, dur = audio.duration || 0;
     const pct = dur ? (cur / dur) * 100 : 0;
     document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressThumb').style.left = pct + '%';
     document.getElementById('curTime').textContent = fmt(cur);
     document.getElementById('durTime').textContent = fmt(dur);
   }
   function fmt(s) {
     if (!s || isNaN(s)) return '0:00';
-    return Math.floor(s/60) + ':' + String(Math.floor(s%60)).padStart(2,'0');
+    return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
   }
   document.getElementById('progressBar').addEventListener('click', e => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    audio.currentTime = ((e.clientX - rect.left) / rect.width) * (audio.duration || 0);
+    const r = e.currentTarget.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - r.left) / r.width) * (audio.duration || 0);
   });
 
   initAudio();
