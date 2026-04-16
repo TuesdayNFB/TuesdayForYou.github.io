@@ -4,239 +4,358 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TuesdayForYou</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      background: #fff;
-      color: #111;
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    :root {
+      --bg: #0a0a0b;
+      --surface: #111113;
+      --surface2: #18181c;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --text: #f0ede8;
+      --muted: #5a5760;
+      --subtle: #2e2c35;
+      --accent: #c8b98a;
+      --accent2: #e8d9b0;
+      --glow: rgba(200,185,138,0.15);
     }
 
-    @media (prefers-color-scheme: dark) {
-      body { background: #111; color: #fff; }
-      .player { border-color: #222; }
-      .progress-track { background: #2a2a2a; }
-      .ctrl svg { fill: #555; }
-      .ctrl:hover { background: #1a1a1a; }
-      .ctrl:hover svg { fill: #fff; }
-      .ctrl.on svg { fill: #fff; }
-      .play-btn { border-color: #333; }
-      .play-btn svg { fill: #fff; }
-      .play-btn:hover { background: #fff; border-color: #fff; }
-      .play-btn:hover svg { fill: #111; }
-      input[type=range] { background: linear-gradient(to right, #fff var(--fill,80%), #2a2a2a var(--fill,80%)); }
-      input[type=range]::-webkit-slider-thumb { background: #fff; }
-      input[type=range]::-moz-range-thumb { background: #fff; }
-      .status-dot.on { background: #fff; }
-      .verse-box { border-color: #1e1e1e; }
-      .verse-text { color: #555; }
-      .verse-ref { color: #3a3a3a; }
-      .verse-btn:hover { color: #fff; }
-      .progress-fill { background: #fff; }
-      .progress-thumb { background: #fff; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Ambient background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 600px 400px at 20% 50%, rgba(200,185,138,0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 400px 600px at 80% 30%, rgba(120,100,180,0.03) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     .page {
+      position: relative;
+      z-index: 1;
       width: 100%;
-      max-width: 380px;
-      padding: 24px 20px;
+      max-width: 420px;
+      padding: 28px 20px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 14px;
     }
 
-    .top-row {
+    /* ── Header ── */
+    .header {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 12px;
+      gap: 16px;
     }
 
     .brand {
-      font-size: 20px;
-      font-weight: 500;
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      font-weight: 400;
       letter-spacing: -0.5px;
+      color: var(--text);
+      line-height: 1;
       flex-shrink: 0;
-      padding-top: 2px;
+      padding-top: 4px;
+    }
+    .brand span {
+      color: var(--accent);
     }
 
+    /* ── Verse box ── */
     .verse-box {
-      border: 1px solid #ebebeb;
-      border-radius: 10px;
-      padding: 10px 12px;
-      max-width: 170px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      max-width: 175px;
+      position: relative;
+      overflow: hidden;
+    }
+    .verse-box::before {
+      content: '"';
+      font-family: 'DM Serif Display', serif;
+      font-size: 60px;
+      color: var(--accent);
+      opacity: 0.08;
+      position: absolute;
+      top: -10px;
+      left: 6px;
+      line-height: 1;
+      pointer-events: none;
     }
     .verse-text {
-      font-size: 10px;
-      line-height: 1.65;
-      color: #999;
+      font-size: 10.5px;
+      line-height: 1.7;
+      color: #8a8590;
       font-style: italic;
-      transition: opacity 0.25s;
+      transition: opacity 0.3s;
+      position: relative;
     }
     .verse-ref {
-      font-size: 9px;
-      color: #ccc;
-      margin-top: 5px;
-      letter-spacing: 0.3px;
-      transition: opacity 0.25s;
+      font-size: 9.5px;
+      color: var(--accent);
+      opacity: 0.7;
+      margin-top: 6px;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+      transition: opacity 0.3s;
     }
     .verse-btn {
       display: block;
-      margin-top: 7px;
+      margin-top: 8px;
       background: none;
       border: none;
       font-size: 9px;
-      letter-spacing: 1px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
-      color: #ccc;
+      color: var(--muted);
       cursor: pointer;
       padding: 0;
-      font-family: 'Inter', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       transition: color 0.2s;
     }
-    .verse-btn:hover { color: #111; }
+    .verse-btn:hover { color: var(--accent); }
 
+    /* ── Player card ── */
     .player {
-      width: 100%;
-      border: 1px solid #e8e8e8;
-      border-radius: 14px;
-      padding: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px 20px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 40px 80px rgba(0,0,0,0.4);
+    }
+    /* Subtle top shine */
+    .player::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 16px; right: 16px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
     }
 
+    /* ── Track row ── */
     .track-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 10px;
     }
+    .track-info { flex: 1; min-width: 0; }
     .track-name {
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 500;
+      color: var(--text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      letter-spacing: -0.2px;
     }
+    .track-sub {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 2px;
+      letter-spacing: 0.3px;
+    }
+
     .status-pill {
-      display: flex; align-items: center; gap: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 4px 10px 4px 7px;
       flex-shrink: 0;
     }
     .status-dot {
       width: 5px; height: 5px;
       border-radius: 50%;
-      background: #ddd;
-      transition: background 0.3s;
+      background: var(--subtle);
+      transition: background 0.3s, box-shadow 0.3s;
     }
-    .status-dot.on { background: #111; }
+    .status-dot.on {
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--glow);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
     .status-text {
-      font-size: 10px;
+      font-size: 9.5px;
       letter-spacing: 0.8px;
       text-transform: uppercase;
-      color: #bbb;
+      color: var(--muted);
+      font-weight: 500;
     }
 
-    .vis-wrap { display: flex; justify-content: center; }
+    /* ── Visualizer ── */
+    .vis-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      height: 52px;
+    }
     #visualizer { display: block; }
 
+    /* ── Progress ── */
     .progress-track {
-      width: 100%; height: 2px;
-      background: #ebebeb;
+      width: 100%; height: 3px;
+      background: var(--subtle);
       border-radius: 99px;
       position: relative;
       cursor: pointer;
     }
     .progress-fill {
       height: 100%; width: 0%;
-      background: #111;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
       border-radius: 99px;
       transition: width 0.1s linear;
       pointer-events: none;
     }
     .progress-thumb {
       position: absolute; top: 50%; left: 0;
-      width: 9px; height: 9px;
+      width: 10px; height: 10px;
       border-radius: 50%;
-      background: #111;
+      background: var(--accent2);
       transform: translate(-50%, -50%);
-      pointer-events: none; opacity: 0;
+      pointer-events: none;
+      opacity: 0;
       transition: opacity 0.2s;
+      box-shadow: 0 0 8px var(--glow);
     }
     .progress-track:hover .progress-thumb { opacity: 1; }
 
     .time-row {
       display: flex; justify-content: space-between;
-      margin-top: -6px;
+      margin-top: -4px;
     }
-    .t { font-size: 10px; color: #bbb; font-variant-numeric: tabular-nums; }
+    .t { font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; }
 
+    /* ── Controls ── */
     .controls {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
     }
     .ctrl {
       background: none; border: none; cursor: pointer;
-      padding: 7px; border-radius: 50%;
+      padding: 8px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       transition: background 0.15s;
     }
-    .ctrl:hover { background: #f4f4f4; }
-    .ctrl svg { width: 16px; height: 16px; fill: #bbb; transition: fill 0.15s; }
-    .ctrl:hover svg { fill: #111; }
-    .ctrl.on svg { fill: #111; }
+    .ctrl:hover { background: var(--surface2); }
+    .ctrl svg { width: 16px; height: 16px; fill: var(--muted); transition: fill 0.15s; }
+    .ctrl:hover svg { fill: var(--text); }
+    .ctrl.on svg { fill: var(--accent); }
 
     .play-btn {
-      width: 38px; height: 38px;
+      width: 46px; height: 46px;
       border-radius: 50%;
-      border: 1px solid #ccc;
-      background: none;
+      border: 1px solid var(--border2);
+      background: var(--surface2);
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, border-color 0.15s;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+      position: relative;
     }
-    .play-btn:hover { background: #111; border-color: #111; }
-    .play-btn:hover svg { fill: #fff; }
-    .play-btn svg { width: 15px; height: 15px; fill: #111; transition: fill 0.15s; }
+    .play-btn::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(200,185,138,0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .play-btn:hover { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 20px var(--glow); }
+    .play-btn:hover::before { opacity: 1; }
+    .play-btn:hover svg { fill: #0a0a0b; }
+    .play-btn:active { transform: scale(0.94); }
+    .play-btn svg { width: 16px; height: 16px; fill: var(--text); transition: fill 0.15s; position: relative; z-index: 1; }
 
+    /* ── Volume ── */
     .vol-row {
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; gap: 10px;
     }
-    .vol-icon { width: 12px; height: 12px; fill: #bbb; flex-shrink: 0; }
+    .vol-icon { width: 13px; height: 13px; fill: var(--muted); flex-shrink: 0; }
     input[type=range] {
       flex: 1; -webkit-appearance: none; appearance: none;
-      height: 2px;
-      background: linear-gradient(to right, #111 var(--fill,80%), #ebebeb var(--fill,80%));
+      height: 3px;
+      background: linear-gradient(to right, var(--accent) var(--fill,80%), var(--subtle) var(--fill,80%));
       border-radius: 99px; outline: none; cursor: pointer;
     }
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 11px; height: 11px;
-      border-radius: 50%; background: #111; cursor: pointer;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--accent2);
+      cursor: pointer;
+      box-shadow: 0 0 6px var(--glow);
     }
     input[type=range]::-moz-range-thumb {
-      width: 11px; height: 11px;
-      border-radius: 50%; background: #111; border: none; cursor: pointer;
+      width: 12px; height: 12px;
+      border-radius: 50%; background: var(--accent2); border: none; cursor: pointer;
     }
-    .vol-pct { font-size: 10px; color: #bbb; min-width: 26px; text-align: right; }
+    .vol-pct { font-size: 10px; color: var(--muted); min-width: 28px; text-align: right; }
+
+    /* ── Autoplay notice ── */
+    .autoplay-hint {
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      opacity: 0;
+      transition: opacity 0.4s;
+      height: 0;
+      overflow: hidden;
+    }
+    .autoplay-hint.show {
+      opacity: 1;
+      height: auto;
+    }
 
     .no-track {
-      font-size: 11px; color: #bbb; text-align: center;
+      font-size: 11px; color: var(--muted); text-align: center;
       line-height: 1.6; display: none;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: -4px 0;
     }
   </style>
 </head>
 <body>
 <div class="page">
 
-  <div class="top-row">
-    <div class="brand">TuesdayForYou</div>
+  <div class="header">
+    <div class="brand">Tuesday<span>For</span>You</div>
     <div class="verse-box">
       <div class="verse-text" id="verseText"></div>
       <div class="verse-ref" id="verseRef"></div>
@@ -246,7 +365,10 @@
 
   <div class="player">
     <div class="track-row">
-      <div class="track-name" id="trackName">—</div>
+      <div class="track-info">
+        <div class="track-name" id="trackName">—</div>
+        <div class="track-sub">ambient · slowed</div>
+      </div>
       <div class="status-pill">
         <div class="status-dot" id="statusDot"></div>
         <span class="status-text" id="statusText">Ready</span>
@@ -254,13 +376,13 @@
     </div>
 
     <div class="vis-wrap">
-      <canvas id="visualizer" width="120" height="52"></canvas>
+      <canvas id="visualizer" width="340" height="52"></canvas>
     </div>
 
     <div>
       <div class="progress-track" id="progressBar">
         <div class="progress-fill" id="progressFill"></div>
-        <div class="progress-thumb"></div>
+        <div class="progress-thumb" id="progressThumb"></div>
       </div>
       <div class="time-row">
         <span class="t" id="curTime">0:00</span>
@@ -272,7 +394,7 @@
       <button class="ctrl" id="btnLoop" title="Loop" onclick="toggleLoop()">
         <svg viewBox="0 0 24 24"><path d="M17 17H7V14L3 18l4 4v-3h12v-6h-2v4zM7 7h10v3l4-4-4-4v3H5v6h2V7z"/></svg>
       </button>
-      <button class="play-btn" onclick="togglePlay()">
+      <button class="play-btn" onclick="togglePlay()" id="playBtn">
         <svg id="iconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
       </button>
@@ -282,15 +404,16 @@
       </button>
     </div>
 
+    <div class="divider"></div>
+
     <div class="vol-row">
       <svg class="vol-icon" viewBox="0 0 24 24"><path d="M5 9v6h4l5 5V4L9 9H5z"/></svg>
       <input type="range" id="volSlider" min="0" max="1" step="0.01" value="0.8" oninput="setVolume(this.value)"/>
       <span class="vol-pct" id="volPct">80%</span>
     </div>
 
-    <div class="no-track" id="noTrack">
-      Place <strong>Pass Out (Slowed).mp3</strong> in the same folder as this file.
-    </div>
+    <div class="autoplay-hint" id="autoplayHint">Tap play to start — browser requires interaction first</div>
+    <div class="no-track" id="noTrack">Place <strong>Pass Out (Slowed).mp3</strong> in the same folder.</div>
   </div>
 
 </div>
@@ -324,13 +447,14 @@
       t.textContent = v.text;
       r.textContent = v.ref;
       t.style.opacity = 1; r.style.opacity = 1;
-    }, 180);
+    }, 200);
   }
   loadVerse();
 
   const audio = document.getElementById('audioEl');
   let audioCtx, analyser, source, dataArr;
   let isLooping = false, isMuted = false;
+  let autoplayBlocked = false;
 
   function initAudio() {
     audio.src = 'Pass Out (Slowed).mp3';
@@ -338,7 +462,16 @@
     audio.addEventListener('canplay', () => {
       setupVis();
       audio.volume = 0.8;
-      audio.play().catch(() => setStatus('Click play'));
+      // Try autoplay
+      const p = audio.play();
+      if (p !== undefined) {
+        p.catch(() => {
+          autoplayBlocked = true;
+          const hint = document.getElementById('autoplayHint');
+          hint.classList.add('show');
+          setStatus('Tap play');
+        });
+      }
     });
     audio.addEventListener('play', onPlay);
     audio.addEventListener('pause', onPause);
@@ -355,7 +488,7 @@
     if (audioCtx) return;
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 128;
+    analyser.fftSize = 256;
     source = audioCtx.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
@@ -364,26 +497,54 @@
 
   const canvas = document.getElementById('visualizer');
   const ctx = canvas.getContext('2d');
-  const dark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
 
+  // Scale canvas for sharpness
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = 340 * dpr;
+  canvas.height = 52 * dpr;
+  canvas.style.width = '340px';
+  canvas.style.height = '52px';
+  ctx.scale(dpr, dpr);
+
+  let animFrame = null;
   function drawLoop() {
-    requestAnimationFrame(drawLoop);
-    ctx.clearRect(0, 0, 120, 52);
-    const bars = 24, bw = 3, gap = 2;
+    animFrame = requestAnimationFrame(drawLoop);
+    ctx.clearRect(0, 0, 340, 52);
+
+    const bars = 42, bw = 3, gap = 4.5;
     const totalW = bars * (bw + gap) - gap;
-    const startX = (120 - totalW) / 2;
-    const col = dark() ? '255,255,255' : '0,0,0';
+    const startX = (340 - totalW) / 2;
+
     for (let i = 0; i < bars; i++) {
       let val = 0;
-      if (analyser) {
+      if (analyser && !audio.paused) {
         analyser.getByteFrequencyData(dataArr);
-        val = dataArr[Math.floor(i * dataArr.length / bars)] / 255;
+        // Focus on lower-mid frequencies for a musical look
+        const idx = Math.floor(i * (dataArr.length * 0.6) / bars);
+        val = dataArr[idx] / 255;
+      } else {
+        // Idle animation
+        const t = Date.now() / 1200;
+        val = (Math.sin(i * 0.4 + t) * 0.5 + 0.5) * 0.08 + 0.02;
       }
+
       const h = Math.max(2, val * 44);
       const x = startX + i * (bw + gap);
-      ctx.fillStyle = 'rgba(' + col + ',' + (analyser ? (0.15 + val * 0.85) : 0.08) + ')';
+      const y = 52 - h;
+
+      // Gradient bar: gold top fading down
+      const grad = ctx.createLinearGradient(0, y, 0, 52);
+      if (!audio.paused && val > 0.05) {
+        grad.addColorStop(0, `rgba(200,185,138,${0.6 + val * 0.4})`);
+        grad.addColorStop(1, `rgba(200,185,138,0.05)`);
+      } else {
+        grad.addColorStop(0, `rgba(80,75,90,0.5)`);
+        grad.addColorStop(1, `rgba(80,75,90,0.05)`);
+      }
+
+      ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.roundRect(x, 52 - h, bw, h, 1);
+      ctx.roundRect(x, y, bw, h, [1.5, 1.5, 0, 0]);
       ctx.fill();
     }
   }
@@ -392,19 +553,28 @@
   function togglePlay() {
     if (!audioCtx) setupVis();
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    if (audio.paused) audio.play(); else audio.pause();
+    if (audio.paused) {
+      audio.play();
+      // Hide hint once user interacts
+      document.getElementById('autoplayHint').classList.remove('show');
+    } else {
+      audio.pause();
+    }
   }
+
   function toggleLoop() {
     isLooping = !isLooping;
     audio.loop = isLooping;
     document.getElementById('btnLoop').classList.toggle('on', isLooping);
   }
+
   function toggleMute() {
     isMuted = !isMuted;
     audio.muted = isMuted;
     document.getElementById('iconVol').style.display = isMuted ? 'none' : '';
     document.getElementById('iconMute').style.display = isMuted ? '' : 'none';
   }
+
   function setVolume(v) {
     audio.volume = parseFloat(v);
     document.getElementById('volPct').textContent = Math.round(v * 100) + '%';
@@ -413,6 +583,7 @@
   document.getElementById('volSlider').style.setProperty('--fill', '80%');
 
   function setStatus(t) { document.getElementById('statusText').textContent = t; }
+
   function onPlay() {
     document.getElementById('iconPlay').style.display = 'none';
     document.getElementById('iconPause').style.display = '';
@@ -431,17 +602,21 @@
     document.getElementById('iconPlay').style.display = '';
     document.getElementById('iconPause').style.display = 'none';
   }
+
   function updateProgress() {
     const cur = audio.currentTime, dur = audio.duration || 0;
     const pct = dur ? (cur / dur) * 100 : 0;
     document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressThumb').style.left = pct + '%';
     document.getElementById('curTime').textContent = fmt(cur);
     document.getElementById('durTime').textContent = fmt(dur);
   }
+
   function fmt(s) {
     if (!s || isNaN(s)) return '0:00';
     return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
   }
+
   document.getElementById('progressBar').addEventListener('click', e => {
     const r = e.currentTarget.getBoundingClientRect();
     audio.currentTime = ((e.clientX - r.left) / r.width) * (audio.duration || 0);
