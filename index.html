@@ -1,293 +1,372 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuesday For You</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --bg:#0a0a0a;--fg:#f5f5f0;--mid:#888;--border:#2a2a2a;--accent:#f5f5f0;
-  }
-  body,#root{background:var(--bg);color:var(--fg);font-family:'DM Mono',monospace;min-height:100vh}
-  #app{display:flex;flex-direction:column;min-height:100vh}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-  /* NAV */
-  nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,10,0.92);backdrop-filter:blur(8px);z-index:99}
-  .logo{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;color:var(--fg);cursor:pointer}
-  .logo span{color:var(--mid)}
-  .nav-right{display:flex;gap:1.5rem;align-items:center}
-  .nav-link{font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--mid);cursor:pointer;transition:color 0.2s}
-  .nav-link:hover{color:var(--fg)}
-  .btn-nav{font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;background:var(--fg);color:var(--bg);border:none;padding:0.55rem 1.2rem;cursor:pointer;transition:opacity 0.2s}
-  .btn-nav:hover{opacity:0.85}
+:root {
+  --bg: #0a0a08;
+  --gold: #d4a843;
+  --gold2: #f0c96a;
+  --dim: #3a2e14;
+  --smoke: #6b6456;
+  --cream: #ede5d0;
+  --off: #1a1912;
+}
 
-  /* HERO */
-  #hero{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:6rem 2rem 4rem;max-width:900px;margin:0 auto;width:100%}
-  .tag{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--mid);margin-bottom:1.5rem}
-  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,12vw,9rem);line-height:0.92;letter-spacing:2px;margin-bottom:1.5rem}
-  h1 .ghost{-webkit-text-stroke:1px var(--fg);color:transparent}
-  .sub{font-size:0.78rem;letter-spacing:1px;color:var(--mid);line-height:1.8;max-width:380px;margin-bottom:2.5rem}
-  .cta-row{display:flex;gap:1rem;flex-wrap:wrap}
-  .btn-primary{font-family:'DM Mono',monospace;font-size:0.74rem;letter-spacing:2px;text-transform:uppercase;background:var(--fg);color:var(--bg);border:none;padding:0.8rem 2rem;cursor:pointer;transition:opacity 0.2s}
-  .btn-primary:hover{opacity:0.8}
-  .btn-ghost{font-family:'DM Mono',monospace;font-size:0.74rem;letter-spacing:2px;text-transform:uppercase;background:transparent;color:var(--fg);border:1px solid var(--border);padding:0.8rem 2rem;cursor:pointer;transition:border-color 0.2s,color 0.2s}
-  .btn-ghost:hover{border-color:var(--fg)}
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Syne', sans-serif;
+  cursor: none;
+  user-select: none;
+}
 
-  /* TICKER */
-  .ticker{border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:0.6rem 0;white-space:nowrap}
-  .ticker-inner{display:inline-flex;animation:tick 18s linear infinite}
-  .ticker-inner span{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--mid);padding:0 2.5rem}
-  @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+#cur {
+  position: fixed;
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  mix-blend-mode: difference;
+}
+#cur2 {
+  position: fixed;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(212,168,67,0.35);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+}
 
-  /* LOGIN OVERLAY */
-  #overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;justify-content:center;align-items:center;padding:1rem}
-  #overlay.show{display:flex}
-  .modal{background:#111;border:1px solid var(--border);padding:2.5rem;width:100%;max-width:420px;position:relative}
-  .modal-close{position:absolute;top:1rem;right:1.2rem;background:none;border:none;color:var(--mid);font-family:'DM Mono',monospace;font-size:1rem;cursor:pointer;line-height:1}
-  .modal-close:hover{color:var(--fg)}
-  .modal h2{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:3px;margin-bottom:0.3rem}
-  .modal-sub{font-size:0.7rem;color:var(--mid);letter-spacing:1px;margin-bottom:2rem}
-  .field{margin-bottom:1.2rem}
-  .field label{display:block;font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:0.5rem}
-  .field input{width:100%;background:#0a0a0a;border:1px solid var(--border);color:var(--fg);font-family:'DM Mono',monospace;font-size:0.82rem;padding:0.7rem 0.9rem;outline:none;transition:border-color 0.2s}
-  .field input:focus{border-color:#555}
-  .field input::placeholder{color:#444}
-  .btn-submit{width:100%;font-family:'DM Mono',monospace;font-size:0.74rem;letter-spacing:2px;text-transform:uppercase;background:var(--fg);color:var(--bg);border:none;padding:0.9rem;cursor:pointer;transition:opacity 0.2s;margin-top:0.5rem}
-  .btn-submit:hover:not(:disabled){opacity:0.85}
-  .btn-submit:disabled{opacity:0.4;cursor:not-allowed}
-  .msg{font-size:0.72rem;letter-spacing:1px;margin-top:1rem;min-height:1.1rem;text-align:center}
-  .msg.ok{color:#7fba7f}
-  .msg.err{color:#ba7f7f}
-  .divider{display:flex;align-items:center;gap:0.8rem;margin:1.2rem 0}
-  .divider hr{flex:1;border:none;border-top:1px solid var(--border)}
-  .divider span{font-size:0.65rem;color:#444;letter-spacing:2px}
-  .alt-link{text-align:center;font-size:0.7rem;color:var(--mid);cursor:pointer;letter-spacing:1px;margin-top:0.8rem}
-  .alt-link:hover{color:var(--fg)}
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
 
-  /* DASHBOARD */
-  #dashboard{display:none;flex-direction:column;min-height:100vh}
-  #dashboard.show{display:flex}
-  .dash-body{flex:1;padding:3rem 2rem;max-width:900px;margin:0 auto;width:100%}
-  .dash-greeting{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:2px;margin-bottom:0.5rem}
-  .dash-sub{font-size:0.75rem;color:var(--mid);letter-spacing:2px;margin-bottom:3rem}
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
-  .card{background:#111;padding:1.8rem 1.5rem}
-  .card-label{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:0.6rem}
-  .card-val{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:1px}
-  .dash-section{margin-top:3rem}
-  .dash-section h3{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--mid);margin-bottom:1.2rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border)}
-  .activity-item{display:flex;justify-content:space-between;align-items:center;padding:0.8rem 0;border-bottom:1px solid var(--border);font-size:0.78rem}
-  .activity-dot{width:6px;height:6px;background:var(--fg);border-radius:50%;margin-right:0.8rem;flex-shrink:0}
-  .activity-text{display:flex;align-items:center;color:var(--fg)}
-  .activity-time{color:var(--mid);font-size:0.68rem;letter-spacing:1px}
-  .logout-btn{font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;background:none;color:var(--mid);border:1px solid var(--border);padding:0.45rem 1rem;cursor:pointer;transition:color 0.2s,border-color 0.2s}
-  .logout-btn:hover{color:var(--fg);border-color:var(--fg)}
+.grain {
+  position: fixed;
+  inset: -50%;
+  width: 200%; height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  opacity: 0.3;
+  z-index: 1;
+  pointer-events: none;
+  animation: gs 0.4s steps(1) infinite;
+}
+@keyframes gs {
+  0%  { transform: translate(0,0); }
+  25% { transform: translate(-2%,-3%); }
+  50% { transform: translate(3%,2%); }
+  75% { transform: translate(-1%,4%); }
+  100%{ transform: translate(0,0); }
+}
+
+.glow {
+  position: fixed;
+  width: 700px; height: 350px;
+  background: radial-gradient(ellipse, rgba(212,168,67,0.055) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -58%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* CORNERS */
+.corner {
+  position: fixed;
+  width: 36px; height: 36px;
+  z-index: 3;
+  opacity: 0;
+  animation: fi 1s 2s forwards;
+}
+.corner svg { width: 100%; height: 100%; }
+.corner.tl { top: 1.8rem; left: 1.8rem; }
+.corner.tr { top: 1.8rem; right: 1.8rem; transform: scaleX(-1); }
+.corner.bl { bottom: 1.8rem; left: 1.8rem; transform: scaleY(-1); }
+.corner.br { bottom: 1.8rem; right: 1.8rem; transform: scale(-1,-1); }
+
+/* PAGE */
+.page {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 0;
+}
+
+.date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: rgba(212,168,67,0.07);
+  border: 1px solid rgba(212,168,67,0.18);
+  border-radius: 100px;
+  padding: 0.4rem 1.1rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2.2rem;
+  opacity: 0;
+  animation: pop 0.9s 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.dot-live {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--gold2);
+  animation: pulse 2.2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+}
+
+.headline { text-align: center; line-height: 0.95; margin-bottom: 2.2rem; }
+.line1 {
+  display: block;
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-style: italic;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+  opacity: 0;
+  animation: su 1s 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.line2 {
+  display: block;
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(0.75rem, 2.2vw, 1.6rem);
+  font-weight: 800;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 0.5rem;
+  opacity: 0;
+  animation: su 1s 0.75s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fi 1s 1.1s forwards;
+}
+.dl { width: 55px; height: 1px; background: linear-gradient(to right, transparent, var(--dim)); }
+.dr { width: 55px; height: 1px; background: linear-gradient(to left, transparent, var(--dim)); }
+.dd { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); }
+
+.quote {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(0.95rem, 1.8vw, 1.25rem);
+  font-style: italic;
+  color: var(--smoke);
+  text-align: center;
+  max-width: 500px;
+  line-height: 1.75;
+  opacity: 0;
+  animation: fi 1s 1.3s forwards;
+  margin-bottom: 3rem;
+}
+.quote em { font-style: normal; color: var(--cream); }
+
+.cards {
+  display: flex;
+  gap: 0.9rem;
+  opacity: 0;
+  animation: fi 1s 1.6s forwards;
+  margin-bottom: 2.8rem;
+}
+.card {
+  background: var(--off);
+  border: 1px solid #201f18;
+  border-radius: 14px;
+  padding: 1rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 150px;
+  transition: border-color 0.35s, transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  cursor: default;
+}
+.card:hover { border-color: var(--dim); transform: translateY(-5px); }
+.card-icon { font-size: 1.1rem; line-height: 1; }
+.card-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+.card-val {
+  font-family: 'Instrument Serif', serif;
+  font-size: 0.92rem;
+  color: var(--cream);
+  line-height: 1.35;
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  opacity: 0;
+  animation: fi 1s 1.9s forwards;
+}
+.btext {
+  font-size: 0.58rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.bdot { width: 3px; height: 3px; background: var(--dim); border-radius: 50%; }
+
+/* KEYFRAMES */
+@keyframes su {
+  from { opacity: 0; transform: translateY(35px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fi {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
 </style>
+</head>
+<body>
 
-<div id="app">
-  <div id="main-site">
-    <nav>
-      <div class="logo">tuesday<span>.lol</span></div>
-      <div class="nav-right">
-        <span class="nav-link">about</span>
-        <span class="nav-link">work</span>
-        <button class="btn-nav" onclick="openLogin()">sign in</button>
-      </div>
-    </nav>
+<div id="cur"></div>
+<div id="cur2"></div>
+<canvas id="c"></canvas>
+<div class="grain"></div>
+<div class="glow"></div>
 
-    <div class="ticker">
-      <div class="ticker-inner">
-        <span>tuesday.lol</span><span>&#8212;</span><span>est. today</span><span>&#8212;</span><span>no wednesday vibes here</span><span>&#8212;</span><span>tuesday.lol</span><span>&#8212;</span><span>minimal. monochrome. monday's cooler sibling</span><span>&#8212;</span><span>tuesday.lol</span><span>&#8212;</span><span>est. today</span><span>&#8212;</span><span>no wednesday vibes here</span><span>&#8212;</span><span>tuesday.lol</span><span>&#8212;</span><span>minimal. monochrome. monday's cooler sibling</span><span>&#8212;</span>
-      </div>
-    </div>
+<div class="corner tl"><svg viewBox="0 0 36 36" fill="none"><line x1="0" y1="0" x2="18" y2="0" stroke="#3a2e14" stroke-width="1"/><line x1="0" y1="0" x2="0" y2="18" stroke="#3a2e14" stroke-width="1"/><circle cx="0" cy="0" r="2" fill="#d4a843"/></svg></div>
+<div class="corner tr"><svg viewBox="0 0 36 36" fill="none"><line x1="0" y1="0" x2="18" y2="0" stroke="#3a2e14" stroke-width="1"/><line x1="0" y1="0" x2="0" y2="18" stroke="#3a2e14" stroke-width="1"/><circle cx="0" cy="0" r="2" fill="#d4a843"/></svg></div>
+<div class="corner bl"><svg viewBox="0 0 36 36" fill="none"><line x1="0" y1="0" x2="18" y2="0" stroke="#3a2e14" stroke-width="1"/><line x1="0" y1="0" x2="0" y2="18" stroke="#3a2e14" stroke-width="1"/><circle cx="0" cy="0" r="2" fill="#d4a843"/></svg></div>
+<div class="corner br"><svg viewBox="0 0 36 36" fill="none"><line x1="0" y1="0" x2="18" y2="0" stroke="#3a2e14" stroke-width="1"/><line x1="0" y1="0" x2="0" y2="18" stroke="#3a2e14" stroke-width="1"/><circle cx="0" cy="0" r="2" fill="#d4a843"/></svg></div>
 
-    <section id="hero">
-      <p class="tag">welcome to</p>
-      <h1>TUES<br><span class="ghost">DAY</span><br>.LOL</h1>
-      <p class="sub">a brutally minimal corner of the internet. no noise. no color. just tuesday.</p>
-      <div class="cta-row">
-        <button class="btn-primary" onclick="openLogin()">get started</button>
-        <button class="btn-ghost">learn more</button>
-      </div>
-    </section>
+<div class="page">
+  <div class="date-pill"><div class="dot-live"></div><span id="dateLabel"></span></div>
+
+  <div class="headline">
+    <span class="line1">This is yours.</span>
+    <span class="line2">Tuesday For You</span>
   </div>
 
-  <div id="dashboard">
-    <nav>
-      <div class="logo">tuesday<span>.lol</span></div>
-      <div class="nav-right">
-        <span id="dash-user-nav" style="font-size:0.72rem;letter-spacing:1px;color:var(--mid)"></span>
-        <button class="logout-btn" onclick="logout()">log out</button>
-      </div>
-    </nav>
-    <div class="dash-body">
-      <p class="dash-greeting" id="dash-greeting">WELCOME BACK</p>
-      <p class="dash-sub" id="dash-sub">you're in.</p>
-      <div class="cards">
-        <div class="card"><div class="card-label">days since monday</div><div class="card-val">1</div></div>
-        <div class="card"><div class="card-label">days until friday</div><div class="card-val">3</div></div>
-        <div class="card"><div class="card-label">vibe level</div><div class="card-val">MAX</div></div>
-        <div class="card"><div class="card-label">sessions</div><div class="card-val" id="dash-sessions">1</div></div>
-      </div>
-      <div class="dash-section">
-        <h3>recent activity</h3>
-        <div class="activity-item"><div class="activity-text"><div class="activity-dot"></div>logged in successfully</div><div class="activity-time">just now</div></div>
-        <div class="activity-item"><div class="activity-text"><div class="activity-dot"></div>account verified</div><div class="activity-time">just now</div></div>
-        <div class="activity-item"><div class="activity-text"><div class="activity-dot"></div>tuesday confirmed</div><div class="activity-time">always</div></div>
-      </div>
+  <div class="divider">
+    <div class="dl"></div><div class="dd"></div><div class="dr"></div>
+  </div>
+
+  <p class="quote" id="quoteEl"></p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🌅</div>
+      <div class="card-label">Today's vibe</div>
+      <div class="card-val" id="vibeEl"></div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <div class="card-label">One focus</div>
+      <div class="card-val" id="focusEl"></div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💛</div>
+      <div class="card-label">Remember</div>
+      <div class="card-val" id="rememberEl"></div>
     </div>
   </div>
-</div>
 
-<div id="overlay">
-  <div class="modal">
-    <button class="modal-close" onclick="closeLogin()">&#x2715;</button>
-    <h2 id="modal-title">SIGN IN</h2>
-    <p class="modal-sub" id="modal-sub">welcome back to tuesday.lol</p>
-
-    <div id="login-form">
-      <div class="field">
-        <label>email</label>
-        <input type="email" id="email" placeholder="you@tuesday.lol" autocomplete="email" />
-      </div>
-      <div class="field">
-        <label>password</label>
-        <input type="password" id="password" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" autocomplete="current-password" />
-      </div>
-      <button class="btn-submit" id="login-btn" onclick="doLogin()">sign in</button>
-      <div class="msg" id="login-msg"></div>
-      <p class="alt-link" onclick="switchToRegister()">no account? create one &#8594;</p>
-    </div>
-
-    <div id="register-form" style="display:none">
-      <div class="field">
-        <label>username</label>
-        <input type="text" id="reg-name" placeholder="your name" autocomplete="name" />
-      </div>
-      <div class="field">
-        <label>email</label>
-        <input type="email" id="reg-email" placeholder="you@tuesday.lol" autocomplete="email" />
-      </div>
-      <div class="field">
-        <label>password</label>
-        <input type="password" id="reg-password" placeholder="min 8 characters" autocomplete="new-password" />
-      </div>
-      <button class="btn-submit" id="reg-btn" onclick="doRegister()">create account</button>
-      <div class="msg" id="reg-msg"></div>
-      <p class="alt-link" onclick="switchToLogin()">&#8592; back to sign in</p>
-    </div>
+  <div class="bottom">
+    <span class="btext">TuesdayForYou.com</span>
+    <div class="bdot"></div>
+    <span class="btext" id="dayCount"></span>
   </div>
 </div>
 
 <script>
-const STORAGE_KEY = 'tuesday_users_v1';
-const SESSION_KEY = 'tuesday_session_v1';
+// Cursor
+const cur = document.getElementById('cur'), cur2 = document.getElementById('cur2');
+let mx=-200, my=-200, rx=-200, ry=-200;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+(function tick(){
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+  rx+=(mx-rx)*0.1; ry+=(my-ry)*0.1;
+  cur2.style.left=rx+'px'; cur2.style.top=ry+'px';
+  requestAnimationFrame(tick);
+})();
 
-function getUsers(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch{return[]}}
-function saveUsers(u){localStorage.setItem(STORAGE_KEY,JSON.stringify(u))}
-function getSession(){try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null')}catch{return null}}
-function saveSession(s){sessionStorage.setItem(SESSION_KEY,JSON.stringify(s))}
-function clearSession(){sessionStorage.removeItem(SESSION_KEY)}
-
-async function hashPass(pass){
-  const enc=new TextEncoder().encode(pass);
-  const buf=await crypto.subtle.digest('SHA-256',enc);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+// Canvas particles
+const cv=document.getElementById('c'), ctx=cv.getContext('2d');
+let W,H,pts=[];
+function init(){
+  W=cv.width=innerWidth; H=cv.height=innerHeight;
+  pts=Array.from({length:100},()=>({
+    x:Math.random()*W, y:Math.random()*H,
+    r:Math.random()*1+0.2,
+    vx:(Math.random()-.5)*0.12,
+    vy:(Math.random()-.5)*0.12,
+    a:Math.random()*0.45+0.05
+  }));
 }
+init(); addEventListener('resize',init);
+(function draw(){
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+    if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(212,168,67,${p.a})`; ctx.fill();
+  });
+  requestAnimationFrame(draw);
+})();
 
-function validateEmail(e){return/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)}
-function validatePass(p){return p.length>=8}
+// Date + day count
+const now=new Date();
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+document.getElementById('dateLabel').textContent=`${DAYS[now.getDay()]} · ${MONTHS[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+const dayOfYear=Math.floor((now-(new Date(now.getFullYear(),0,0)))/86400000);
+document.getElementById('dayCount').textContent=`Day ${dayOfYear} of ${now.getFullYear()}`;
 
-function setMsg(id,text,type){
-  const el=document.getElementById(id);
-  el.textContent=text;
-  el.className='msg '+(type||'');
-}
+// Content — rotates by day of month
+const quotes=[
+  `You already survived every hard day before this one. <em>That record is unbroken.</em>`,
+  `Tuesday is where the quiet work lives. <em>Nobody sees it — that's the point.</em>`,
+  `The version of you making it through today <em>is stronger than yesterday's.</em>`,
+  `You don't need a Monday reset. <em>Every hour is a beginning.</em>`,
+  `Small. Steady. Relentless. <em>That's the whole strategy.</em>`,
+  `The hardest part is starting. <em>You've already done that — you woke up.</em>`,
+  `There's no wasted Tuesday. <em>Every one of them shaped who you are.</em>`,
+];
+const vibes=['Focused & Calm','Quietly Powerful','Steady As Ever','Low-key Relentless','Present Moment','Gentle Momentum','Grounded Energy'];
+const focuses=['One honest hour','Show up, fully','Finish one thing','Let one thing go','Move your body','Say the kind thing','Rest without guilt'];
+const remembers=["You belong here","Rest is not laziness","Done beats perfect","You've been here before","It's okay to go slow","Ask for what you need","Your pace is valid"];
 
-function setLoading(btnId,loading){
-  const btn=document.getElementById(btnId);
-  btn.disabled=loading;
-  btn.textContent=loading?(btnId==='login-btn'?'signing in...':'creating account...'):(btnId==='login-btn'?'sign in':'create account');
-}
-
-async function doLogin(){
-  const email=document.getElementById('email').value.trim();
-  const pass=document.getElementById('password').value;
-  setMsg('login-msg','');
-  if(!email||!pass){setMsg('login-msg','please fill in all fields','err');return}
-  if(!validateEmail(email)){setMsg('login-msg','invalid email address','err');return}
-  setLoading('login-btn',true);
-  await new Promise(r=>setTimeout(r,400));
-  const users=getUsers();
-  const hash=await hashPass(pass);
-  const user=users.find(u=>u.email.toLowerCase()===email.toLowerCase()&&u.hash===hash);
-  if(!user){setMsg('login-msg','incorrect email or password','err');setLoading('login-btn',false);return}
-  user.sessions=(user.sessions||0)+1;
-  saveUsers(users);
-  saveSession({email:user.email,name:user.name,sessions:user.sessions});
-  setLoading('login-btn',false);
-  closeLogin();
-  showDashboard(user);
-}
-
-async function doRegister(){
-  const name=document.getElementById('reg-name').value.trim();
-  const email=document.getElementById('reg-email').value.trim();
-  const pass=document.getElementById('reg-password').value;
-  setMsg('reg-msg','');
-  if(!name||!email||!pass){setMsg('reg-msg','please fill in all fields','err');return}
-  if(!validateEmail(email)){setMsg('reg-msg','invalid email address','err');return}
-  if(!validatePass(pass)){setMsg('reg-msg','password must be at least 8 characters','err');return}
-  const users=getUsers();
-  if(users.find(u=>u.email.toLowerCase()===email.toLowerCase())){setMsg('reg-msg','account already exists','err');return}
-  setLoading('reg-btn',true);
-  await new Promise(r=>setTimeout(r,500));
-  const hash=await hashPass(pass);
-  const newUser={name,email,hash,sessions:1,created:Date.now()};
-  users.push(newUser);
-  saveUsers(users);
-  saveSession({email,name,sessions:1});
-  setLoading('reg-btn',false);
-  closeLogin();
-  showDashboard(newUser);
-}
-
-function showDashboard(user){
-  document.getElementById('main-site').style.display='none';
-  const dash=document.getElementById('dashboard');
-  dash.className='show';
-  document.getElementById('dash-greeting').textContent='WELCOME, '+(user.name||'friend').toUpperCase();
-  document.getElementById('dash-sub').textContent='you\'re in. it\'s tuesday.';
-  document.getElementById('dash-user-nav').textContent=user.email;
-  document.getElementById('dash-sessions').textContent=user.sessions||1;
-}
-
-function logout(){
-  clearSession();
-  document.getElementById('dashboard').className='';
-  document.getElementById('main-site').style.display='';
-}
-
-function openLogin(){document.getElementById('overlay').className='show';document.getElementById('email').focus()}
-function closeLogin(){document.getElementById('overlay').className='';setMsg('login-msg','');setMsg('reg-msg','')}
-
-function switchToRegister(){
-  document.getElementById('login-form').style.display='none';
-  document.getElementById('register-form').style.display='';
-  document.getElementById('modal-title').textContent='CREATE ACCOUNT';
-  document.getElementById('modal-sub').textContent='join tuesday.lol';
-  document.getElementById('reg-name').focus();
-}
-function switchToLogin(){
-  document.getElementById('register-form').style.display='none';
-  document.getElementById('login-form').style.display='';
-  document.getElementById('modal-title').textContent='SIGN IN';
-  document.getElementById('modal-sub').textContent='welcome back to tuesday.lol';
-  document.getElementById('email').focus();
-}
-
-document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closeLogin()});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLogin()});
-document.getElementById('password').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
-document.getElementById('reg-password').addEventListener('keydown',function(e){if(e.key==='Enter')doRegister()});
-
-const sess=getSession();
-if(sess){showDashboard(sess)}
+const s=now.getDate()+now.getMonth()*31;
+const pick=(a,o=0)=>a[(s+o)%a.length];
+document.getElementById('quoteEl').innerHTML=pick(quotes);
+document.getElementById('vibeEl').textContent=pick(vibes,1);
+document.getElementById('focusEl').textContent=pick(focuses,2);
+document.getElementById('rememberEl').textContent=pick(remembers,3);
 </script>
+</body>
+</html>
