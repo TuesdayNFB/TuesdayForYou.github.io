@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 :root {
   --bg: #0a0a08;
   --gold: #d4a843;
@@ -17,235 +16,234 @@
   --cream: #ede5d0;
   --off: #1a1912;
 }
+html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--cream); font-family: 'Syne', sans-serif; cursor: none; user-select: none; }
 
-html, body {
-  height: 100%;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--cream);
-  font-family: 'Syne', sans-serif;
-  cursor: none;
-  user-select: none;
-}
+#cur { position: fixed; width: 8px; height: 8px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%,-50%); mix-blend-mode: difference; }
+#cur2 { position: fixed; width: 32px; height: 32px; border: 1px solid rgba(212,168,67,0.35); border-radius: 50%; pointer-events: none; z-index: 99998; transform: translate(-50%,-50%); }
 
-#cur {
-  position: fixed;
-  width: 8px; height: 8px;
-  background: var(--gold);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%,-50%);
-  mix-blend-mode: difference;
-}
-#cur2 {
-  position: fixed;
-  width: 32px; height: 32px;
-  border: 1px solid rgba(212,168,67,0.35);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%,-50%);
-}
+canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
+.grain { position: fixed; inset: -50%; width: 200%; height: 200%; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E"); opacity: 0.3; z-index: 1; pointer-events: none; animation: gs 0.4s steps(1) infinite; }
+@keyframes gs { 0%{transform:translate(0,0)}25%{transform:translate(-2%,-3%)}50%{transform:translate(3%,2%)}75%{transform:translate(-1%,4%)}100%{transform:translate(0,0)} }
 
-.grain {
-  position: fixed;
-  inset: -50%;
-  width: 200%; height: 200%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-  opacity: 0.3;
-  z-index: 1;
-  pointer-events: none;
-  animation: gs 0.4s steps(1) infinite;
-}
-@keyframes gs {
-  0%  { transform: translate(0,0); }
-  25% { transform: translate(-2%,-3%); }
-  50% { transform: translate(3%,2%); }
-  75% { transform: translate(-1%,4%); }
-  100%{ transform: translate(0,0); }
-}
+.glow { position: fixed; width: 700px; height: 350px; background: radial-gradient(ellipse, rgba(212,168,67,0.055) 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-58%); pointer-events: none; z-index: 1; }
 
-.glow {
-  position: fixed;
-  width: 700px; height: 350px;
-  background: radial-gradient(ellipse, rgba(212,168,67,0.055) 0%, transparent 70%);
-  top: 50%; left: 50%;
-  transform: translate(-50%, -58%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* CORNERS */
-.corner {
-  position: fixed;
-  width: 36px; height: 36px;
-  z-index: 3;
-  opacity: 0;
-  animation: fi 1s 2s forwards;
-}
+.corner { position: fixed; width: 36px; height: 36px; z-index: 3; opacity: 0; animation: fi 1s 2s forwards; }
 .corner svg { width: 100%; height: 100%; }
 .corner.tl { top: 1.8rem; left: 1.8rem; }
 .corner.tr { top: 1.8rem; right: 1.8rem; transform: scaleX(-1); }
 .corner.bl { bottom: 1.8rem; left: 1.8rem; transform: scaleY(-1); }
 .corner.br { bottom: 1.8rem; right: 1.8rem; transform: scale(-1,-1); }
 
-/* PAGE */
-.page {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  gap: 0;
-}
+/* YOUTUBE IFRAME — hidden, audio only */
+#yt { position: fixed; width: 1px; height: 1px; bottom: 0; left: 0; opacity: 0; pointer-events: none; z-index: 0; }
 
-.date-pill {
-  display: inline-flex;
+/* MUSIC CONTROLS */
+#musicBar {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
   align-items: center;
-  gap: 0.55rem;
-  background: rgba(212,168,67,0.07);
-  border: 1px solid rgba(212,168,67,0.18);
+  gap: 0.8rem;
+  background: rgba(26,25,18,0.85);
+  border: 1px solid #2a2518;
   border-radius: 100px;
-  padding: 0.4rem 1.1rem;
-  font-size: 0.62rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 2.2rem;
+  padding: 0.5rem 1.2rem;
+  backdrop-filter: blur(10px);
   opacity: 0;
-  animation: pop 0.9s 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  transition: opacity 0.5s;
 }
-.dot-live {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--gold2);
-  animation: pulse 2.2s infinite;
+#musicBar.show { opacity: 1; }
+.music-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: mdot 1.5s ease-in-out infinite; }
+.music-dot:nth-child(2) { animation-delay: 0.2s; }
+.music-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes mdot { 0%,100%{transform:scaleY(1);opacity:0.4} 50%{transform:scaleY(2);opacity:1} }
+.music-label { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--smoke); }
+#toggleMusic {
+  background: none; border: 1px solid var(--dim); border-radius: 100px;
+  color: var(--gold); font-family: 'Syne', sans-serif; font-size: 0.55rem;
+  letter-spacing: 0.15em; text-transform: uppercase; padding: 0.3rem 0.75rem;
+  cursor: pointer; transition: border-color 0.3s, color 0.3s;
 }
-@keyframes pulse {
-  0%,100% { opacity: 1; } 50% { opacity: 0.3; }
-}
+#toggleMusic:hover { border-color: var(--gold); color: var(--gold2); }
+
+/* PAGE */
+.page { position: fixed; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
+
+.date-pill { display: inline-flex; align-items: center; gap: 0.55rem; background: rgba(212,168,67,0.07); border: 1px solid rgba(212,168,67,0.18); border-radius: 100px; padding: 0.4rem 1.1rem; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 2.2rem; opacity: 0; animation: pop 0.9s 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.dot-live { width: 5px; height: 5px; border-radius: 50%; background: var(--gold2); animation: pulse 2.2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
 
 .headline { text-align: center; line-height: 0.95; margin-bottom: 2.2rem; }
-.line1 {
-  display: block;
-  font-family: 'Instrument Serif', serif;
-  font-size: clamp(4rem, 12vw, 10rem);
-  font-style: italic;
-  color: var(--cream);
-  letter-spacing: -0.02em;
-  opacity: 0;
-  animation: su 1s 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.line2 {
-  display: block;
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(0.75rem, 2.2vw, 1.6rem);
-  font-weight: 800;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-top: 0.5rem;
-  opacity: 0;
-  animation: su 1s 0.75s cubic-bezier(0.16,1,0.3,1) forwards;
-}
+.line1 { display: block; font-family: 'Instrument Serif', serif; font-size: clamp(4rem,12vw,10rem); font-style: italic; color: var(--cream); letter-spacing: -0.02em; opacity: 0; animation: su 1s 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+.line2 { display: block; font-family: 'Syne', sans-serif; font-size: clamp(0.75rem,2.2vw,1.6rem); font-weight: 800; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-top: 0.5rem; opacity: 0; animation: su 1s 0.75s cubic-bezier(0.16,1,0.3,1) forwards; }
 
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  margin-bottom: 2rem;
-  opacity: 0;
-  animation: fi 1s 1.1s forwards;
-}
+.divider { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 2rem; opacity: 0; animation: fi 1s 1.1s forwards; }
 .dl { width: 55px; height: 1px; background: linear-gradient(to right, transparent, var(--dim)); }
 .dr { width: 55px; height: 1px; background: linear-gradient(to left, transparent, var(--dim)); }
 .dd { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); }
 
-.quote {
-  font-family: 'Instrument Serif', serif;
-  font-size: clamp(0.95rem, 1.8vw, 1.25rem);
-  font-style: italic;
-  color: var(--smoke);
-  text-align: center;
-  max-width: 500px;
-  line-height: 1.75;
-  opacity: 0;
-  animation: fi 1s 1.3s forwards;
-  margin-bottom: 3rem;
-}
+.quote { font-family: 'Instrument Serif', serif; font-size: clamp(0.95rem,1.8vw,1.25rem); font-style: italic; color: var(--smoke); text-align: center; max-width: 500px; line-height: 1.75; opacity: 0; animation: fi 1s 1.3s forwards; margin-bottom: 3rem; }
 .quote em { font-style: normal; color: var(--cream); }
 
-.cards {
-  display: flex;
-  gap: 0.9rem;
-  opacity: 0;
-  animation: fi 1s 1.6s forwards;
-  margin-bottom: 2.8rem;
-}
-.card {
-  background: var(--off);
-  border: 1px solid #201f18;
-  border-radius: 14px;
-  padding: 1rem 1.3rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  min-width: 150px;
-  transition: border-color 0.35s, transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
-  cursor: default;
-}
+.cards { display: flex; gap: 0.9rem; opacity: 0; animation: fi 1s 1.6s forwards; margin-bottom: 2.8rem; }
+.card { background: var(--off); border: 1px solid #201f18; border-radius: 14px; padding: 1rem 1.3rem; display: flex; flex-direction: column; gap: 0.35rem; min-width: 150px; transition: border-color 0.35s, transform 0.35s cubic-bezier(0.34,1.56,0.64,1); cursor: default; }
 .card:hover { border-color: var(--dim); transform: translateY(-5px); }
 .card-icon { font-size: 1.1rem; line-height: 1; }
-.card-label {
-  font-size: 0.58rem;
+.card-label { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--smoke); }
+.card-val { font-family: 'Instrument Serif', serif; font-size: 0.92rem; color: var(--cream); line-height: 1.35; }
+
+.bottom { display: flex; align-items: center; gap: 1.5rem; opacity: 0; animation: fi 1s 1.9s forwards; }
+.btext { font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--dim); }
+.bdot { width: 3px; height: 3px; background: var(--dim); border-radius: 50%; }
+
+@keyframes su { from{opacity:0;transform:translateY(35px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fi { from{opacity:0} to{opacity:1} }
+@keyframes pop { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
+
+/* ===================== POPUP ===================== */
+#overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(5,5,4,0.92);
+  backdrop-filter: blur(18px);
+  display: flex; align-items: center; justify-content: center;
+  animation: fi 0.4s forwards;
+}
+#popup {
+  background: #111109;
+  border: 1px solid #2a2518;
+  border-radius: 20px;
+  padding: 3rem 3.5rem;
+  max-width: 440px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  animation: popIn 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes popIn { from{opacity:0;transform:scale(0.85) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+
+/* shimmer top border */
+#popup::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.popup-glyph {
+  width: 52px; height: 52px;
+  border: 1px solid var(--dim);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.8rem;
+  position: relative;
+}
+.popup-glyph::before {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(212,168,67,0.1);
+}
+.popup-glyph svg { width: 22px; height: 22px; }
+
+.popup-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.9rem;
+  font-style: italic;
+  color: var(--cream);
+  line-height: 1.2;
+  margin-bottom: 0.6rem;
+}
+.popup-site {
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.6rem;
+}
+.popup-desc {
+  font-family: 'Instrument Serif', serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--smoke);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+/* MUSIC CHOICE */
+.music-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+.choice-label {
+  font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--smoke);
+  margin-bottom: 0.3rem;
 }
-.card-val {
-  font-family: 'Instrument Serif', serif;
-  font-size: 0.92rem;
-  color: var(--cream);
-  line-height: 1.35;
+.choice-row { display: flex; gap: 0.6rem; }
+.choice-btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #2a2518;
+  background: #0f0f0d;
+  color: var(--smoke);
+  font-family: 'Syne', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
 }
+.choice-btn:hover { border-color: var(--dim); color: var(--cream); }
+.choice-btn.selected {
+  border-color: var(--gold);
+  background: rgba(212,168,67,0.08);
+  color: var(--gold);
+}
+.choice-btn .cb-icon { font-size: 1rem; }
 
-.bottom {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  opacity: 0;
-  animation: fi 1s 1.9s forwards;
-}
-.btext {
-  font-size: 0.58rem;
-  letter-spacing: 0.25em;
+/* VERIFY BTN */
+#verifyBtn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--gold);
+  color: #0a0a08;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--dim);
+  cursor: pointer;
+  transition: background 0.25s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
 }
-.bdot { width: 3px; height: 3px; background: var(--dim); border-radius: 50%; }
+#verifyBtn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+}
+#verifyBtn:hover { background: var(--gold2); transform: translateY(-2px); }
+#verifyBtn:active { transform: translateY(0); }
 
-/* KEYFRAMES */
-@keyframes su {
-  from { opacity: 0; transform: translateY(35px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fi {
-  from { opacity: 0; } to { opacity: 1; }
-}
-@keyframes pop {
-  from { opacity: 0; transform: scale(0.8); }
-  to   { opacity: 1; transform: scale(1); }
+.popup-fine {
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  color: #3a3830;
+  margin-top: 1.2rem;
+  line-height: 1.6;
 }
 </style>
 </head>
@@ -257,43 +255,38 @@ canvas {
 <div class="grain"></div>
 <div class="glow"></div>
 
+<!-- corners -->
 <div class="corner tl"><svg viewBox="0 0 36 36" fill="none"><line x1="0" y1="0" x2="18" y2="0" stroke="#3a2e14" stroke-width="1"/><line x1="0" y1="0" x2="0" y2="18" stroke="#3a2e14" stroke-width="1"/><circle cx="0" cy="0" r="2" fill="#d4a843"/></svg></div>
 <div class="corner tr"><svg viewBox="0 0 36 36" fill="none"><line x1="0" y1="0" x2="18" y2="0" stroke="#3a2e14" stroke-width="1"/><line x1="0" y1="0" x2="0" y2="18" stroke="#3a2e14" stroke-width="1"/><circle cx="0" cy="0" r="2" fill="#d4a843"/></svg></div>
 <div class="corner bl"><svg viewBox="0 0 36 36" fill="none"><line x1="0" y1="0" x2="18" y2="0" stroke="#3a2e14" stroke-width="1"/><line x1="0" y1="0" x2="0" y2="18" stroke="#3a2e14" stroke-width="1"/><circle cx="0" cy="0" r="2" fill="#d4a843"/></svg></div>
 <div class="corner br"><svg viewBox="0 0 36 36" fill="none"><line x1="0" y1="0" x2="18" y2="0" stroke="#3a2e14" stroke-width="1"/><line x1="0" y1="0" x2="0" y2="18" stroke="#3a2e14" stroke-width="1"/><circle cx="0" cy="0" r="2" fill="#d4a843"/></svg></div>
 
+<!-- hidden YT player -->
+<iframe id="yt" src="" allow="autoplay" frameborder="0"></iframe>
+
+<!-- music bar -->
+<div id="musicBar">
+  <div class="music-dot"></div>
+  <div class="music-dot"></div>
+  <div class="music-dot"></div>
+  <span class="music-label">Playing</span>
+  <button id="toggleMusic">Pause</button>
+</div>
+
+<!-- MAIN PAGE -->
 <div class="page">
   <div class="date-pill"><div class="dot-live"></div><span id="dateLabel"></span></div>
-
   <div class="headline">
     <span class="line1">This is yours.</span>
     <span class="line2">Tuesday For You</span>
   </div>
-
-  <div class="divider">
-    <div class="dl"></div><div class="dd"></div><div class="dr"></div>
-  </div>
-
+  <div class="divider"><div class="dl"></div><div class="dd"></div><div class="dr"></div></div>
   <p class="quote" id="quoteEl"></p>
-
   <div class="cards">
-    <div class="card">
-      <div class="card-icon">🌅</div>
-      <div class="card-label">Today's vibe</div>
-      <div class="card-val" id="vibeEl"></div>
-    </div>
-    <div class="card">
-      <div class="card-icon">🎯</div>
-      <div class="card-label">One focus</div>
-      <div class="card-val" id="focusEl"></div>
-    </div>
-    <div class="card">
-      <div class="card-icon">💛</div>
-      <div class="card-label">Remember</div>
-      <div class="card-val" id="rememberEl"></div>
-    </div>
+    <div class="card"><div class="card-icon">🌅</div><div class="card-label">Today's vibe</div><div class="card-val" id="vibeEl"></div></div>
+    <div class="card"><div class="card-icon">🎯</div><div class="card-label">One focus</div><div class="card-val" id="focusEl"></div></div>
+    <div class="card"><div class="card-icon">💛</div><div class="card-label">Remember</div><div class="card-val" id="rememberEl"></div></div>
   </div>
-
   <div class="bottom">
     <span class="btext">TuesdayForYou.com</span>
     <div class="bdot"></div>
@@ -301,53 +294,76 @@ canvas {
   </div>
 </div>
 
+<!-- WELCOME POPUP -->
+<div id="overlay">
+  <div id="popup">
+    <div class="popup-glyph">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#d4a843" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+      </svg>
+    </div>
+
+    <h1 class="popup-title">Welcome To<br>Tuesday For You.</h1>
+    <p class="popup-site">TuesdayForYou.com</p>
+    <p class="popup-desc">A place built for your moment.<br>Step in, breathe, and make today yours.</p>
+
+    <div class="music-choice">
+      <p class="choice-label">🎵 Background music</p>
+      <div class="choice-row">
+        <button class="choice-btn selected" id="btnAutoplay" onclick="selectMusic(true)">
+          <span class="cb-icon">🔊</span> Autoplay
+        </button>
+        <button class="choice-btn" id="btnNoplay" onclick="selectMusic(false)">
+          <span class="cb-icon">🔇</span> No thanks
+        </button>
+      </div>
+    </div>
+
+    <button id="verifyBtn" onclick="enterSite()">✦ &nbsp; Enter &nbsp; ✦</button>
+    <p class="popup-fine">By entering you confirm you are ready<br>to make the most of your Tuesday.</p>
+  </div>
+</div>
+
 <script>
 // Cursor
-const cur = document.getElementById('cur'), cur2 = document.getElementById('cur2');
-let mx=-200, my=-200, rx=-200, ry=-200;
-document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=-200,my=-200,rx=-200,ry=-200;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
 (function tick(){
-  cur.style.left=mx+'px'; cur.style.top=my+'px';
-  rx+=(mx-rx)*0.1; ry+=(my-ry)*0.1;
-  cur2.style.left=rx+'px'; cur2.style.top=ry+'px';
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+  rx+=(mx-rx)*0.1;ry+=(my-ry)*0.1;
+  cur2.style.left=rx+'px';cur2.style.top=ry+'px';
   requestAnimationFrame(tick);
 })();
 
-// Canvas particles
-const cv=document.getElementById('c'), ctx=cv.getContext('2d');
+// Canvas
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
 let W,H,pts=[];
 function init(){
-  W=cv.width=innerWidth; H=cv.height=innerHeight;
-  pts=Array.from({length:100},()=>({
-    x:Math.random()*W, y:Math.random()*H,
-    r:Math.random()*1+0.2,
-    vx:(Math.random()-.5)*0.12,
-    vy:(Math.random()-.5)*0.12,
-    a:Math.random()*0.45+0.05
-  }));
+  W=cv.width=innerWidth;H=cv.height=innerHeight;
+  pts=Array.from({length:100},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1+0.2,vx:(Math.random()-.5)*0.12,vy:(Math.random()-.5)*0.12,a:Math.random()*0.45+0.05}));
 }
-init(); addEventListener('resize',init);
+init();addEventListener('resize',init);
 (function draw(){
   ctx.clearRect(0,0,W,H);
   pts.forEach(p=>{
-    p.x+=p.vx; p.y+=p.vy;
-    if(p.x<0)p.x=W; if(p.x>W)p.x=0;
-    if(p.y<0)p.y=H; if(p.y>H)p.y=0;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(212,168,67,${p.a})`; ctx.fill();
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(212,168,67,${p.a})`;ctx.fill();
   });
   requestAnimationFrame(draw);
 })();
 
-// Date + day count
+// Date
 const now=new Date();
 const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 document.getElementById('dateLabel').textContent=`${DAYS[now.getDay()]} · ${MONTHS[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
-const dayOfYear=Math.floor((now-(new Date(now.getFullYear(),0,0)))/86400000);
-document.getElementById('dayCount').textContent=`Day ${dayOfYear} of ${now.getFullYear()}`;
+const doy=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
+document.getElementById('dayCount').textContent=`Day ${doy} of ${now.getFullYear()}`;
 
-// Content — rotates by day of month
+// Content
 const quotes=[
   `You already survived every hard day before this one. <em>That record is unbroken.</em>`,
   `Tuesday is where the quiet work lives. <em>Nobody sees it — that's the point.</em>`,
@@ -360,13 +376,61 @@ const quotes=[
 const vibes=['Focused & Calm','Quietly Powerful','Steady As Ever','Low-key Relentless','Present Moment','Gentle Momentum','Grounded Energy'];
 const focuses=['One honest hour','Show up, fully','Finish one thing','Let one thing go','Move your body','Say the kind thing','Rest without guilt'];
 const remembers=["You belong here","Rest is not laziness","Done beats perfect","You've been here before","It's okay to go slow","Ask for what you need","Your pace is valid"];
-
 const s=now.getDate()+now.getMonth()*31;
 const pick=(a,o=0)=>a[(s+o)%a.length];
 document.getElementById('quoteEl').innerHTML=pick(quotes);
 document.getElementById('vibeEl').textContent=pick(vibes,1);
 document.getElementById('focusEl').textContent=pick(focuses,2);
 document.getElementById('rememberEl').textContent=pick(remembers,3);
+
+// Music state
+let wantsMusic = true;
+let musicPlaying = false;
+
+function selectMusic(val) {
+  wantsMusic = val;
+  document.getElementById('btnAutoplay').classList.toggle('selected', val);
+  document.getElementById('btnNoplay').classList.toggle('selected', !val);
+}
+
+function enterSite() {
+  const overlay = document.getElementById('overlay');
+  overlay.style.transition = 'opacity 0.6s, backdrop-filter 0.6s';
+  overlay.style.opacity = '0';
+  setTimeout(() => overlay.remove(), 650);
+
+  if (wantsMusic) {
+    startMusic();
+  }
+}
+
+function startMusic() {
+  const yt = document.getElementById('yt');
+  // autoplay=1, mute=0 so sound plays, loop=1 for continuous
+  yt.src = 'https://www.youtube.com/embed/eeuObHs01VM?autoplay=1&mute=0&loop=1&playlist=eeuObHs01VM&controls=0&rel=0&modestbranding=1&enablejsapi=1';
+  musicPlaying = true;
+  setTimeout(() => {
+    const bar = document.getElementById('musicBar');
+    bar.classList.add('show');
+  }, 800);
+}
+
+// Toggle music
+let muted = false;
+document.getElementById('toggleMusic').addEventListener('click', function() {
+  const yt = document.getElementById('yt');
+  if (!musicPlaying) return;
+  muted = !muted;
+  if (muted) {
+    yt.src = yt.src.replace('mute=0','mute=1');
+    this.textContent = 'Unmute';
+    document.querySelector('.music-label').textContent = 'Muted';
+  } else {
+    yt.src = yt.src.replace('mute=1','mute=0');
+    this.textContent = 'Pause';
+    document.querySelector('.music-label').textContent = 'Playing';
+  }
+});
 </script>
 </body>
 </html>
