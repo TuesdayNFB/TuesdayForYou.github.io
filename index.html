@@ -3,341 +3,217 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tuesday For You</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<title>TuesdayForYou — Coming Soon</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --cream: #f5ede0;
-    --gold: #c9963a;
-    --rust: #b5451b;
-    --deep: #1a0f05;
+    --bg:      #080808;
+    --bg2:     #111;
+    --bg3:     #1a1a1a;
+    --border:  #1f1f1f;
+    --border2: #2a2a2a;
+    --muted:   #555;
+    --sub:     #888;
+    --light:   #ccc;
+    --white:   #f0f0f0;
+    --pure:    #ffffff;
   }
 
+  html, body { height: 100%; }
+
   body {
-    background: var(--deep);
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    font-family: 'Cormorant Garamond', serif;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
   }
 
-  .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0; animation: orbFloat 12s ease-in-out infinite; }
-  .orb1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(181,69,27,0.35) 0%, transparent 70%); top: -100px; left: -100px; animation-delay: 0s; }
-  .orb2 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(201,150,58,0.2) 0%, transparent 70%); bottom: -150px; right: -150px; animation-delay: 3s; }
-  .orb3 { width: 350px; height: 350px; background: radial-gradient(circle, rgba(181,69,27,0.18) 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 6s; }
-
-  @keyframes orbFloat {
-    0%   { opacity: 0; transform: scale(0.8) translate(0, 0); }
-    25%  { opacity: 1; }
-    50%  { transform: scale(1.1) translate(20px, -30px); }
-    75%  { opacity: 0.7; }
-    100% { opacity: 0; transform: scale(0.8) translate(0, 0); }
+  /* ── GRID ── */
+  .bg-grid {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 100%);
   }
 
-  .particles { position: fixed; inset: 0; pointer-events: none; }
-  .particle { position: absolute; width: 2px; height: 2px; background: var(--gold); border-radius: 50%; opacity: 0; animation: particleDrift linear infinite; }
-  @keyframes particleDrift {
-    0%   { opacity: 0; transform: translateY(100vh) scale(0); }
-    10%  { opacity: 0.8; }
-    90%  { opacity: 0.4; }
-    100% { opacity: 0; transform: translateY(-10vh) scale(1.5); }
+  /* ── GLOW ── */
+  .bg-glow {
+    position: fixed; pointer-events: none; z-index: 0;
+    width: 800px; height: 500px;
+    background: radial-gradient(ellipse, rgba(255,255,255,.055) 0%, transparent 65%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    animation: glowBreath 6s ease-in-out infinite;
+  }
+  @keyframes glowBreath {
+    0%,100% { opacity: .7; transform: translate(-50%,-50%) scale(1); }
+    50%      { opacity: 1;  transform: translate(-50%,-50%) scale(1.08); }
   }
 
-  .scanline { position: fixed; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(201,150,58,0.4), transparent); animation: scanDown 8s ease-in-out infinite; opacity: 0; }
-  @keyframes scanDown {
-    0%   { top: 0; opacity: 0; }
-    5%   { opacity: 1; }
-    95%  { opacity: 0.3; }
-    100% { top: 100vh; opacity: 0; }
+  /* ── NOISE ── */
+  .bg-noise {
+    position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    opacity: .35;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
   }
 
-  /* ── INTRO ── */
-  #intro-screen {
-    position: fixed; inset: 0; z-index: 20;
-    display: flex; align-items: center; justify-content: center;
-    transition: opacity 1.2s cubic-bezier(0.16,1,0.3,1), transform 1.2s cubic-bezier(0.16,1,0.3,1);
-  }
-  #intro-screen.shrink-away { opacity: 0; transform: scale(0.92); pointer-events: none; }
-
-  .layout { display: flex; align-items: center; justify-content: center; width: 100vw; gap: 0; padding: 2rem; }
-
-  .side-quote { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 1.4rem; opacity: 0; }
-  .side-quote.left  { transform: translateX(-30px); animation: fadeInLeft  1.4s cubic-bezier(0.16,1,0.3,1) forwards 3.2s; }
-  .side-quote.right { transform: translateX(30px);  animation: fadeInRight 1.4s cubic-bezier(0.16,1,0.3,1) forwards 3.6s; }
-  @keyframes fadeInLeft  { to { opacity: 1; transform: translateX(0); } }
-  @keyframes fadeInRight { to { opacity: 1; transform: translateX(0); } }
-
-  .quote-rule { width: 1px; height: 0; background: linear-gradient(180deg, transparent, var(--gold), transparent); animation: expandRuleV 1.4s ease forwards; }
-  .side-quote.left  .quote-rule { animation-delay: 3.8s; }
-  .side-quote.right .quote-rule { animation-delay: 4.2s; }
-  @keyframes expandRuleV { to { height: 60px; } }
-
-  .quote-text { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: clamp(0.78rem, 1.3vw, 0.92rem); line-height: 1.85; letter-spacing: 0.04em; color: rgba(245,237,224,0.38); text-align: center; max-width: 180px; opacity: 0; transform: translateY(14px); }
-  .side-quote.left  .quote-text { animation: fadeUp 1.2s ease forwards 4.0s; }
-  .side-quote.right .quote-text { animation: fadeUp 1.2s ease forwards 4.4s; }
-
-  .quote-attr { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(201,150,58,0.35); text-align: center; opacity: 0; transform: translateY(10px); }
-  .side-quote.left  .quote-attr { animation: fadeUp 1.2s ease forwards 4.3s; }
-  .side-quote.right .quote-attr { animation: fadeUp 1.2s ease forwards 4.7s; }
-
-  .center { text-align: center; position: relative; flex: 1; max-width: 680px; }
-
-  .day-label { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: clamp(0.9rem, 2vw, 1.1rem); letter-spacing: 0.5em; color: var(--gold); text-transform: uppercase; opacity: 0; transform: translateY(20px); animation: fadeUp 1.2s ease forwards 0.4s; margin-bottom: 1.5rem; }
-
-  .title { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1; color: var(--cream); opacity: 0; transform: translateY(30px) scale(0.96); animation: heroReveal 1.6s cubic-bezier(0.16,1,0.3,1) forwards 0.8s; position: relative; }
-  .title .word-tuesday { display: block; position: relative; }
-  .title .word-for { display: block; font-style: italic; font-size: 0.55em; color: var(--gold); letter-spacing: 0.12em; margin: 0.2em 0; }
-  .title .word-you { display: block; }
-
-  .title .word-tuesday::after { content: 'Tuesday'; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(201,150,58,0.6) 50%, transparent 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 4s ease-in-out infinite 2.5s; opacity: 0; animation-fill-mode: forwards; }
-  @keyframes shimmer {
-    0%   { background-position: -200% 0; opacity: 0; }
-    10%  { opacity: 1; }
-    50%  { background-position: 200% 0; }
-    60%  { opacity: 0; }
-    100% { background-position: 200% 0; opacity: 0; }
+  /* ── CONTENT ── */
+  .wrap {
+    position: relative; z-index: 10;
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    padding: 2rem;
+    max-width: 600px; width: 100%;
   }
 
-  .deco-line { width: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 2rem auto; animation: expandLine 1.4s ease forwards 2s; }
-  @keyframes expandLine { to { width: 280px; } }
+  /* wordmark */
+  .logo {
+    font-size: .72rem; font-weight: 700;
+    letter-spacing: .35em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 3rem;
+    opacity: 0; animation: fadeUp .8s ease forwards .1s;
+    display: flex; align-items: center; gap: .9rem;
+  }
+  .logo-line { width: 28px; height: 1px; background: var(--border2); }
 
-  .subtitle { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: clamp(0.85rem, 2vw, 1rem); letter-spacing: 0.3em; color: rgba(245,237,224,0.4); text-transform: uppercase; opacity: 0; transform: translateY(10px); animation: fadeUp 1s ease forwards 2.4s; }
-
-  /* Loading */
-  .loading-text { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: clamp(0.72rem, 1.4vw, 0.85rem); letter-spacing: 0.45em; color: rgba(201,150,58,0.45); text-transform: uppercase; margin-top: 1.8rem; opacity: 0; transform: translateY(10px); animation: fadeUp 1s ease forwards 2.9s; }
-  .loading-dots span { display: inline-block; animation: dotPulse 1.4s ease-in-out infinite; }
-  .loading-dots span:nth-child(1) { animation-delay: 0s; }
-  .loading-dots span:nth-child(2) { animation-delay: 0.22s; }
-  .loading-dots span:nth-child(3) { animation-delay: 0.44s; }
-  @keyframes dotPulse { 0%, 80%, 100% { opacity: 0.2; } 40% { opacity: 1; } }
-
-  .ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 1px solid rgba(201,150,58,0.15); opacity: 0; animation: ringPulse 5s ease-out infinite; }
-  .ring:nth-child(1) { width: 340px; height: 340px; animation-delay: 2s; }
-  .ring:nth-child(2) { width: 480px; height: 480px; animation-delay: 2.8s; }
-  .ring:nth-child(3) { width: 620px; height: 620px; animation-delay: 3.6s; }
-  @keyframes ringPulse {
-    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-    20%  { opacity: 0.6; }
-    100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+  /* heading */
+  h1 {
+    font-size: clamp(3.5rem, 12vw, 7.5rem);
+    font-weight: 900; letter-spacing: -.04em;
+    line-height: .95; color: var(--pure);
+    opacity: 0; animation: fadeUp 1s cubic-bezier(.16,1,.3,1) forwards .25s;
+  }
+  h1 .outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--border2);
   }
 
-  @keyframes fadeUp    { to { opacity: 1; transform: translateY(0); } }
-  @keyframes heroReveal{ to { opacity: 1; transform: translateY(0) scale(1); } }
-
-  /* ── CORNER LOGO ── */
-  #corner-logo {
-    position: fixed; top: 1.4rem; left: 1.8rem; z-index: 50;
-    opacity: 0; transform: scale(0.7) translateY(-10px);
-    transition: opacity 1s cubic-bezier(0.16,1,0.3,1) 0.4s, transform 1s cubic-bezier(0.16,1,0.3,1) 0.4s;
-    pointer-events: none; line-height: 1.15;
+  /* sub */
+  .tagline {
+    margin-top: 1.6rem;
+    font-size: clamp(.88rem, 2vw, 1rem);
+    font-weight: 400; color: var(--muted);
+    line-height: 1.7; max-width: 360px;
+    opacity: 0; animation: fadeUp .8s ease forwards .45s;
   }
-  #corner-logo.visible { opacity: 1; transform: scale(1) translateY(0); }
-  #corner-logo .cl-t { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 1.3rem; color: var(--cream); display: block; }
-  #corner-logo .cl-f { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.68rem; color: var(--gold); letter-spacing: 0.18em; display: block; margin: 1px 0; }
-  #corner-logo .cl-y { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 1.3rem; color: var(--cream); display: block; }
 
-  /* ── COUNTDOWN SCREEN ── */
-  #countdown-screen {
-    position: fixed; inset: 0; z-index: 30;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none;
-    transition: opacity 1.2s cubic-bezier(0.16,1,0.3,1) 0.2s;
+  /* divider */
+  .divider {
+    width: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border2), transparent);
+    margin: 2.5rem auto;
+    animation: expandW 1s ease forwards .65s;
   }
-  #countdown-screen.visible { opacity: 1; pointer-events: auto; }
+  @keyframes expandW { to { width: 160px; } }
 
-  .cd-eyebrow { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: clamp(0.8rem, 1.6vw, 1rem); letter-spacing: 0.55em; color: rgba(201,150,58,0.6); text-transform: uppercase; opacity: 0; transform: translateY(18px); }
-  #countdown-screen.visible .cd-eyebrow { animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) forwards 0.15s; }
+  /* feature cards */
+  .features {
+    width: 100%;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    opacity: 0; animation: fadeUp .9s ease forwards .8s;
+  }
+  .feat {
+    background: var(--bg2); padding: 1.5rem 1.2rem;
+    transition: background .2s;
+  }
+  .feat:hover { background: var(--bg3); }
+  .feat-icon { font-size: 1.1rem; margin-bottom: .7rem; display: block; filter: grayscale(1); }
+  .feat-title { font-size: .82rem; font-weight: 700; color: var(--white); margin-bottom: .3rem; }
+  .feat-desc  { font-size: .72rem; color: var(--muted); line-height: 1.55; }
 
-  .cd-title { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(2.4rem, 7vw, 5.5rem); line-height: 1.05; color: var(--cream); text-align: center; margin: 0.5rem 0 0.2rem; opacity: 0; transform: translateY(28px) scale(0.96); }
-  #countdown-screen.visible .cd-title { animation: heroReveal 1.4s cubic-bezier(0.16,1,0.3,1) forwards 0.35s; }
-  .cd-title .gta-six { display: block; color: var(--gold); font-size: 1.15em; }
+  /* discord */
+  .discord-btn {
+    margin-top: 2.5rem;
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .82rem; font-weight: 700;
+    padding: .7rem 1.6rem; border-radius: 8px;
+    background: var(--pure); color: var(--bg);
+    text-decoration: none; border: none;
+    transition: background .15s, transform .1s;
+    opacity: 0; animation: fadeUp .8s ease forwards 1s;
+  }
+  .discord-btn:hover { background: var(--light); transform: translateY(-1px); }
+  .discord-btn svg { width: 16px; height: 16px; }
 
-  .cd-deco { width: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 1.6rem auto; }
-  #countdown-screen.visible .cd-deco { animation: expandLine 1.2s ease forwards 0.85s; }
+  /* footer */
+  .foot {
+    position: fixed; bottom: 1.5rem; left: 0; right: 0;
+    display: flex; justify-content: center;
+    font-size: .62rem; font-weight: 400;
+    letter-spacing: .14em; color: var(--border2);
+    text-transform: uppercase; z-index: 10;
+  }
 
-  .cd-grid { display: flex; gap: clamp(1rem, 4vw, 3rem); align-items: flex-end; opacity: 0; transform: translateY(20px); }
-  #countdown-screen.visible .cd-grid { animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) forwards 1.05s; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 
-  .cd-unit { text-align: center; }
-  .cd-num { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(2.8rem, 8vw, 6.5rem); line-height: 1; color: var(--cream); display: block; }
-  .cd-sep { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(2rem, 5vw, 4rem); color: rgba(201,150,58,0.3); padding-bottom: 0.6rem; line-height: 1; }
-  .cd-label { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: clamp(0.62rem, 1.2vw, 0.76rem); letter-spacing: 0.35em; color: rgba(245,237,224,0.28); text-transform: uppercase; margin-top: 0.5rem; display: block; }
-
-  .cd-sub { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: clamp(0.7rem, 1.3vw, 0.82rem); letter-spacing: 0.3em; color: rgba(245,237,224,0.22); text-transform: uppercase; margin-top: 2.2rem; opacity: 0; transform: translateY(10px); }
-  #countdown-screen.visible .cd-sub { animation: fadeUp 1s ease forwards 1.45s; }
-
-  /* Music */
-  .music-indicator { position: fixed; bottom: 2rem; right: 2rem; display: flex; align-items: center; gap: 0.6rem; opacity: 0; animation: fadeUp 1s ease forwards 3s; z-index: 100; }
-  .music-label { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.8rem; letter-spacing: 0.2em; color: rgba(201,150,58,0.5); }
-  .bars { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
-  .bar { width: 3px; background: var(--gold); opacity: 0.5; border-radius: 2px; animation: barBounce 0.8s ease-in-out infinite alternate; }
-  .bar:nth-child(1) { height: 8px;  animation-delay: 0s; }
-  .bar:nth-child(2) { height: 14px; animation-delay: 0.15s; }
-  .bar:nth-child(3) { height: 10px; animation-delay: 0.3s; }
-  .bar:nth-child(4) { height: 16px; animation-delay: 0.1s; }
-  .bar:nth-child(5) { height: 7px;  animation-delay: 0.25s; }
-  @keyframes barBounce { from { transform: scaleY(0.3); } to { transform: scaleY(1); } }
-
-  #yt-player { display: none; }
+  @media (max-width: 480px) {
+    .features { grid-template-columns: 1fr; }
+    h1 { font-size: clamp(3rem, 15vw, 5rem); }
+  }
 </style>
 </head>
 <body>
 
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
-<div class="scanline"></div>
-<div class="particles" id="particles"></div>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<div class="bg-noise"></div>
 
-<div style="position:fixed;inset:0;pointer-events:none;z-index:5;">
-  <div class="ring"></div>
-  <div class="ring"></div>
-  <div class="ring"></div>
-</div>
+<div class="wrap">
 
-<!-- INTRO -->
-<div id="intro-screen">
-  <div class="layout">
-
-    <div class="side-quote left">
-      <div class="quote-rule"></div>
-      <p class="quote-text">"I have waited for this day longer than I have waited for anything."</p>
-      <span class="quote-attr">— neruda</span>
-      <div class="quote-rule"></div>
-    </div>
-
-    <div class="center">
-      <p class="day-label">every single week</p>
-      <h1 class="title">
-        <span class="word-tuesday">Tuesday</span>
-        <span class="word-for">for</span>
-        <span class="word-you">You</span>
-      </h1>
-      <div class="deco-line"></div>
-      <p class="subtitle">always &nbsp;&bull;&nbsp; forever &nbsp;&bull;&nbsp; yours</p>
-      <p class="loading-text">loading <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></p>
-    </div>
-
-    <div class="side-quote right">
-      <div class="quote-rule"></div>
-      <p class="quote-text">"Whatever our souls are made of, yours and mine are the same."</p>
-      <span class="quote-attr">— brontë</span>
-      <div class="quote-rule"></div>
-    </div>
-
+  <div class="logo">
+    <div class="logo-line"></div>
+    TuesdayForYou
+    <div class="logo-line"></div>
   </div>
-</div>
 
-<!-- CORNER LOGO -->
-<div id="corner-logo">
-  <span class="cl-t">Tuesday</span>
-  <span class="cl-f">for</span>
-  <span class="cl-y">You</span>
-</div>
+  <h1>Coming<br><span class="outline">Soon.</span></h1>
 
-<!-- COUNTDOWN -->
-<div id="countdown-screen">
-  <p class="cd-eyebrow">counting every second until</p>
-  <h2 class="cd-title">
-    <span>Grand Theft Auto</span>
-    <span class="gta-six">VI</span>
-  </h2>
-  <div class="cd-deco"></div>
-  <div class="cd-grid">
-    <div class="cd-unit">
-      <span class="cd-num" id="cd-days">000</span>
-      <span class="cd-label">days</span>
+  <p class="tagline">
+    A clean single player cheat loader for Steam games.
+    No keys. No drama. Dropping soon.
+  </p>
+
+  <div class="divider"></div>
+
+  <div class="features">
+    <div class="feat">
+      <span class="feat-icon">⚡</span>
+      <div class="feat-title">Instant Inject</div>
+      <p class="feat-desc">Attaches to your game in under a second.</p>
     </div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit">
-      <span class="cd-num" id="cd-hours">00</span>
-      <span class="cd-label">hours</span>
+    <div class="feat">
+      <span class="feat-icon">🛡</span>
+      <div class="feat-title">SP Safe</div>
+      <p class="feat-desc">Offline-only. Zero VAC exposure.</p>
     </div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit">
-      <span class="cd-num" id="cd-mins">00</span>
-      <span class="cd-label">minutes</span>
-    </div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit">
-      <span class="cd-num" id="cd-secs">00</span>
-      <span class="cd-label">seconds</span>
+    <div class="feat">
+      <span class="feat-icon">🎛</span>
+      <div class="feat-title">Live Menu</div>
+      <p class="feat-desc">Toggle cheats in-game. Press INSERT.</p>
     </div>
   </div>
-  <p class="cd-sub">release date tbd &nbsp;&bull;&nbsp; stay ready</p>
+
+  <a class="discord-btn" href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.8 19.8 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.055a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+    Join Discord
+  </a>
+
 </div>
 
-<div class="music-indicator">
-  <span class="music-label">now playing</span>
-  <div class="bars">
-    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-    <div class="bar"></div><div class="bar"></div>
-  </div>
-</div>
+<div class="foot">© 2025 TuesdayForYou &nbsp;·&nbsp; SP Only &nbsp;·&nbsp; Steam Games</div>
 
-<div id="yt-player"></div>
-
-<script>
-  /* particles */
-  const pc = document.getElementById('particles');
-  for (let i = 0; i < 55; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.left = Math.random() * 100 + 'vw';
-    p.style.width = p.style.height = (Math.random() * 2 + 1) + 'px';
-    p.style.animationDuration = (Math.random() * 18 + 10) + 's';
-    p.style.animationDelay = (Math.random() * 15) + 's';
-    p.style.opacity = Math.random() * 0.6;
-    pc.appendChild(p);
-  }
-
-  /* GTA 6 target — random speculative date to always show a live ticking countdown */
-  const months = [5,6,7,8,9,10];
-  const m = months[Math.floor(Math.random() * months.length)];
-  const d = Math.floor(Math.random() * 25) + 1;
-  const h = Math.floor(Math.random() * 12);
-  const min = Math.floor(Math.random() * 60);
-  const TARGET = new Date(2026, m - 1, d, h, min, 0);
-
-  function pad(n, w) { return String(n).padStart(w, '0'); }
-
-  function tick() {
-    const diff = TARGET - Date.now();
-    if (diff <= 0) { return; }
-    const s   = Math.floor(diff / 1000);
-    document.getElementById('cd-days').textContent  = pad(Math.floor(s / 86400), 3);
-    document.getElementById('cd-hours').textContent = pad(Math.floor(s / 3600) % 24, 2);
-    document.getElementById('cd-mins').textContent  = pad(Math.floor(s / 60) % 60, 2);
-    document.getElementById('cd-secs').textContent  = pad(s % 60, 2);
-  }
-  tick();
-  setInterval(tick, 1000);
-
-  /* transition at 10s */
-  setTimeout(() => {
-    document.getElementById('intro-screen').classList.add('shrink-away');
-    setTimeout(() => {
-      document.getElementById('corner-logo').classList.add('visible');
-      document.getElementById('countdown-screen').classList.add('visible');
-    }, 700);
-  }, 10000);
-
-  /* YouTube */
-  var tag = document.createElement('script');
-  tag.src = 'https://www.youtube.com/iframe_api';
-  document.head.appendChild(tag);
-  function onYouTubeIframeAPIReady() {
-    new YT.Player('yt-player', {
-      height: '1', width: '1',
-      videoId: 'eeuObHs01VM',
-      playerVars: { autoplay: 1, loop: 1, playlist: 'eeuObHs01VM', controls: 0, mute: 0 },
-      events: { onReady: function(e) { e.target.playVideo(); } }
-    });
-  }
-</script>
 </body>
 </html>
