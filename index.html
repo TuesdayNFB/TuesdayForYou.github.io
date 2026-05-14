@@ -6,55 +6,32 @@
   <title>TuesdayForYou</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Jost:wght@200;300&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       min-height: 100vh;
+      background-color: #faf7f2;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      color: #2c2520;
+    }
+
+    nav {
       display: flex;
       align-items: center;
-      justify-content: center;
-      background-color: #faf7f2;
-      font-family: 'Cormorant Garamond', serif;
-      overflow: hidden;
-    }
-
-    .grain {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 10;
-      opacity: 0.035;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      background-repeat: repeat;
-      background-size: 200px 200px;
-    }
-
-    .center {
-      text-align: center;
-      position: relative;
-      animation: fadeIn 1.6s ease both;
-    }
-
-    .eyebrow {
-      font-family: 'Jost', sans-serif;
-      font-weight: 200;
-      font-size: 11px;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: #b8a898;
-      margin-bottom: 2rem;
-      animation: slideUp 1.6s ease both;
+      padding: 1.4rem 2.5rem;
+      border-bottom: 1px solid #e8e0d6;
     }
 
     .wordmark {
-      font-size: clamp(3.5rem, 9vw, 7rem);
+      font-family: 'Cormorant Garamond', serif;
       font-weight: 300;
+      font-size: 1.5rem;
+      letter-spacing: 0.01em;
       color: #2c2520;
-      line-height: 1;
-      letter-spacing: -0.01em;
-      animation: slideUp 1.4s ease both;
+      text-decoration: none;
     }
 
     .wordmark em {
@@ -62,47 +39,167 @@
       color: #8c6a50;
     }
 
-    .divider {
-      width: 40px;
-      height: 1px;
-      background: #c9b8a8;
-      margin: 2.2rem auto;
-      animation: grow 1.8s ease both;
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2.5rem;
     }
 
-    .tagline {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
+    .section-label {
+      font-family: 'Jost', sans-serif;
+      font-weight: 200;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #b8a898;
+      margin-bottom: 1.5rem;
+    }
+
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: #e8e0d6;
+      border: 1px solid #e8e0d6;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .file-card {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 1rem 1.4rem;
+      background: #faf7f2;
+      transition: background 0.15s;
+    }
+
+    .file-card:hover { background: #f3ede5; }
+
+    .file-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: #f0e8dd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .file-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: #8c6a50;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .file-info { flex: 1; min-width: 0; }
+
+    .file-name {
+      font-size: 0.9rem;
       font-weight: 300;
-      font-size: clamp(1.1rem, 2.5vw, 1.45rem);
-      color: #9a8878;
-      letter-spacing: 0.02em;
-      animation: slideUp 1.8s ease both;
+      color: #2c2520;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
+    .file-meta {
+      font-size: 0.75rem;
+      color: #b8a898;
+      margin-top: 2px;
+      font-weight: 200;
     }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .dl-btn {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 200;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #8c6a50;
+      border: 1px solid #c9b8a8;
+      border-radius: 20px;
+      padding: 5px 14px;
+      cursor: pointer;
+      background: transparent;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
-    @keyframes grow {
-      from { width: 0; opacity: 0; }
-      to   { width: 40px; opacity: 1; }
+    .dl-btn:hover {
+      background: #8c6a50;
+      color: #faf7f2;
+      border-color: #8c6a50;
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 1rem;
+      font-size: 0.72rem;
+      color: #c9b8a8;
+      font-weight: 200;
+      letter-spacing: 0.1em;
     }
   </style>
 </head>
 <body>
-  <div class="grain"></div>
-  <div class="center">
-    <p class="eyebrow">welcome</p>
-    <h1 class="wordmark">Tuesday<em>ForYou</em></h1>
-    <div class="divider"></div>
-    <p class="tagline">something good, just for you</p>
-  </div>
+
+  <nav>
+    <a class="wordmark" href="#">Tuesday<em>ForYou</em></a>
+  </nav>
+
+  <main>
+    <p class="section-label">Files</p>
+    <div class="file-list">
+
+      <div class="file-card">
+        <div class="file-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div class="file-info">
+          <div class="file-name">Beginner_Kelp_Farm.litematic</div>
+          <div class="file-meta">Minecraft schematic &nbsp;·&nbsp; 2.9 KB</div>
+        </div>
+        <button class="dl-btn" id="dl-kelp">Download</button>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>tuesdayforyou</footer>
+
+  <script>
+    const FILES = {
+      "dl-kelp": {
+        name: "Beginner_Kelp_Farm.litematic",
+        b64: "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"
+      }
+    };
+
+    function b64ToBlob(b64) {
+      const bin = atob(b64.replace(/\s/g, ''));
+      const buf = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+      return new Blob([buf], { type: 'application/octet-stream' });
+    }
+
+    Object.keys(FILES).forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        const f = FILES[id];
+        const url = URL.createObjectURL(b64ToBlob(f.b64));
+        const a = document.createElement('a');
+        a.href = url; a.download = f.name; a.click();
+        URL.revokeObjectURL(url);
+      });
+    });
+  </script>
 </body>
 </html>
