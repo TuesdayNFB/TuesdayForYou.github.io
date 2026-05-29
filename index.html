@@ -1,499 +1,511 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tuesdayforyou</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:#fff;color:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:52px;border-bottom:1px solid #e8e8e8;background:#fff;}
-.brand{font-size:16px;font-weight:600;color:#111;letter-spacing:-0.4px;}
-.nav{display:flex;gap:24px;align-items:center;}
-.nav a{font-size:13px;color:#555;text-decoration:none;cursor:pointer;transition:color 0.15s;}
-.nav a:hover{color:#111;}
-.right-bar{display:flex;align-items:center;gap:12px;}
-.api-badge{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:4px 10px;border-radius:6px;border:1px solid #e0e0e0;background:#fafafa;color:#555;transition:all 0.5s ease;white-space:nowrap;}
-.api-badge.connecting{color:#888;border-color:#e0e0e0;background:#fafafa;}
-.api-badge.offline{color:#b91c1c;border-color:#fca5a5;background:#fff5f5;}
-.api-badge .led{width:6px;height:6px;border-radius:50%;background:#bbb;flex-shrink:0;transition:background 0.4s;}
-.api-badge.connecting .led{animation:blink 1.2s infinite;background:#bbb;}
-.api-badge.offline .led{background:#dc2626;animation:none;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
-.avatar{width:30px;height:30px;border-radius:50%;background:#e8e8e8;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#555;}
-.subbar{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:1px solid #f0f0f0;background:#fafafa;}
-.breadcrumb{font-size:12px;color:#888;}
-.breadcrumb span{color:#555;}
-.page-wrap{position:relative;}
-#status-page{display:none;}
-.page{display:flex;min-height:520px;}
-.sidebar{width:200px;border-right:1px solid #f0f0f0;padding:16px 0;flex-shrink:0;}
-.sidebar-item{padding:7px 20px;font-size:13px;color:#666;cursor:pointer;display:flex;align-items:center;gap:8px;}
-.sidebar-item:hover{background:#f5f5f5;color:#111;}
-.sidebar-item.active{color:#111;font-weight:500;background:#f0f0f0;}
-.sidebar-item i{font-size:15px;}
-.content{flex:1;padding:32px 40px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.conn-panel{width:100%;max-width:460px;}
-.conn-header{margin-bottom:28px;}
-.conn-header h2{font-size:18px;font-weight:600;color:#111;margin-bottom:4px;}
-.conn-header p{font-size:13px;color:#888;}
-.progress-steps{display:flex;flex-direction:column;gap:0;margin-bottom:28px;border:1px solid #e8e8e8;border-radius:10px;overflow:hidden;}
-.step{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid #f0f0f0;background:#fff;transition:background 0.3s;}
-.step:last-child{border-bottom:none;}
-.step.active{background:#fafafa;}
-.step.done .step-icon{background:#111;border-color:#111;}
-.step.fail .step-icon{background:#fee2e2;border-color:#fca5a5;}
-.step-icon{width:26px;height:26px;border-radius:50%;border:1.5px solid #d0d0d0;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;transition:all 0.4s;}
-.step-icon .spin{width:12px;height:12px;border:1.5px solid #ccc;border-top-color:#555;border-radius:50%;animation:spin 0.8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.step-label{flex:1;}
-.step-label strong{font-size:13px;font-weight:500;color:#111;display:block;}
-.step-label span{font-size:12px;color:#aaa;}
-.step-time{font-size:11px;color:#bbb;font-variant-numeric:tabular-nums;font-family:monospace;}
-.err-box{border:1px solid #fca5a5;border-radius:10px;background:#fff5f5;padding:14px 16px;margin-bottom:20px;display:none;}
-.err-box.vis{display:block;animation:fadeUp 0.35s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-.err-box-top{display:flex;align-items:flex-start;gap:10px;}
-.err-icon{color:#dc2626;font-size:18px;flex-shrink:0;margin-top:1px;}
-.err-title{font-size:13px;font-weight:600;color:#b91c1c;margin-bottom:3px;}
-.err-msg{font-size:12px;color:#c0392b;line-height:1.5;}
-.err-code{margin-top:10px;padding:8px 10px;background:#fff;border:1px solid #fde0de;border-radius:6px;font-family:monospace;font-size:11px;color:#c0392b;}
-.actions{display:flex;gap:10px;align-items:center;}
-.btn-retry{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;background:#111;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.15s,transform 0.1s;opacity:0;pointer-events:none;}
-.btn-retry.show{opacity:1;pointer-events:all;transition:opacity 0.4s,background 0.15s,transform 0.1s;}
-.btn-retry:hover{background:#333;}
-.btn-retry:active{transform:scale(0.97);}
-.btn-retry:disabled{background:#aaa;cursor:not-allowed;transform:none;}
-.btn-link{font-size:13px;color:#888;cursor:pointer;text-decoration:underline;text-underline-offset:2px;opacity:0;pointer-events:none;transition:opacity 0.4s;background:none;border:none;}
-.btn-link.show{opacity:1;pointer-events:all;}
-.hint{font-size:12px;color:#aaa;margin-top:14px;line-height:1.6;display:none;}
-.hint.show{display:block;animation:fadeUp 0.35s ease;}
-.ping-row{display:flex;gap:6px;margin-top:14px;display:none;}
-.ping-row.show{display:flex;}
-.ping-bar{height:4px;border-radius:2px;background:#e8e8e8;flex:1;}
-.log-box{border:1px solid #f0f0f0;border-radius:8px;background:#fafafa;padding:10px 14px;margin-bottom:20px;font-family:monospace;font-size:11px;color:#999;line-height:1.8;display:none;}
-.log-box.show{display:block;animation:fadeUp 0.3s ease;}
-.log-line.err{color:#e07070;}
-.status-banner{background:#fff1f1;border-bottom:1px solid #fca5a5;padding:14px 32px;display:flex;align-items:center;gap:12px;}
-.status-banner-dot{width:10px;height:10px;border-radius:50%;background:#dc2626;flex-shrink:0;animation:pulse-red 1.5s infinite;}
-@keyframes pulse-red{0%,100%{opacity:1;}50%{opacity:0.4;}}
-.status-banner-text{font-size:13px;font-weight:600;color:#b91c1c;}
-.status-banner-sub{font-size:12px;color:#c0392b;margin-left:4px;font-weight:400;}
-.status-banner-time{margin-left:auto;font-size:11px;color:#e07070;font-family:monospace;}
-.status-body{padding:32px;}
-.status-hero h1{font-size:22px;font-weight:600;color:#111;margin-bottom:6px;}
-.status-hero p{font-size:13px;color:#888;margin-bottom:28px;}
-.status-overall{display:flex;align-items:center;gap:12px;padding:16px 20px;border:1px solid #fca5a5;border-radius:10px;background:#fff5f5;margin-bottom:28px;}
-.status-overall-dot{width:12px;height:12px;border-radius:50%;background:#dc2626;flex-shrink:0;}
-.status-overall-label{font-size:15px;font-weight:600;color:#b91c1c;flex:1;}
-.status-overall-time{font-size:12px;color:#e07070;font-family:monospace;}
-.section-title{font-size:12px;font-weight:600;color:#aaa;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:12px;}
-.services{display:flex;flex-direction:column;gap:0;border:1px solid #e8e8e8;border-radius:10px;overflow:hidden;margin-bottom:28px;}
-.svc-row{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid #f0f0f0;background:#fff;}
-.svc-row:last-child{border-bottom:none;}
-.svc-name{flex:1;font-size:13px;font-weight:500;color:#111;}
-.svc-sub{font-size:11px;color:#aaa;font-weight:400;margin-top:1px;}
-.svc-pill{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;}
-.pill-outage{background:#fee2e2;color:#b91c1c;}
-.pill-degraded{background:#fef3c7;color:#92400e;}
-.pill-ok{background:#ecfdf5;color:#065f46;}
-.pill-monitoring{background:#eff6ff;color:#1e40af;}
-.uptime-row{display:flex;gap:3px;margin-top:6px;}
-.uptime-bar{height:20px;border-radius:2px;flex:1;background:#ecfdf5;}
-.uptime-bar.bad{background:#fee2e2;}
-.uptime-bar.warn{background:#fef3c7;}
-.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px;}
-.metric-card{background:#fafafa;border-radius:8px;padding:14px 16px;border:1px solid #f0f0f0;}
-.metric-val{font-size:20px;font-weight:600;color:#111;margin-bottom:2px;font-variant-numeric:tabular-nums;}
-.metric-val.red{color:#dc2626;}
-.metric-label{font-size:11px;color:#aaa;}
-.incident-list{display:flex;flex-direction:column;gap:12px;margin-bottom:28px;}
-.incident{border:1px solid #e8e8e8;border-radius:10px;overflow:hidden;}
-.incident-header{padding:12px 16px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:10px;}
-.incident-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.incident-dot.red{background:#dc2626;}
-.incident-dot.green{background:#059669;}
-.incident-title{font-size:13px;font-weight:600;color:#111;flex:1;}
-.incident-date{font-size:11px;color:#aaa;font-family:monospace;}
-.incident-body{padding:12px 16px;}
-.update{display:flex;gap:12px;margin-bottom:10px;}
-.update:last-child{margin-bottom:0;}
-.update-time{font-size:11px;color:#aaa;font-family:monospace;white-space:nowrap;padding-top:1px;width:52px;flex-shrink:0;}
-.update-content{font-size:12px;color:#555;line-height:1.6;}
-.update-status{font-size:11px;font-weight:600;margin-bottom:2px;}
-.update-status.investigating{color:#b91c1c;}
-.update-status.identified{color:#92400e;}
-.update-status.monitoring{color:#1e40af;}
-.update-status.resolved{color:#065f46;}
-.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#555;cursor:pointer;padding:7px 14px;border:1px solid #e0e0e0;border-radius:7px;background:#fff;transition:background 0.15s;margin-bottom:20px;}
-.back-btn:hover{background:#f5f5f5;}
+  :root {
+    --cream: #f5f0e8;
+    --warm-white: #faf8f4;
+    --charcoal: #1c1c1e;
+    --muted: #8a8278;
+    --accent: #c9a96e;
+    --accent-light: #e8d9be;
+    --soft-shadow: rgba(28,28,30,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--charcoal);
+    font-family: 'Raleway', sans-serif;
+    overflow: hidden;
+    cursor: default;
+  }
+
+  /* ── LOADING SCREEN ── */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--charcoal);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: opacity 1.2s ease, visibility 1.2s ease;
+  }
+
+  #loader.fade-out {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .loader-ring {
+    width: 64px; height: 64px;
+    border: 1.5px solid rgba(201,169,110,0.15);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1.4s linear infinite;
+    margin-bottom: 36px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loader-text {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 200;
+    font-size: clamp(13px, 2vw, 15px);
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    animation: pulse-text 2s ease-in-out infinite;
+  }
+
+  .loader-text span {
+    color: var(--accent);
+    animation: blink 1.4s step-start infinite;
+  }
+
+  @keyframes pulse-text {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .loader-dots {
+    display: flex; gap: 6px; margin-top: 20px;
+  }
+  .loader-dots div {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.3;
+    animation: dot-bounce 1.4s ease-in-out infinite;
+  }
+  .loader-dots div:nth-child(2) { animation-delay: 0.2s; }
+  .loader-dots div:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dot-bounce {
+    0%, 80%, 100% { opacity: 0.3; transform: scale(1); }
+    40% { opacity: 1; transform: scale(1.4); }
+  }
+
+  /* ── MAIN PAGE ── */
+  #main {
+    position: fixed; inset: 0;
+    background: var(--warm-white);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1.4s ease, visibility 1.4s ease;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  #main.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Grain overlay */
+  #main::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+    background: linear-gradient(to bottom, var(--warm-white) 60%, transparent);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 2.5vw, 22px);
+    font-weight: 400;
+    color: var(--charcoal);
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.8s ease 1.2s, transform 0.8s ease 1.2s;
+  }
+
+  .logo em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  #main.visible .logo {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .nav {
+    display: flex; gap: 32px;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.8s ease 1.4s, transform 0.8s ease 1.4s;
+  }
+
+  #main.visible .nav { opacity: 1; transform: translateY(0); }
+
+  .nav a {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .nav a:hover { color: var(--charcoal); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 40px 80px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-label {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.9s ease 1.5s, transform 0.9s ease 1.5s;
+  }
+
+  #main.visible .hero-label { opacity: 1; transform: translateY(0); }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 9vw, 110px);
+    font-weight: 400;
+    line-height: 1.02;
+    color: var(--charcoal);
+    letter-spacing: -0.01em;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1s ease 1.7s, transform 1s ease 1.7s;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  #main.visible .hero-title { opacity: 1; transform: translateY(0); }
+
+  .hero-sub {
+    margin-top: 32px;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    max-width: 340px;
+    line-height: 1.9;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.9s ease 2s, transform 0.9s ease 2s;
+  }
+
+  #main.visible .hero-sub { opacity: 1; transform: translateY(0); }
+
+  .hero-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    margin: 48px auto 0;
+    opacity: 0;
+    transition: opacity 0.9s ease 2.3s;
+  }
+
+  #main.visible .hero-line { opacity: 1; }
+
+  /* ── CARDS ── */
+  .cards-section {
+    padding: 80px 40px 120px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+
+  .card {
+    background: var(--cream);
+    border: 1px solid var(--accent-light);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    box-shadow: 0 12px 40px var(--soft-shadow);
+    transform: translateY(-2px) !important;
+  }
+
+  .card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(to right, var(--accent), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .card:hover::after { transform: scaleX(1); }
+
+  .card-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+
+  .card-body {
+    font-size: 12.5px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.85;
+    letter-spacing: 0.03em;
+  }
+
+  #main.visible .card:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 2.2s; }
+  #main.visible .card:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 2.4s; }
+  #main.visible .card:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 2.6s; }
+
+  /* ── MUSIC BADGE ── */
+  .music-badge {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(28,28,30,0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(201,169,110,0.2);
+    padding: 10px 16px;
+    border-radius: 40px;
+    z-index: 20;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.8s ease 3s, transform 0.8s ease 3s;
+  }
+
+  #main.visible .music-badge { opacity: 1; transform: translateY(0); }
+
+  .bars {
+    display: flex; align-items: flex-end; gap: 2px; height: 14px;
+  }
+
+  .bar {
+    width: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    animation: bar-dance 1s ease-in-out infinite;
+  }
+
+  .bar:nth-child(1) { height: 6px; animation-delay: 0s; }
+  .bar:nth-child(2) { height: 11px; animation-delay: 0.15s; }
+  .bar:nth-child(3) { height: 8px; animation-delay: 0.3s; }
+  .bar:nth-child(4) { height: 14px; animation-delay: 0.1s; }
+
+  @keyframes bar-dance {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.4); }
+  }
+
+  .music-label {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(250,248,244,0.6);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--accent-light);
+    max-width: 1100px;
+    margin: 0 auto;
+    opacity: 0;
+    transition: opacity 0.8s ease 2.8s;
+  }
+
+  #main.visible footer { opacity: 1; }
+
+  .footer-left {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .footer-right {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+  }
+
+  /* Hidden YouTube embed */
+  #yt-embed {
+    position: fixed;
+    width: 1px; height: 1px;
+    left: -9999px; top: -9999px;
+    pointer-events: none;
+  }
 </style>
+</head>
+<body>
 
-<div class="topbar">
-  <div style="display:flex;align-items:center;gap:32px;">
-    <span class="brand">tuesdayforyou</span>
-    <div class="nav">
-      <a onclick="showConn()">Dashboard</a>
-      <a>Analytics</a>
-      <a>Settings</a>
-    </div>
-  </div>
-  <div class="right-bar">
-    <div class="api-badge connecting" id="badge">
-      <span class="led"></span>
-      <span id="badge-label">API status: Connecting</span>
-    </div>
-    <div class="avatar">JD</div>
+<!-- Hidden YouTube Player -->
+<div id="yt-embed">
+  <div id="player"></div>
+</div>
+
+<!-- Loading Screen -->
+<div id="loader">
+  <div class="loader-ring"></div>
+  <div class="loader-text">Wait while we connect you<span>_</span></div>
+  <div class="loader-dots">
+    <div></div><div></div><div></div>
   </div>
 </div>
 
-<div class="subbar">
-  <span class="breadcrumb" id="bc">Home &rsaquo; <span>Connection</span></span>
-</div>
+<!-- Main Page -->
+<div id="main">
+  <header>
+    <div class="logo">tuesday<em>for</em>you</div>
+    <nav class="nav">
+      <a href="#">About</a>
+      <a href="#">Archive</a>
+      <a href="#">Letters</a>
+    </nav>
+  </header>
 
-<div class="page-wrap">
+  <section class="hero">
+    <p class="hero-label">A space just for you</p>
+    <h1 class="hero-title">tuesday<br><em>for you</em></h1>
+    <p class="hero-sub">Something warm, something quiet — arriving every week without fail.</p>
+    <div class="hero-line"></div>
+  </section>
 
-<div id="conn-page">
-  <div class="page">
-    <div class="sidebar">
-      <div class="sidebar-item active"><i class="ti ti-wifi" aria-hidden="true"></i> Connection</div>
-      <div class="sidebar-item"><i class="ti ti-chart-bar" aria-hidden="true"></i> Analytics</div>
-      <div class="sidebar-item"><i class="ti ti-bell" aria-hidden="true"></i> Alerts</div>
-      <div class="sidebar-item"><i class="ti ti-lock" aria-hidden="true"></i> Security</div>
-      <div class="sidebar-item"><i class="ti ti-settings" aria-hidden="true"></i> Settings</div>
-    </div>
-    <div class="content">
-      <div class="conn-panel">
-        <div class="conn-header">
-          <h2 id="main-title">Establishing connection</h2>
-          <p id="main-sub">Connecting to tuesdayforyou API endpoints&hellip;</p>
-        </div>
-        <div class="log-box" id="log-box">
-          <div class="log-line" id="log1"></div>
-          <div class="log-line" id="log2"></div>
-          <div class="log-line" id="log3"></div>
-          <div class="log-line err" id="log4"></div>
-        </div>
-        <div class="progress-steps">
-          <div class="step active" id="s1">
-            <div class="step-icon" id="si1"><div class="spin"></div></div>
-            <div class="step-label"><strong>DNS resolution</strong><span id="sl1">Resolving api.tuesdayforyou.io&hellip;</span></div>
-            <span class="step-time" id="st1"></span>
-          </div>
-          <div class="step" id="s2">
-            <div class="step-icon" id="si2"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ccc" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="4"/></svg></div>
-            <div class="step-label"><strong>TLS handshake</strong><span id="sl2">Waiting&hellip;</span></div>
-            <span class="step-time" id="st2"></span>
-          </div>
-          <div class="step" id="s3">
-            <div class="step-icon" id="si3"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ccc" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="4"/></svg></div>
-            <div class="step-label"><strong>Auth token exchange</strong><span id="sl3">Waiting&hellip;</span></div>
-            <span class="step-time" id="st3"></span>
-          </div>
-          <div class="step" id="s4">
-            <div class="step-icon" id="si4"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ccc" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="4"/></svg></div>
-            <div class="step-label"><strong>Channel ready</strong><span id="sl4">Waiting&hellip;</span></div>
-            <span class="step-time" id="st4"></span>
-          </div>
-        </div>
-        <div class="err-box" id="err-box">
-          <div class="err-box-top">
-            <i class="ti ti-alert-circle err-icon" aria-hidden="true"></i>
-            <div>
-              <div class="err-title" id="err-title">Connection refused</div>
-              <div class="err-msg" id="err-msg">The server at api.tuesdayforyou.io rejected the connection.</div>
-            </div>
-          </div>
-          <div class="err-code" id="err-code">GET https://api.tuesdayforyou.io/v2/connect — 503 Service Unavailable (timeout: 8000ms)</div>
-        </div>
-        <div class="actions">
-          <button class="btn-retry" id="retry-btn" onclick="retry()">
-            <i class="ti ti-refresh" aria-hidden="true"></i> Try again
-          </button>
-          <button class="btn-link" id="status-link" onclick="showStatus()">View status page</button>
-        </div>
-        <div class="hint" id="hint">
-          Attempt <span id="attempt-num">1</span> of 3 failed. <span style="text-decoration:underline;cursor:pointer;" onclick="showStatus()">Check the status page.</span>
-        </div>
-        <div class="ping-row" id="ping-row">
-          <div class="ping-bar" id="pb1"></div><div class="ping-bar" id="pb2"></div>
-          <div class="ping-bar" id="pb3"></div><div class="ping-bar" id="pb4"></div>
-          <div class="ping-bar" id="pb5"></div><div class="ping-bar" id="pb6"></div>
-          <div class="ping-bar" id="pb7"></div><div class="ping-bar" id="pb8"></div>
-        </div>
+  <section class="cards-section">
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-number">01</div>
+        <div class="card-title">This Week's Letter</div>
+        <div class="card-body">A handwritten note waiting for you. Soft words for a soft day. Open when the world feels too loud.</div>
+      </div>
+      <div class="card">
+        <div class="card-number">02</div>
+        <div class="card-title">Something to Listen To</div>
+        <div class="card-body">Curated sounds chosen for the afternoon light. Let them play in the background while you breathe.</div>
+      </div>
+      <div class="card">
+        <div class="card-number">03</div>
+        <div class="card-title">Just For Today</div>
+        <div class="card-body">One small, beautiful thing. A prompt, a thought, or a reminder that today is enough.</div>
       </div>
     </div>
+  </section>
+
+  <footer>
+    <div class="footer-left">every tuesday, without fail.</div>
+    <div class="footer-right">© tuesdayforyou</div>
+  </footer>
+
+  <!-- Music badge -->
+  <div class="music-badge">
+    <div class="bars">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <span class="music-label">Now playing</span>
   </div>
 </div>
 
-<div id="status-page">
-  <div class="status-banner">
-    <div class="status-banner-dot"></div>
-    <span class="status-banner-text">Major outage in progress</span>
-    <span class="status-banner-sub">— API services are unavailable</span>
-    <span class="status-banner-time" id="banner-clock"></span>
-  </div>
-  <div class="status-body">
-    <button class="back-btn" onclick="showConn()"><i class="ti ti-arrow-left" style="font-size:14px;" aria-hidden="true"></i> Back to dashboard</button>
-    <div class="status-hero">
-      <h1>System Status</h1>
-      <p>Real-time health and incident information for tuesdayforyou services.</p>
-    </div>
-    <div class="status-overall">
-      <div class="status-overall-dot"></div>
-      <span class="status-overall-label">Major service outage</span>
-      <span class="status-overall-time" id="since-label"></span>
-    </div>
-    <div class="section-title">Service health</div>
-    <div class="services">
-      <div class="svc-row">
-        <div style="flex:1;"><div class="svc-name">API Gateway <span class="svc-sub">api.tuesdayforyou.io</span></div><div class="uptime-row" id="uptime-api"></div></div>
-        <span class="svc-pill pill-outage">Outage</span>
-      </div>
-      <div class="svc-row">
-        <div style="flex:1;"><div class="svc-name">Auth Service <span class="svc-sub">auth.tuesdayforyou.io</span></div><div class="uptime-row" id="uptime-auth"></div></div>
-        <span class="svc-pill pill-outage">Outage</span>
-      </div>
-      <div class="svc-row">
-        <div style="flex:1;"><div class="svc-name">Data Pipeline <span class="svc-sub">Internal processing</span></div><div class="uptime-row" id="uptime-pipe"></div></div>
-        <span class="svc-pill pill-degraded">Degraded</span>
-      </div>
-      <div class="svc-row">
-        <div style="flex:1;"><div class="svc-name">CDN / Edge <span class="svc-sub">Static assets</span></div><div class="uptime-row" id="uptime-cdn"></div></div>
-        <span class="svc-pill pill-ok">Operational</span>
-      </div>
-      <div class="svc-row">
-        <div style="flex:1;"><div class="svc-name">Dashboard UI <span class="svc-sub">Web interface</span></div><div class="uptime-row" id="uptime-ui"></div></div>
-        <span class="svc-pill pill-monitoring">Monitoring</span>
-      </div>
-    </div>
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-val red">503</div>
-        <div class="metric-label">HTTP status code</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-val red" id="downtime-display">0:00</div>
-        <div class="metric-label">Time down (mm:ss)</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-val">99.7%</div>
-        <div class="metric-label">30-day uptime</div>
-      </div>
-    </div>
-    <div class="section-title">Incident history</div>
-    <div class="incident-list">
-      <div class="incident">
-        <div class="incident-header">
-          <div class="incident-dot red"></div>
-          <span class="incident-title">API server outage — all regions affected</span>
-          <span class="incident-date" id="inc-date">Today</span>
-        </div>
-        <div class="incident-body">
-          <div class="update">
-            <div class="update-time" id="t-inv"></div>
-            <div class="update-content"><div class="update-status investigating">Investigating</div>We are investigating reports of API unavailability across all regions. Engineers have been paged and are actively working to identify the root cause.</div>
-          </div>
-          <div class="update">
-            <div class="update-time" id="t-id"></div>
-            <div class="update-content"><div class="update-status identified">Identified</div>The issue has been traced to a failed upstream load balancer deployment. Traffic is not routing to healthy nodes. A rollback has been initiated.</div>
-          </div>
-          <div class="update">
-            <div class="update-time" id="t-mon"></div>
-            <div class="update-content"><div class="update-status monitoring">Monitoring</div>Rollback is in progress. Some regions may continue to see errors during stabilisation.</div>
-          </div>
-        </div>
-      </div>
-      <div class="incident">
-        <div class="incident-header">
-          <div class="incident-dot green"></div>
-          <span class="incident-title">Elevated latency — EU-West region</span>
-          <span class="incident-date">May 21, 2026</span>
-        </div>
-        <div class="incident-body">
-          <div class="update">
-            <div class="update-time">13:02</div>
-            <div class="update-content"><div class="update-status resolved">Resolved</div>Latency spike in EU-West resolved. Root cause was a misconfigured BGP route. Total duration: 22 minutes.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-</div>
-
+<!-- YouTube IFrame API -->
 <script>
-let attempt=0;
-let outageStart=null;
-let downtimeInterval=null;
-let bannerInterval=null;
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
 
-function ts(){const n=new Date();return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')+':'+n.getSeconds().toString().padStart(2,'0');}
-function fmt(d){return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');}
-function checkIcon(c){return `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>`;}
-function xIcon(){return `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="9" y2="9"/><line x1="9" y1="3" x2="3" y2="9"/></svg>`;}
-function spinIcon(){return `<div class="spin"></div>`;}
-
-function tickDowntime(){
-  if(!outageStart) return;
-  const elapsed=Math.floor((Date.now()-outageStart)/1000);
-  const h=Math.floor(elapsed/3600);
-  const m=Math.floor((elapsed%3600)/60);
-  const s=elapsed%60;
-  let display;
-  if(h>0){
-    display=h+':'+m.toString().padStart(2,'0')+':'+s.toString().padStart(2,'0');
-    document.getElementById('downtime-display').parentElement.querySelector('.metric-label').textContent='Time down (hh:mm:ss)';
-  } else {
-    display=m+':'+s.toString().padStart(2,'0');
-    document.getElementById('downtime-display').parentElement.querySelector('.metric-label').textContent='Time down (mm:ss)';
+  var player;
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      videoId: 'LW_BSEjgBss',
+      playerVars: {
+        autoplay: 1,
+        loop: 1,
+        playlist: 'LW_BSEjgBss',
+        controls: 0,
+        mute: 0,
+        playsinline: 1
+      },
+      events: {
+        onReady: function(e) {
+          e.target.setVolume(55);
+          e.target.playVideo();
+        }
+      }
+    });
   }
-  document.getElementById('downtime-display').textContent=display;
-  document.getElementById('since-label').textContent='Since '+fmt(new Date(outageStart))+' UTC · '+elapsed+'s elapsed';
-}
 
-function tickBanner(){
-  document.getElementById('banner-clock').textContent='Updated '+ts()+' UTC';
-}
-
-function setStep(id,state,sub,t){
-  document.getElementById('s'+id).className='step '+state;
-  const si=document.getElementById('si'+id);
-  if(state==='active')si.innerHTML=spinIcon();
-  else if(state==='done')si.innerHTML=checkIcon('#fff');
-  else if(state==='fail')si.innerHTML=xIcon();
-  if(sub)document.getElementById('sl'+id).textContent=sub;
-  if(t)document.getElementById('st'+id).textContent=t;
-}
-
-function resetSteps(){
-  for(let i=1;i<=4;i++){
-    document.getElementById('s'+i).className='step'+(i===1?' active':'');
-    document.getElementById('si'+i).innerHTML=i===1?spinIcon():`<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ccc" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="4"/></svg>`;
-    document.getElementById('sl'+i).textContent=i===1?(attempt===0?'Resolving api.tuesdayforyou.io…':'Retrying DNS lookup…'):'Waiting…';
-    document.getElementById('st'+i).textContent='';
-  }
-}
-
-function startConnect(){
-  attempt++;
-  const badge=document.getElementById('badge');
-  badge.className='api-badge connecting';
-  document.getElementById('badge-label').textContent='API status: Connecting';
-  document.getElementById('main-title').textContent=attempt===1?'Establishing connection':'Retrying connection';
-  document.getElementById('main-sub').textContent=attempt===1?'Connecting to tuesdayforyou API endpoints…':'Reconnecting — attempt '+attempt+' of 3…';
-  document.getElementById('err-box').classList.remove('vis');
-  document.getElementById('err-box').style.display='none';
-  document.getElementById('retry-btn').classList.remove('show');
-  document.getElementById('status-link').classList.remove('show');
-  document.getElementById('hint').classList.remove('show');
-  document.getElementById('ping-row').classList.remove('show');
-  document.getElementById('retry-btn').disabled=true;
-  const lb=document.getElementById('log-box');
-  lb.className='log-box show';
-  document.getElementById('log1').textContent='['+ts()+'] Initiating connection to api.tuesdayforyou.io:443';
-  document.getElementById('log2').textContent='['+ts()+'] Resolving DNS via 1.1.1.1…';
-  document.getElementById('log3').textContent='';
-  document.getElementById('log4').textContent='';
-  resetSteps();
-
-  setTimeout(()=>{
-    document.getElementById('log2').textContent='['+ts()+'] DNS resolved: 104.18.22.'+(Math.floor(Math.random()*200+10));
-    setStep(1,'done','Resolved in 38ms','38ms');
-    setStep(2,'active','Negotiating TLS 1.3…','');
-  },700);
-  setTimeout(()=>{
-    document.getElementById('log3').textContent='['+ts()+'] TLS 1.3 handshake initiated (ECDHE_RSA_AES_256)';
-  },1100);
-  setTimeout(()=>{
-    setStep(2,'done','TLS 1.3 established','112ms');
-    setStep(3,'active','Exchanging bearer token…','');
-    document.getElementById('log3').textContent='['+ts()+'] TLS OK — certificate valid, HSTS enforced';
-  },1500);
-  setTimeout(()=>{
-    setStep(3,'fail','Server returned 503','—');
-    setStep(4,'fail','Aborted','—');
-    document.getElementById('log4').textContent='['+ts()+'] Error: 503 Service Unavailable — upstream timeout';
-    if(!outageStart) outageStart=Date.now();
-    showFailure();
-  },2600);
-}
-
-function showFailure(){
-  document.getElementById('badge').className='api-badge offline';
-  document.getElementById('badge-label').textContent='API status: Offline';
-  document.getElementById('main-title').textContent='Connection failed';
-  document.getElementById('main-sub').textContent='Unable to reach the tuesdayforyou API.';
-  const eb=document.getElementById('err-box');
-  if(attempt>=2){
-    document.getElementById('err-title').textContent='Persistent connection failure';
-    document.getElementById('err-msg').textContent='Multiple attempts have failed. The API server appears to be down. Check the status page for updates.';
-    document.getElementById('err-code').textContent='GET https://api.tuesdayforyou.io/v2/connect — 503 Service Unavailable (attempt '+attempt+'/3)';
-  } else {
-    document.getElementById('err-title').textContent='Connection refused';
-    document.getElementById('err-msg').textContent='The server at api.tuesdayforyou.io rejected the connection. The endpoint may be unreachable or experiencing an outage.';
-    document.getElementById('err-code').textContent='GET https://api.tuesdayforyou.io/v2/connect — 503 Service Unavailable (timeout: 8000ms)';
-  }
-  eb.style.display='block';
-  setTimeout(()=>eb.classList.add('vis'),10);
-  document.getElementById('retry-btn').disabled=false;
-  document.getElementById('retry-btn').classList.add('show');
-  document.getElementById('status-link').classList.add('show');
-  document.getElementById('attempt-num').textContent=attempt;
-  document.getElementById('hint').classList.add('show');
-  const pingColors=['#dc2626','#dc2626','#dc2626','#dc2626','#e8e8e8','#e8e8e8','#e8e8e8','#e8e8e8'];
-  for(let i=1;i<=8;i++) document.getElementById('pb'+i).style.background=pingColors[i-1];
-  document.getElementById('ping-row').classList.add('show');
-}
-
-function retry(){
-  document.getElementById('retry-btn').disabled=true;
-  startConnect();
-}
-
-function buildUptime(id,pattern){
-  const el=document.getElementById(id);
-  el.innerHTML='';
-  pattern.forEach(p=>{
-    const b=document.createElement('div');
-    b.className='uptime-bar'+(p==='bad'?' bad':p==='warn'?' warn':'');
-    el.appendChild(b);
-  });
-}
-
-function showStatus(){
-  document.getElementById('conn-page').style.display='none';
-  document.getElementById('status-page').style.display='block';
-  document.getElementById('bc').innerHTML='Home &rsaquo; <span>Status</span>';
-
-  if(!outageStart) outageStart=Date.now();
-
-  const t1=new Date(outageStart-2*60000);
-  const t2=new Date(outageStart+3*60000);
-  const t3=new Date(outageStart+7*60000);
-  document.getElementById('t-inv').textContent=fmt(t1);
-  document.getElementById('t-id').textContent=fmt(t2);
-  document.getElementById('t-mon').textContent=fmt(t3);
-  document.getElementById('inc-date').textContent='Today, '+fmt(new Date(outageStart));
-
-  const good=Array(26).fill('good');
-  buildUptime('uptime-api',[...good,'bad','bad','bad','bad']);
-  buildUptime('uptime-auth',[...good,'bad','bad','bad','bad']);
-  buildUptime('uptime-pipe',[...Array(25).fill('good'),'warn','warn','bad','bad']);
-  buildUptime('uptime-cdn',Array(30).fill('good'));
-  buildUptime('uptime-ui',[...Array(28).fill('good'),'warn','warn']);
-
-  tickDowntime();
-  tickBanner();
-  if(downtimeInterval) clearInterval(downtimeInterval);
-  if(bannerInterval) clearInterval(bannerInterval);
-  downtimeInterval=setInterval(tickDowntime,1000);
-  bannerInterval=setInterval(tickBanner,1000);
-}
-
-function showConn(){
-  if(downtimeInterval) clearInterval(downtimeInterval);
-  if(bannerInterval) clearInterval(bannerInterval);
-  document.getElementById('status-page').style.display='none';
-  document.getElementById('conn-page').style.display='block';
-  document.getElementById('bc').innerHTML='Home &rsaquo; <span>Connection</span>';
-}
-
-startConnect();
+  // 10-second countdown then transition
+  setTimeout(function() {
+    document.getElementById('loader').classList.add('fade-out');
+    document.getElementById('main').classList.add('visible');
+    document.body.style.overflow = 'auto';
+  }, 10000);
 </script>
+</body>
+</html>
