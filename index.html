@@ -1,235 +1,318 @@
 
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #fff; color: #111; font-family: var(--font-sans, system-ui, sans-serif); }
-  .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 28px;
-    height: 56px;
-    border-bottom: 0.5px solid #e0e0e0;
-    background: #fff;
-  }
-  .brand {
-    font-size: 17px;
-    font-weight: 500;
-    letter-spacing: -0.3px;
-    color: #111;
-  }
-  .status-badge {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 5px 12px;
-    border-radius: 20px;
-    border: 0.5px solid transparent;
-    transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
-  }
-  .status-badge.connecting {
-    background: #f5f5f5;
-    color: #666;
-    border-color: #e0e0e0;
-  }
-  .status-badge.offline {
-    background: #fdf2f2;
-    color: #b91c1c;
-    border-color: #fca5a5;
-  }
-  .dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    transition: background 0.4s ease;
-  }
-  .dot.pulse {
-    background: #aaa;
-    animation: pulse 1.1s infinite;
-  }
-  .dot.red {
-    background: #dc2626;
-    animation: none;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.25; }
-  }
-  .main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: calc(100vh - 56px);
-    gap: 0;
-    padding: 48px 24px;
-  }
-  .card {
-    background: #fff;
-    border: 0.5px solid #e5e5e5;
-    border-radius: 16px;
-    padding: 48px 52px;
-    max-width: 420px;
-    width: 100%;
-    text-align: center;
-    transition: border-color 0.4s ease;
-  }
-  .card.error-card { border-color: #fca5a5; }
-  .icon-wrap {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 24px;
-    transition: background 0.4s ease;
-  }
-  .icon-wrap.connecting-icon { background: #f5f5f5; }
-  .icon-wrap.error-icon { background: #fdf2f2; }
-  .spinner {
-    width: 26px;
-    height: 26px;
-    border: 2.5px solid #d0d0d0;
-    border-top-color: #555;
-    border-radius: 50%;
-    animation: spin 0.85s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .state-title {
-    font-size: 20px;
-    font-weight: 500;
-    color: #111;
-    margin-bottom: 10px;
-    transition: color 0.4s ease;
-  }
-  .state-title.error-title { color: #b91c1c; }
-  .state-sub {
-    font-size: 14px;
-    color: #777;
-    line-height: 1.6;
-    margin-bottom: 28px;
-    min-height: 44px;
-  }
-  .try-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #111;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 11px 24px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.1s ease, opacity 0.3s ease;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .try-btn.visible {
-    opacity: 1;
-    pointer-events: all;
-  }
-  .try-btn:hover { background: #333; }
-  .try-btn:active { transform: scale(0.97); }
-  .try-btn:disabled {
-    background: #aaa;
-    cursor: not-allowed;
-    transform: none;
-  }
-  .err-code {
-    margin-top: 24px;
-    font-size: 12px;
-    color: #bbb;
-    letter-spacing: 0.5px;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    font-family: var(--font-mono, monospace);
-  }
-  .err-code.visible { opacity: 1; }
-  .fade-enter { animation: fadeIn 0.5s ease forwards; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#fff;color:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:52px;border-bottom:1px solid #e8e8e8;background:#fff;}
+.brand{font-size:16px;font-weight:600;color:#111;letter-spacing:-0.4px;}
+.nav{display:flex;gap:24px;align-items:center;}
+.nav a{font-size:13px;color:#555;text-decoration:none;cursor:pointer;}
+.nav a:hover{color:#111;}
+.right-bar{display:flex;align-items:center;gap:12px;}
+.api-badge{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:4px 10px;border-radius:6px;border:1px solid #e0e0e0;background:#fafafa;color:#555;transition:all 0.5s ease;white-space:nowrap;}
+.api-badge.connecting{color:#888;border-color:#e0e0e0;background:#fafafa;}
+.api-badge.offline{color:#b91c1c;border-color:#fca5a5;background:#fff5f5;}
+.api-badge .led{width:6px;height:6px;border-radius:50%;background:#bbb;flex-shrink:0;transition:background 0.4s;}
+.api-badge.connecting .led{animation:blink 1.2s infinite;background:#bbb;}
+.api-badge.offline .led{background:#dc2626;animation:none;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.avatar{width:30px;height:30px;border-radius:50%;background:#e8e8e8;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#555;}
+.subbar{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:1px solid #f0f0f0;background:#fafafa;}
+.breadcrumb{font-size:12px;color:#888;}
+.breadcrumb span{color:#555;}
+.page{display:flex;min-height:520px;}
+.sidebar{width:200px;border-right:1px solid #f0f0f0;padding:16px 0;flex-shrink:0;}
+.sidebar-item{padding:7px 20px;font-size:13px;color:#666;cursor:pointer;display:flex;align-items:center;gap:8px;}
+.sidebar-item:hover{background:#f5f5f5;color:#111;}
+.sidebar-item.active{color:#111;font-weight:500;background:#f0f0f0;}
+.sidebar-item i{font-size:15px;}
+.content{flex:1;padding:32px 40px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.conn-panel{width:100%;max-width:460px;}
+.conn-header{margin-bottom:28px;}
+.conn-header h2{font-size:18px;font-weight:600;color:#111;margin-bottom:4px;}
+.conn-header p{font-size:13px;color:#888;}
+.progress-steps{display:flex;flex-direction:column;gap:0;margin-bottom:28px;border:1px solid #e8e8e8;border-radius:10px;overflow:hidden;}
+.step{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid #f0f0f0;background:#fff;transition:background 0.3s;}
+.step:last-child{border-bottom:none;}
+.step.active{background:#fafafa;}
+.step.done .step-icon{background:#111;border-color:#111;}
+.step.done .step-icon svg{stroke:#fff;}
+.step.fail .step-icon{background:#fee2e2;border-color:#fca5a5;}
+.step.fail .step-icon svg{stroke:#dc2626;}
+.step-icon{width:26px;height:26px;border-radius:50%;border:1.5px solid #d0d0d0;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;transition:all 0.4s;}
+.step-icon .spin{width:12px;height:12px;border:1.5px solid #ccc;border-top-color:#555;border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.step-label{flex:1;}
+.step-label strong{font-size:13px;font-weight:500;color:#111;display:block;}
+.step-label span{font-size:12px;color:#aaa;}
+.step-time{font-size:11px;color:#ccc;font-variant-numeric:tabular-nums;font-family:monospace;}
+.step.active .step-time,.step.done .step-time,.step.fail .step-time{color:#bbb;}
+.err-box{border:1px solid #fca5a5;border-radius:10px;background:#fff5f5;padding:14px 16px;margin-bottom:20px;display:none;}
+.err-box.visible{display:block;animation:fadeUp 0.35s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.err-box-top{display:flex;align-items:flex-start;gap:10px;}
+.err-icon{color:#dc2626;font-size:18px;flex-shrink:0;margin-top:1px;}
+.err-title{font-size:13px;font-weight:600;color:#b91c1c;margin-bottom:3px;}
+.err-msg{font-size:12px;color:#c0392b;line-height:1.5;}
+.err-code{margin-top:10px;padding:8px 10px;background:#fff;border:1px solid #fde0de;border-radius:6px;font-family:monospace;font-size:11px;color:#c0392b;}
+.actions{display:flex;gap:10px;align-items:center;}
+.btn-retry{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;background:#111;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.15s,transform 0.1s;opacity:0;pointer-events:none;transition:opacity 0.4s,background 0.15s,transform 0.1s;}
+.btn-retry.show{opacity:1;pointer-events:all;}
+.btn-retry:hover{background:#333;}
+.btn-retry:active{transform:scale(0.97);}
+.btn-retry:disabled{background:#aaa;cursor:not-allowed;transform:none;}
+.btn-docs{font-size:13px;color:#888;cursor:pointer;text-decoration:underline;text-underline-offset:2px;opacity:0;transition:opacity 0.4s;pointer-events:none;}
+.btn-docs.show{opacity:1;pointer-events:all;}
+.hint{font-size:12px;color:#aaa;margin-top:14px;line-height:1.6;display:none;}
+.hint.show{display:block;animation:fadeUp 0.35s ease;}
+.ping-row{display:flex;gap:6px;margin-top:14px;display:none;}
+.ping-row.show{display:flex;}
+.ping-bar{height:4px;border-radius:2px;background:#e8e8e8;flex:1;}
+.log-box{border:1px solid #f0f0f0;border-radius:8px;background:#fafafa;padding:10px 14px;margin-bottom:20px;font-family:monospace;font-size:11px;color:#999;line-height:1.8;display:none;max-height:90px;overflow:hidden;}
+.log-box.show{display:block;animation:fadeUp 0.3s ease;}
+.log-line{color:#bbb;}
+.log-line.err{color:#e07070;}
 </style>
 
 <div class="topbar">
-  <span class="brand">tuesdayforyou</span>
-  <span class="status-badge connecting" id="badge">
-    <span class="dot pulse" id="dot"></span>
-    <span id="badge-text">Connecting</span>
-  </span>
+  <div style="display:flex;align-items:center;gap:32px;">
+    <span class="brand">tuesdayforyou</span>
+    <div class="nav">
+      <a>Dashboard</a>
+      <a>Analytics</a>
+      <a>Settings</a>
+    </div>
+  </div>
+  <div class="right-bar">
+    <div class="api-badge connecting" id="badge">
+      <span class="led" id="led"></span>
+      <span id="badge-label">API status: Connecting</span>
+    </div>
+    <div class="avatar">JD</div>
+  </div>
 </div>
 
-<div class="main">
-  <div class="card" id="card">
-    <div class="icon-wrap connecting-icon" id="icon-wrap">
-      <div class="spinner" id="spinner"></div>
+<div class="subbar">
+  <span class="breadcrumb">Home &rsaquo; <span>Connection</span></span>
+</div>
+
+<div class="page">
+  <div class="sidebar">
+    <div class="sidebar-item active"><i class="ti ti-wifi" aria-hidden="true"></i> Connection</div>
+    <div class="sidebar-item"><i class="ti ti-chart-bar" aria-hidden="true"></i> Analytics</div>
+    <div class="sidebar-item"><i class="ti ti-bell" aria-hidden="true"></i> Alerts</div>
+    <div class="sidebar-item"><i class="ti ti-lock" aria-hidden="true"></i> Security</div>
+    <div class="sidebar-item"><i class="ti ti-settings" aria-hidden="true"></i> Settings</div>
+  </div>
+
+  <div class="content">
+    <div class="conn-panel">
+      <div class="conn-header">
+        <h2 id="main-title">Establishing connection</h2>
+        <p id="main-sub">Connecting to tuesdayforyou API endpoints&hellip;</p>
+      </div>
+
+      <div class="log-box" id="log-box">
+        <div class="log-line" id="log1"></div>
+        <div class="log-line" id="log2"></div>
+        <div class="log-line" id="log3"></div>
+        <div class="log-line err" id="log4"></div>
+      </div>
+
+      <div class="progress-steps" id="steps">
+        <div class="step active" id="s1">
+          <div class="step-icon" id="si1"><div class="spin"></div></div>
+          <div class="step-label"><strong>DNS resolution</strong><span id="sl1">Resolving api.tuesdayforyou.io&hellip;</span></div>
+          <span class="step-time" id="st1"></span>
+        </div>
+        <div class="step" id="s2">
+          <div class="step-icon" id="si2"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ccc" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="4"/></svg></div>
+          <div class="step-label"><strong>TLS handshake</strong><span id="sl2">Waiting&hellip;</span></div>
+          <span class="step-time" id="st2"></span>
+        </div>
+        <div class="step" id="s3">
+          <div class="step-icon" id="si3"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ccc" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="4"/></svg></div>
+          <div class="step-label"><strong>Auth token exchange</strong><span id="sl3">Waiting&hellip;</span></div>
+          <span class="step-time" id="st3"></span>
+        </div>
+        <div class="step" id="s4">
+          <div class="step-icon" id="si4"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ccc" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="4"/></svg></div>
+          <div class="step-label"><strong>Channel ready</strong><span id="sl4">Waiting&hellip;</span></div>
+          <span class="step-time" id="st4"></span>
+        </div>
+      </div>
+
+      <div class="err-box" id="err-box">
+        <div class="err-box-top">
+          <i class="ti ti-alert-circle err-icon" aria-hidden="true"></i>
+          <div>
+            <div class="err-title" id="err-title">Connection refused</div>
+            <div class="err-msg" id="err-msg">The server at api.tuesdayforyou.io rejected the connection. The endpoint may be unreachable or experiencing an outage.</div>
+          </div>
+        </div>
+        <div class="err-code" id="err-code">GET https://api.tuesdayforyou.io/v2/connect — 503 Service Unavailable (timeout: 8000ms)</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-retry" id="retry-btn" onclick="retry()">
+          <i class="ti ti-refresh" aria-hidden="true"></i>
+          <span id="retry-label">Try again</span>
+        </button>
+        <span class="btn-docs" id="docs-link">View status page</span>
+      </div>
+
+      <div class="hint" id="hint">
+        Attempt <span id="attempt-num">1</span> of 3 failed. Check your network or visit the <span style="text-decoration:underline;cursor:pointer;">status page</span> for live updates.
+      </div>
+
+      <div class="ping-row" id="ping-row">
+        <div class="ping-bar" id="pb1"></div>
+        <div class="ping-bar" id="pb2"></div>
+        <div class="ping-bar" id="pb3"></div>
+        <div class="ping-bar" id="pb4"></div>
+        <div class="ping-bar" id="pb5"></div>
+        <div class="ping-bar" id="pb6"></div>
+        <div class="ping-bar" id="pb7"></div>
+        <div class="ping-bar" id="pb8"></div>
+      </div>
     </div>
-    <div class="state-title" id="state-title">Connecting…</div>
-    <div class="state-sub" id="state-sub">Establishing a connection to the server. This should only take a moment.</div>
-    <button class="try-btn" id="try-btn" onclick="retryConnect()">
-      <i class="ti ti-refresh" aria-hidden="true"></i>
-      Try again
-    </button>
-    <div class="err-code" id="err-code">ERR_CONNECTION_REFUSED · 503</div>
   </div>
 </div>
 
 <script>
-  let attempt = 0;
-  const badge = document.getElementById('badge');
-  const dot = document.getElementById('dot');
-  const badgeText = document.getElementById('badge-text');
-  const card = document.getElementById('card');
-  const iconWrap = document.getElementById('icon-wrap');
-  const spinner = document.getElementById('spinner');
-  const stateTitle = document.getElementById('state-title');
-  const stateSub = document.getElementById('state-sub');
-  const tryBtn = document.getElementById('try-btn');
-  const errCode = document.getElementById('err-code');
+let attempt = 0;
+let logTimer;
 
-  function setConnecting() {
-    badge.className = 'status-badge connecting';
-    dot.className = 'dot pulse';
-    badgeText.textContent = 'Connecting';
-    card.className = 'card';
-    iconWrap.className = 'icon-wrap connecting-icon';
-    spinner.style.display = 'block';
-    stateTitle.className = 'state-title';
-    stateTitle.textContent = attempt === 0 ? 'Connecting…' : 'Retrying…';
-    stateSub.textContent = attempt === 0
-      ? 'Establishing a connection to the server. This should only take a moment.'
-      : 'Attempting to reconnect. Please wait.';
-    tryBtn.classList.remove('visible');
-    tryBtn.disabled = true;
-    errCode.classList.remove('visible');
+function ms(n){return n+'ms';}
+function checkIcon(color){return `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>`;}
+function xIcon(){return `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round"><line x1="3" y1="3" x2="9" y2="9"/><line x1="9" y1="3" x2="3" y2="9"/></svg>`;}
+function spinIcon(){return `<div class="spin"></div>`;}
+
+function setStep(id, state, sublabel, time){
+  const s=document.getElementById('s'+id);
+  const si=document.getElementById('si'+id);
+  const sl=document.getElementById('sl'+id);
+  const st=document.getElementById('st'+id);
+  s.className='step '+state;
+  if(state==='active') si.innerHTML=spinIcon();
+  else if(state==='done') si.innerHTML=checkIcon('#fff');
+  else if(state==='fail') si.innerHTML=xIcon();
+  if(sublabel) sl.textContent=sublabel;
+  if(time) st.textContent=time;
+}
+
+function resetSteps(){
+  for(let i=1;i<=4;i++){
+    const s=document.getElementById('s'+i);
+    const si=document.getElementById('si'+i);
+    const sl=document.getElementById('sl'+i);
+    const st=document.getElementById('st'+i);
+    s.className='step'+(i===1?' active':'');
+    si.innerHTML = i===1 ? spinIcon() : `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ccc" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="4"/></svg>`;
+    sl.textContent = i===1?(attempt===0?'Resolving api.tuesdayforyou.io…':'Retrying DNS lookup…'):'Waiting…';
+    st.textContent='';
   }
+}
 
-  function setFailed() {
-    badge.className = 'status-badge offline';
-    dot.className = 'dot red';
-    badgeText.textContent = 'Offline';
-    card.className = 'card error-card fade-enter';
-    iconWrap.className = 'icon-wrap error-icon';
-    spinner.style.display = 'none';
-    iconWrap.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
-    stateTitle.className = 'state-title error-title';
-    stateTitle.textContent = 'Connection failed';
-    stateSub.textContent = attempt === 1
-      ? 'Unable to reach the server. Check your network or try again.'
-      : 'Still unable to connect. The server may be down or unreachable.';
-    tryBtn.disabled = false;
-    tryBtn.classList.add('visible');
-    errCode.classList.add('visible');
+function showLog(){
+  const box=document.getElementById('log-box');
+  const lines=['['+ts()+'] Initiating connection to api.tuesdayforyou.io:443','['+ts()+'] Resolving DNS via 1.1.1.1…','',''];
+  document.getElementById('log1').textContent=lines[0];
+  document.getElementById('log2').textContent=lines[1];
+  document.getElementById('log3').textContent='';
+  document.getElementById('log4').textContent='';
+  box.classList.add('show');
+}
+
+function ts(){
+  const n=new Date();
+  return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')+':'+n.getSeconds().toString().padStart(2,'0')+'.'+Math.floor(Math.random()*900+100);
+}
+
+function startConnect(){
+  attempt++;
+  const badge=document.getElementById('badge');
+  const badgeLabel=document.getElementById('badge-label');
+  badge.className='api-badge connecting';
+  badgeLabel.textContent='API status: Connecting';
+  document.getElementById('main-title').textContent=attempt===1?'Establishing connection':'Retrying connection';
+  document.getElementById('main-sub').textContent=attempt===1?'Connecting to tuesdayforyou API endpoints…':'Reconnecting — attempt '+attempt+' of 3…';
+  document.getElementById('err-box').classList.remove('visible');
+  document.getElementById('err-box').style.display='none';
+  document.getElementById('retry-btn').classList.remove('show');
+  document.getElementById('docs-link').classList.remove('show');
+  document.getElementById('hint').classList.remove('show');
+  document.getElementById('ping-row').classList.remove('show');
+  const rb=document.getElementById('retry-btn');
+  rb.disabled=true;
+  resetSteps();
+  showLog();
+
+  setTimeout(()=>{
+    document.getElementById('log2').textContent='['+ts()+'] DNS resolved: 104.18.22.'+Math.floor(Math.random()*200+10);
+    setStep(1,'done','Resolved in 38ms','38ms');
+    setStep(2,'active','Negotiating TLS 1.3…','');
+  },700);
+
+  setTimeout(()=>{
+    document.getElementById('log3').textContent='['+ts()+'] TLS 1.3 handshake initiated (ECDHE_RSA_AES_256)';
+  },1100);
+
+  setTimeout(()=>{
+    setStep(2,'done','TLS 1.3 established','112ms');
+    setStep(3,'active','Exchanging bearer token…','');
+    document.getElementById('log3').textContent='['+ts()+'] TLS OK — certificate valid, HSTS enforced';
+  },1500);
+
+  setTimeout(()=>{
+    setStep(3,'fail','Server returned 503','—');
+    setStep(4,'fail','Aborted','—');
+    document.getElementById('log4').textContent='['+ts()+'] Error: 503 Service Unavailable — upstream timeout';
+    showFailure();
+  },2600);
+}
+
+function showFailure(){
+  const badge=document.getElementById('badge');
+  const badgeLabel=document.getElementById('badge-label');
+  badge.className='api-badge offline';
+  badgeLabel.textContent='API status: Offline';
+  document.getElementById('main-title').textContent='Connection failed';
+  document.getElementById('main-sub').textContent='Unable to reach the tuesdayforyou API.';
+
+  const errBox=document.getElementById('err-box');
+  if(attempt>=2){
+    document.getElementById('err-title').textContent='Persistent connection failure';
+    document.getElementById('err-msg').textContent='Multiple connection attempts have failed. The API server may be down or rate-limiting your IP. Please check the status page or contact support.';
+    document.getElementById('err-code').textContent='GET https://api.tuesdayforyou.io/v2/connect — 503 Service Unavailable (attempt '+attempt+'/3)';
+  } else {
+    document.getElementById('err-title').textContent='Connection refused';
+    document.getElementById('err-msg').textContent='The server at api.tuesdayforyou.io rejected the connection. The endpoint may be unreachable or experiencing an outage.';
+    document.getElementById('err-code').textContent='GET https://api.tuesdayforyou.io/v2/connect — 503 Service Unavailable (timeout: 8000ms)';
   }
+  errBox.style.display='block';
+  setTimeout(()=>errBox.classList.add('visible'),10);
 
-  function retryConnect() {
-    attempt++;
-    setConnecting();
-    setTimeout(() => setFailed(), 2800);
+  const rb=document.getElementById('retry-btn');
+  rb.disabled=false;
+  rb.classList.add('show');
+  document.getElementById('docs-link').classList.add('show');
+
+  document.getElementById('attempt-num').textContent=attempt;
+  document.getElementById('hint').classList.add('show');
+
+  const pings=[2,2,2,2,2,2,2,2];
+  const pingColors=['#dc2626','#dc2626','#dc2626','#dc2626','#e8e8e8','#e8e8e8','#e8e8e8','#e8e8e8'];
+  for(let i=1;i<=8;i++){
+    document.getElementById('pb'+i).style.background=pingColors[i-1];
   }
+  document.getElementById('ping-row').classList.add('show');
+}
 
-  setTimeout(() => setFailed(), 2400);
+function retry(){
+  const rb=document.getElementById('retry-btn');
+  rb.disabled=true;
+  startConnect();
+}
+
+startConnect();
 </script>
