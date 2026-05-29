@@ -1,778 +1,235 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TuesdayForYou - Minecraft Cases</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+
 <style>
-:root {
-  --green: #4a8c1c;
-  --green-l: #6dbf2a;
-  --gold: #f5c518;
-  --dark: #111;
-  --panel: #1e1e1e;
-  --panel2: #252525;
-  --panel3: #2d2d2d;
-  --border: #3a3a3a;
-  --border2: #4a4a4a;
-  --chat-bg: #161b22;
-  --text: #e2e2e2;
-  --muted: #888;
-  --r-common: #9e9e9e;
-  --r-uncommon: #4caf50;
-  --r-rare: #2196f3;
-  --r-epic: #9c27b0;
-  --r-legendary: #ff9800;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--dark);color:var(--text);font-family:'VT323',monospace;font-size:18px;min-height:100vh;
-  background-image:repeating-linear-gradient(0deg,transparent,transparent 31px,rgba(255,255,255,.03) 31px,rgba(255,255,255,.03) 32px),
-  repeating-linear-gradient(90deg,transparent,transparent 31px,rgba(255,255,255,.03) 31px,rgba(255,255,255,.03) 32px);
-  background-size:32px 32px;}
-
-/* HEADER */
-header{background:#161616;border-bottom:3px solid var(--green);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;gap:12px}
-.logo{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--green-l);text-shadow:2px 2px 0 #1a4a08;white-space:nowrap}
-.logo span{color:var(--gold)}
-nav{display:flex;gap:6px;flex-shrink:0}
-nav button{font-family:'VT323',monospace;font-size:17px;background:var(--panel3);border:2px solid var(--border2);color:var(--text);padding:5px 14px;cursor:pointer;transition:all .1s}
-nav button:hover,nav button.active{background:var(--green);border-color:var(--green-l);color:#fff}
-.balance-pill{background:var(--panel3);border:2px solid var(--gold);padding:5px 14px;font-size:20px;color:var(--gold);display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0}
-.seed-bar{background:#0d1117;border-bottom:2px solid #1a2a3a;padding:5px 20px;font-size:13px;color:#4a8aaa;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.seed-val{color:#6abfdd;font-family:'VT323',monospace;font-size:15px;cursor:pointer}
-.seed-val:hover{color:#fff}
-
-/* LAYOUT */
-.layout{display:grid;grid-template-columns:1fr 300px;height:calc(100vh - 88px)}
-.main-area{padding:20px;overflow-y:auto}
-
-/* SECTION */
-.section-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--green-l);margin-bottom:12px;text-shadow:1px 1px 0 #1a4a08}
-
-/* LIVE FEED */
-.feed-wrap{margin-bottom:20px}
-.live-feed{display:flex;flex-direction:column;gap:5px;max-height:180px;overflow-y:auto}
-.feed-item{background:var(--panel2);border:1.5px solid var(--border);padding:7px 12px;display:flex;align-items:center;gap:8px;font-size:15px;animation:fi .3s ease}
-@keyframes fi{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
-.fi-icon{font-size:26px;flex-shrink:0}
-.fi-user{min-width:110px;flex-shrink:0}
-.fi-item{flex:1;color:#bbb}
-.fi-val{color:var(--gold);min-width:80px;text-align:right}
-
-/* SPINNER */
-.spinner-section{background:var(--panel);border:3px solid var(--border2);padding:20px;margin-bottom:20px}
-.spinner-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--gold);margin-bottom:14px;text-align:center}
-.spinner-track-wrap{position:relative;overflow:hidden;height:116px;border:2px solid var(--border2);background:#0a0a0a}
-.spinner-pointer{position:absolute;top:0;left:50%;transform:translateX(-50%);width:2px;height:100%;background:#ff3333;z-index:10;pointer-events:none}
-.spinner-pointer::before{content:'▼';position:absolute;top:-2px;left:50%;transform:translateX(-50%);color:#ff3333;font-size:14px}
-.spinner-pointer::after{content:'▲';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);color:#ff3333;font-size:14px}
-.spinner-track{display:flex;height:100%;align-items:center;will-change:transform}
-.spinner-item{min-width:116px;height:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1.5px solid #222;font-size:40px;flex-shrink:0;position:relative;background:#0e0e0e}
-.spinner-item .si-bar{position:absolute;bottom:0;left:0;right:0;height:3px}
-.spinner-item .si-name{font-size:10px;color:#999;margin-top:3px;text-align:center;padding:0 4px;line-height:1.2}
-.open-btn{font-family:'Press Start 2P',monospace;font-size:9px;background:var(--green);border:3px solid var(--green-l);color:#fff;padding:11px 28px;cursor:pointer;display:block;margin:14px auto 0;transition:all .1s;text-shadow:1px 1px 0 #1a4a08}
-.open-btn:hover:not(:disabled){background:var(--green-l);transform:translateY(-1px)}
-.open-btn:disabled{background:#444;border-color:#555;cursor:not-allowed;opacity:.5}
-.case-cost{text-align:center;color:var(--gold);font-size:17px;margin-top:8px}
-
-/* ODDS TABLE */
-.odds-panel{margin-top:14px;border-top:1px solid var(--border);padding-top:14px}
-.odds-title{font-family:'Press Start 2P',monospace;font-size:8px;color:#777;margin-bottom:10px}
-.odds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
-.odds-item{background:var(--panel2);border:1.5px solid var(--border);padding:8px 10px;display:flex;align-items:center;gap:8px;font-size:15px}
-.odds-item .oi-icon{font-size:24px;flex-shrink:0}
-.odds-item .oi-info{flex:1;min-width:0}
-.odds-item .oi-name{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.odds-item .oi-val{font-size:13px;color:var(--gold)}
-.odds-item .oi-pct{font-size:12px;color:#666;margin-left:auto;flex-shrink:0}
-.odds-item .oi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-
-/* CASE GRID */
-.case-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:28px}
-.case-card{background:var(--panel2);border:2.5px solid var(--border2);padding:14px;cursor:pointer;transition:all .12s;text-align:center;position:relative;overflow:hidden}
-.case-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent,var(--green))}
-.case-card:hover{border-color:var(--green-l);transform:translateY(-2px);background:var(--panel3)}
-.case-icon{font-size:52px;display:block;margin:0 auto 8px}
-.case-name{font-family:'Press Start 2P',monospace;font-size:7px;color:#fff;margin-bottom:6px;line-height:1.6}
-.case-price{color:var(--gold);font-size:20px}
-.case-best{font-size:13px;color:var(--r-legendary)}
-
-/* TABS */
-.tabs{display:flex;gap:0;margin-bottom:14px}
-.tab-btn{font-family:'Press Start 2P',monospace;font-size:7px;background:var(--panel3);border:2px solid var(--border2);color:#888;padding:7px 14px;cursor:pointer;border-right:none}
-.tab-btn:last-child{border-right:2px solid var(--border2)}
-.tab-btn.active{background:var(--green);color:#fff;border-color:var(--green-l)}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
-
-/* INVENTORY */
-.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
-.inv-item{background:var(--panel2);border:2px solid var(--border);padding:12px 8px;text-align:center;cursor:pointer;transition:all .1s;position:relative}
-.inv-item:hover{border-color:var(--green-l);background:var(--panel3)}
-.inv-item .inv-icon{font-size:36px;display:block}
-.inv-item .inv-name{font-size:12px;color:#bbb;display:block;margin-top:4px;line-height:1.3}
-.inv-item .inv-val{font-size:14px;color:var(--gold)}
-.sell-all-btn{font-family:'Press Start 2P',monospace;font-size:8px;background:#1a3a1a;border:2px solid var(--green);color:var(--green-l);padding:8px 18px;cursor:pointer;margin-bottom:14px}
-.sell-all-btn:hover{background:var(--green);color:#fff}
-
-/* LEADERBOARD */
-.lb-row{background:var(--panel2);border:2px solid var(--border);padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;font-size:17px}
-
-/* WIN OVERLAY */
-.win-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center}
-.win-overlay.show{display:flex}
-.win-box{background:var(--panel);border:4px solid var(--gold);padding:36px 52px;text-align:center;max-width:380px;width:90%;animation:pop .35s cubic-bezier(.17,.89,.32,1.28)}
-@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
-.win-box .wb-icon{font-size:88px;display:block}
-.win-box h2{font-family:'Press Start 2P',monospace;font-size:10px;margin:10px 0 4px}
-.win-box .wb-name{font-size:22px;color:#fff;margin:4px 0}
-.win-box .wb-val{font-size:28px;color:var(--green-l)}
-.wb-seed{font-size:13px;color:#555;margin-top:8px;cursor:pointer}
-.wb-seed:hover{color:#888}
-.wb-btns{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-.wb-sell{font-family:'Press Start 2P',monospace;font-size:8px;background:var(--green);border:2px solid var(--green-l);color:#fff;padding:10px 18px;cursor:pointer}
-.wb-keep{font-family:'Press Start 2P',monospace;font-size:8px;background:var(--panel3);border:2px solid var(--border2);color:#ccc;padding:10px 18px;cursor:pointer}
-.wb-sell:hover{background:var(--green-l)}
-.wb-keep:hover{background:var(--panel2)}
-
-/* CHAT */
-.chat-sidebar{background:var(--chat-bg);border-left:3px solid var(--green);display:flex;flex-direction:column;height:100%}
-.chat-header{background:#0d1117;padding:10px 14px;border-bottom:2px solid #1e3a5a;font-family:'Press Start 2P',monospace;font-size:8px;color:var(--green-l);display:flex;align-items:center;gap:8px}
-.chat-dot{width:7px;height:7px;background:#4caf50;border-radius:50%;animation:blink 1.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.online-bar{padding:6px 14px;border-bottom:2px solid #1e3a5a;font-size:14px;color:#555;background:#0a0e14}
-.online-bar span{color:#4caf50}
-.chat-msgs{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:5px}
-.chat-msg{font-size:15px;line-height:1.4;animation:mi .2s ease}
-@keyframes mi{from{opacity:0}to{opacity:1}}
-.msg-user{font-size:13px;margin-right:3px}
-.msg-user.you{color:var(--gold)}
-.msg-user.u1{color:#26c6da}
-.msg-user.u2{color:#ab47bc}
-.msg-user.u3{color:#ffa726}
-.msg-user.u4{color:#66bb6a}
-.msg-user.u5{color:#ef5350}
-.msg-user.sys{color:#444}
-.msg-text{color:#b0b0b0}
-.msg-text.sys-t{color:var(--gold);font-style:italic}
-.chat-input-wrap{padding:10px 12px;border-top:2px solid #1e3a5a;display:flex;gap:7px}
-.chat-input{flex:1;background:#0d1526;border:2px solid #1e3a5a;color:var(--text);font-family:'VT323',monospace;font-size:17px;padding:5px 9px;outline:none}
-.chat-input:focus{border-color:var(--green)}
-.chat-send{font-family:'VT323',monospace;font-size:17px;background:var(--green);border:2px solid var(--green-l);color:#fff;padding:5px 12px;cursor:pointer}
-.chat-send:hover{background:var(--green-l)}
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:#111}
-::-webkit-scrollbar-thumb{background:var(--green)}
-
-/* NOTIFICATION */
-.notif{position:fixed;top:72px;right:20px;background:var(--panel);border:2px solid var(--green);padding:10px 18px;z-index:300;font-size:16px;color:var(--green-l);animation:nfi .3s ease;pointer-events:none}
-@keyframes nfi{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; color: #111; font-family: var(--font-sans, system-ui, sans-serif); }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 56px;
+    border-bottom: 0.5px solid #e0e0e0;
+    background: #fff;
+  }
+  .brand {
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+    color: #111;
+  }
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 0.5px solid transparent;
+    transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+  }
+  .status-badge.connecting {
+    background: #f5f5f5;
+    color: #666;
+    border-color: #e0e0e0;
+  }
+  .status-badge.offline {
+    background: #fdf2f2;
+    color: #b91c1c;
+    border-color: #fca5a5;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: background 0.4s ease;
+  }
+  .dot.pulse {
+    background: #aaa;
+    animation: pulse 1.1s infinite;
+  }
+  .dot.red {
+    background: #dc2626;
+    animation: none;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+  .main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 56px);
+    gap: 0;
+    padding: 48px 24px;
+  }
+  .card {
+    background: #fff;
+    border: 0.5px solid #e5e5e5;
+    border-radius: 16px;
+    padding: 48px 52px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    transition: border-color 0.4s ease;
+  }
+  .card.error-card { border-color: #fca5a5; }
+  .icon-wrap {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    transition: background 0.4s ease;
+  }
+  .icon-wrap.connecting-icon { background: #f5f5f5; }
+  .icon-wrap.error-icon { background: #fdf2f2; }
+  .spinner {
+    width: 26px;
+    height: 26px;
+    border: 2.5px solid #d0d0d0;
+    border-top-color: #555;
+    border-radius: 50%;
+    animation: spin 0.85s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .state-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: #111;
+    margin-bottom: 10px;
+    transition: color 0.4s ease;
+  }
+  .state-title.error-title { color: #b91c1c; }
+  .state-sub {
+    font-size: 14px;
+    color: #777;
+    line-height: 1.6;
+    margin-bottom: 28px;
+    min-height: 44px;
+  }
+  .try-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .try-btn.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .try-btn:hover { background: #333; }
+  .try-btn:active { transform: scale(0.97); }
+  .try-btn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .err-code {
+    margin-top: 24px;
+    font-size: 12px;
+    color: #bbb;
+    letter-spacing: 0.5px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    font-family: var(--font-mono, monospace);
+  }
+  .err-code.visible { opacity: 1; }
+  .fade-enter { animation: fadeIn 0.5s ease forwards; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 </style>
-</head>
-<body>
 
-<header>
-  <div class="logo">Tuesday<span>ForYou</span></div>
-  <nav>
-    <button class="active" onclick="switchPage('cases')">⚔ Cases</button>
-    <button onclick="switchPage('inventory')">🎒 Inventory</button>
-    <button onclick="switchPage('leaderboard')">🏆 Top</button>
-  </nav>
-  <div class="balance-pill">🪙 <span id="bal">0</span></div>
-</header>
-
-<div class="seed-bar">
-  🔐 Provably Fair &nbsp;|&nbsp;
-  Server Seed: <span class="seed-val" id="server-seed" onclick="rotateSeed()" title="Click to rotate">—</span>
-  &nbsp;|&nbsp; Client Seed: <span class="seed-val" id="client-seed" onclick="editClientSeed()" title="Click to edit">—</span>
-  &nbsp;|&nbsp; Nonce: <span id="nonce-val">0</span>
-  &nbsp;|&nbsp; <span style="color:#2a5a6a">Hash verified ✓</span>
+<div class="topbar">
+  <span class="brand">tuesdayforyou</span>
+  <span class="status-badge connecting" id="badge">
+    <span class="dot pulse" id="dot"></span>
+    <span id="badge-text">Connecting</span>
+  </span>
 </div>
 
-<div class="layout">
-  <div class="main-area" id="main-area">
-
-    <!-- CASES PAGE -->
-    <div id="page-cases">
-      <div class="feed-wrap">
-        <div class="section-title">⚡ LIVE DROPS</div>
-        <div class="live-feed" id="live-feed"></div>
-      </div>
-
-      <div class="spinner-section" id="spinner-section" style="display:none">
-        <div class="spinner-title" id="spin-title">SELECT A CASE</div>
-        <div class="spinner-track-wrap">
-          <div class="spinner-pointer"></div>
-          <div class="spinner-track" id="spinner-track"></div>
-        </div>
-        <div class="case-cost" id="case-cost"></div>
-        <button class="open-btn" id="open-btn" onclick="openCase()">OPEN CASE</button>
-
-        <div class="odds-panel">
-          <div class="odds-title">CASE CONTENTS &amp; ODDS</div>
-          <div class="odds-grid" id="odds-grid"></div>
-        </div>
-      </div>
-
-      <div class="section-title">📦 CHOOSE A CASE</div>
-      <div class="case-grid" id="case-grid"></div>
+<div class="main">
+  <div class="card" id="card">
+    <div class="icon-wrap connecting-icon" id="icon-wrap">
+      <div class="spinner" id="spinner"></div>
     </div>
-
-    <!-- INVENTORY PAGE -->
-    <div id="page-inventory" style="display:none">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-        <div class="section-title" style="margin:0">🎒 INVENTORY</div>
-        <button class="sell-all-btn" onclick="sellAll()">SELL ALL FOR 🪙<span id="inv-total">0</span></button>
-      </div>
-      <div class="inv-grid" id="inv-grid"><div style="color:#444;padding:20px">Open some cases first!</div></div>
-    </div>
-
-    <!-- LEADERBOARD PAGE -->
-    <div id="page-leaderboard" style="display:none">
-      <div class="section-title">🏆 LEADERBOARD</div>
-      <div id="lb-list"></div>
-    </div>
-
-  </div>
-
-  <!-- CHAT -->
-  <div class="chat-sidebar">
-    <div class="chat-header"><div class="chat-dot"></div>LIVE CHAT</div>
-    <div class="online-bar">Online: <span id="online-count">247</span></div>
-    <div class="chat-msgs" id="chat-msgs"></div>
-    <div class="chat-input-wrap">
-      <input class="chat-input" id="chat-input" placeholder="Chat..." maxlength="120" onkeydown="if(event.key==='Enter')sendChat()">
-      <button class="chat-send" onclick="sendChat()">▶</button>
-    </div>
-  </div>
-</div>
-
-<!-- WIN OVERLAY -->
-<div class="win-overlay" id="win-overlay">
-  <div class="win-box">
-    <span class="wb-icon" id="wo-icon"></span>
-    <h2 id="wo-rarity" style="color:#ff9800">LEGENDARY</h2>
-    <div class="wb-name" id="wo-name"></div>
-    <div class="wb-val" id="wo-val"></div>
-    <div class="wb-seed" id="wo-seed" onclick="copyHash()" title="Click to copy verification hash">🔐 verify roll — click to copy hash</div>
-    <div class="wb-btns">
-      <button class="wb-sell" onclick="sellWin()">💰 SELL</button>
-      <button class="wb-keep" onclick="keepWin()">🎒 KEEP</button>
-    </div>
+    <div class="state-title" id="state-title">Connecting…</div>
+    <div class="state-sub" id="state-sub">Establishing a connection to the server. This should only take a moment.</div>
+    <button class="try-btn" id="try-btn" onclick="retryConnect()">
+      <i class="ti ti-refresh" aria-hidden="true"></i>
+      Try again
+    </button>
+    <div class="err-code" id="err-code">ERR_CONNECTION_REFUSED · 503</div>
   </div>
 </div>
 
 <script>
-// ==================== DATA ====================
-let balance = 0;
-let inventory = [];
-let pendingWin = null;
-let selectedCase = null;
-let spinning = false;
-let nonce = 0;
-let clientSeed = Math.random().toString(36).slice(2, 10);
-let serverSeedHash = generateHash();
+  let attempt = 0;
+  const badge = document.getElementById('badge');
+  const dot = document.getElementById('dot');
+  const badgeText = document.getElementById('badge-text');
+  const card = document.getElementById('card');
+  const iconWrap = document.getElementById('icon-wrap');
+  const spinner = document.getElementById('spinner');
+  const stateTitle = document.getElementById('state-title');
+  const stateSub = document.getElementById('state-sub');
+  const tryBtn = document.getElementById('try-btn');
+  const errCode = document.getElementById('err-code');
 
-function generateHash() {
-  let h = '';
-  for (let i = 0; i < 16; i++) h += Math.floor(Math.random()*16).toString(16);
-  return h;
-}
-
-const rarityColors = {
-  common: '#9e9e9e',
-  uncommon: '#4caf50',
-  rare: '#2196f3',
-  epic: '#9c27b0',
-  legendary: '#ff9800'
-};
-
-const rarityWeights = {
-  common: 50,
-  uncommon: 27,
-  rare: 15,
-  epic: 6,
-  legendary: 2
-};
-
-const CASES = [
-  {
-    id:'dirt', name:'DIRT CRATE', icon:'🟫', price:500, accent:'#7a5030',
-    items:[
-      {name:'Wooden Sword',    icon:'🗡️',  value:80,    rarity:'common'},
-      {name:'Dirt Block',      icon:'🟫',  value:50,    rarity:'common'},
-      {name:'Apple',           icon:'🍎',  value:70,    rarity:'common'},
-      {name:'Cooked Beef',     icon:'🥩',  value:90,    rarity:'common'},
-      {name:'Stone Pickaxe',   icon:'⛏️', value:220,   rarity:'uncommon'},
-      {name:'Leather Armor',   icon:'🛡️', value:380,   rarity:'uncommon'},
-      {name:'Iron Sword',      icon:'⚔️', value:650,   rarity:'rare'},
-      {name:'Golden Apple',    icon:'🍏',  value:1400,  rarity:'epic'},
-      {name:'Notch Head',      icon:'👾',  value:5000,  rarity:'legendary'},
-    ]
-  },
-  {
-    id:'stone', name:'STONE CHEST', icon:'🪨', price:1500, accent:'#777',
-    items:[
-      {name:'Iron Ingot',      icon:'🔩',  value:300,   rarity:'common'},
-      {name:'Flint',           icon:'🪨',  value:200,   rarity:'common'},
-      {name:'Coal Block',      icon:'⬛',  value:250,   rarity:'common'},
-      {name:'Iron Pickaxe',    icon:'⛏️', value:900,   rarity:'uncommon'},
-      {name:'Iron Chestplate', icon:'🛡️', value:1500,  rarity:'uncommon'},
-      {name:'Bow',             icon:'🏹',  value:2200,  rarity:'rare'},
-      {name:'Enchanted Book',  icon:'📖',  value:4000,  rarity:'epic'},
-      {name:'Diamond Axe',     icon:'🪓',  value:9000,  rarity:'epic'},
-      {name:'Herobrine Skull', icon:'💀',  value:28000, rarity:'legendary'},
-    ]
-  },
-  {
-    id:'nether', name:'NETHER CASE', icon:'🔥', price:3000, accent:'#cc4411',
-    items:[
-      {name:'Blaze Rod',         icon:'🔥', value:500,   rarity:'common'},
-      {name:'Magma Block',       icon:'🟥', value:600,   rarity:'common'},
-      {name:'Nether Brick',      icon:'🧱', value:400,   rarity:'common'},
-      {name:'Soul Sand',         icon:'🏔️',value:700,   rarity:'uncommon'},
-      {name:'Netherite Scrap',   icon:'🌑', value:2500,  rarity:'uncommon'},
-      {name:'Netherite Ingot',   icon:'⬛', value:7000,  rarity:'rare'},
-      {name:'Wither Skull',      icon:'💀', value:12000, rarity:'epic'},
-      {name:'Netherite Sword',   icon:'🗡️',value:24000, rarity:'epic'},
-      {name:'Wither Beacon',     icon:'🔮', value:80000, rarity:'legendary'},
-    ]
-  },
-  {
-    id:'diamond', name:'DIAMOND VAULT', icon:'💎', price:5000, accent:'#19b3b3',
-    items:[
-      {name:'Diamond Block',     icon:'🔷', value:2200,  rarity:'uncommon'},
-      {name:'Diamond Sword',     icon:'⚔️',value:5000,  rarity:'rare'},
-      {name:'Elytra',            icon:'🦋', value:9000,  rarity:'rare'},
-      {name:'Diamond Armor Set', icon:'🛡️',value:18000, rarity:'epic'},
-      {name:'Enchanted Sword',   icon:'⚡', value:26000, rarity:'epic'},
-      {name:'Nether Star',       icon:'⭐', value:60000, rarity:'legendary'},
-      {name:'Dragon Egg',        icon:'🥚', value:120000,rarity:'legendary'},
-    ]
-  },
-  {
-    id:'ender', name:'ENDER CRATE', icon:'🟣', price:8000, accent:'#7b3fa0',
-    items:[
-      {name:'Ender Pearl',       icon:'🟣', value:800,   rarity:'common'},
-      {name:'Eye of Ender',      icon:'👁️',value:3000,  rarity:'uncommon'},
-      {name:'Shulker Box',       icon:'📦', value:6000,  rarity:'rare'},
-      {name:'Ender Chest',       icon:'🗃️',value:14000, rarity:'rare'},
-      {name:'Elytra',            icon:'🦋', value:32000, rarity:'epic'},
-      {name:'Dragon Sword',      icon:'🐉', value:90000, rarity:'legendary'},
-      {name:'End Crystal',       icon:'💜', value:220000,rarity:'legendary'},
-    ]
-  },
-  {
-    id:'gold', name:'GOLDEN CHEST', icon:'🏆', price:12000, accent:'#d4a017',
-    items:[
-      {name:'Gold Block',        icon:'🟡', value:3500,  rarity:'uncommon'},
-      {name:'Golden Sword',      icon:'✨', value:8000,  rarity:'rare'},
-      {name:'Enchanted Golden Armor',icon:'👑',value:38000,rarity:'epic'},
-      {name:'Gold Beacon',       icon:'🔆', value:90000, rarity:'legendary'},
-      {name:'Steve\'s Heart',    icon:'❤️', value:550000,rarity:'legendary'},
-    ]
-  },
-];
-
-const FAKE_USERS = [
-  {name:'CreeperKing99', cls:'u1'},
-  {name:'DiamondSteve',  cls:'u2'},
-  {name:'NotchFan2b2t',  cls:'u3'},
-  {name:'EndermanGG',    cls:'u4'},
-  {name:'BlazeMaster',   cls:'u5'},
-  {name:'SkeletonRush',  cls:'u1'},
-  {name:'WitherKing',    cls:'u3'},
-];
-
-const FAKE_MSGS = [
-  'LETS GO!!','finally a win','this case is rigged lmao','bro HOW',
-  'diamond run active 🔥','legendary drop omg','grind never stops','GG',
-  'keep spinning','nah bro I quit','dirt crate best value fr','my luck is dead',
-  'ender case is busted','send coins pls 😭','insane','actually cracked',
-  'opened 20 and nothing','one more case','just one more','just won big!',
-];
-
-// ==================== PROVABLY FAIR ====================
-function generateHash() {
-  let h = '';
-  for (let i = 0; i < 32; i++) h += Math.floor(Math.random()*16).toString(16);
-  return h;
-}
-
-function rollFromSeeds(serverSeed, cSeed, n) {
-  // Simple deterministic roll: hash combo → 0–1 float
-  let str = serverSeed + ':' + cSeed + ':' + n;
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash % 10000) / 10000;
-}
-
-function rollItem(caseObj) {
-  const roll = rollFromSeeds(serverSeedHash, clientSeed, nonce);
-  nonce++;
-  document.getElementById('nonce-val').textContent = nonce;
-
-  // Build weighted pool
-  const pool = [];
-  caseObj.items.forEach(item => {
-    const w = rarityWeights[item.rarity] || 10;
-    for (let i = 0; i < w; i++) pool.push(item);
-  });
-  const idx = Math.floor(roll * pool.length);
-  return { item: pool[idx], roll, hash: serverSeedHash + ':' + clientSeed + ':' + (nonce-1) };
-}
-
-function rotateSeed() {
-  serverSeedHash = generateHash();
-  document.getElementById('server-seed').textContent = serverSeedHash.slice(0, 16) + '...';
-  notify('Server seed rotated ✓');
-}
-
-function editClientSeed() {
-  const v = prompt('Enter custom client seed:', clientSeed);
-  if (v && v.trim()) {
-    clientSeed = v.trim().slice(0, 24);
-    document.getElementById('client-seed').textContent = clientSeed;
-    notify('Client seed updated ✓');
-  }
-}
-
-function copyHash() {
-  if (!pendingWin) return;
-  navigator.clipboard.writeText(pendingWin.hash).catch(() => {});
-  notify('Hash copied!');
-}
-
-// ==================== UI ====================
-function fmt(n) {
-  if (n >= 1_000_000) return (n/1_000_000).toFixed(2)+'M';
-  if (n >= 1_000) return (n/1_000).toFixed(1)+'K';
-  return n.toLocaleString();
-}
-
-function notify(msg) {
-  const el = document.createElement('div');
-  el.className = 'notif';
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 2400);
-}
-
-function updateBal() {
-  document.getElementById('bal').textContent = fmt(balance);
-}
-
-// ==================== CASES ====================
-function renderCases() {
-  document.getElementById('case-grid').innerHTML = CASES.map(c => {
-    const bestItem = c.items.reduce((a,b) => a.value > b.value ? a : b);
-    return `<div class="case-card" style="--accent:${c.accent}" onclick="selectCase('${c.id}')">
-      <span class="case-icon">${c.icon}</span>
-      <div class="case-name">${c.name}</div>
-      <div class="case-price">🪙 ${fmt(c.price)}</div>
-      <div class="case-best">★ up to ${fmt(bestItem.value)}</div>
-    </div>`;
-  }).join('');
-  document.getElementById('server-seed').textContent = serverSeedHash.slice(0,16)+'...';
-  document.getElementById('client-seed').textContent = clientSeed;
-}
-
-function getItemOdds(caseObj) {
-  const totalW = caseObj.items.reduce((s,i) => s + (rarityWeights[i.rarity]||10), 0);
-  return caseObj.items.map(item => ({
-    ...item,
-    pct: ((rarityWeights[item.rarity]||10) / totalW * 100).toFixed(1)
-  }));
-}
-
-function selectCase(id) {
-  selectedCase = CASES.find(c => c.id === id);
-  const sec = document.getElementById('spinner-section');
-  sec.style.display = 'block';
-  document.getElementById('spin-title').textContent = 'OPENING: ' + selectedCase.name;
-  document.getElementById('case-cost').textContent = '🪙 Cost: ' + fmt(selectedCase.price) + ' per open';
-  document.getElementById('open-btn').disabled = false;
-
-  // Render odds
-  const odds = getItemOdds(selectedCase);
-  odds.sort((a,b) => b.value - a.value);
-  document.getElementById('odds-grid').innerHTML = odds.map(o => `
-    <div class="odds-item" style="border-left:3px solid ${rarityColors[o.rarity]}">
-      <span class="oi-icon">${o.icon}</span>
-      <div class="oi-info">
-        <div class="oi-name">${o.name}</div>
-        <div class="oi-val">🪙${fmt(o.value)}</div>
-      </div>
-      <span class="oi-pct" style="color:${rarityColors[o.rarity]}">${o.pct}%</span>
-    </div>
-  `).join('');
-
-  buildTrack();
-  sec.scrollIntoView({behavior:'smooth', block:'start'});
-}
-
-// ==================== SPINNER ====================
-function buildTrack(forcedWin) {
-  const track = document.getElementById('spinner-track');
-  const items = [];
-  for (let i = 0; i < 64; i++) {
-    const pool = [];
-    selectedCase.items.forEach(item => {
-      const w = rarityWeights[item.rarity]||10;
-      for (let j = 0; j < w; j++) pool.push(item);
-    });
-    items.push(pool[Math.floor(Math.random()*pool.length)]);
-  }
-  if (forcedWin) items[47] = forcedWin;
-  track.style.transition = 'none';
-  track.style.transform = 'translateX(0)';
-  track.innerHTML = items.map(it => `
-    <div class="spinner-item">
-      <span>${it.icon}</span>
-      <span class="si-name" style="color:${rarityColors[it.rarity]}">${it.name.split(' ').slice(0,2).join(' ')}</span>
-      <div class="si-bar" style="background:${rarityColors[it.rarity]}"></div>
-    </div>
-  `).join('');
-  return items;
-}
-
-function openCase() {
-  if (spinning || !selectedCase) return;
-  if (balance < selectedCase.price) {
-    addChat('SYSTEM','sys',`Need 🪙${fmt(selectedCase.price)} to open — type nmoney to add test funds`,true);
-    return;
+  function setConnecting() {
+    badge.className = 'status-badge connecting';
+    dot.className = 'dot pulse';
+    badgeText.textContent = 'Connecting';
+    card.className = 'card';
+    iconWrap.className = 'icon-wrap connecting-icon';
+    spinner.style.display = 'block';
+    stateTitle.className = 'state-title';
+    stateTitle.textContent = attempt === 0 ? 'Connecting…' : 'Retrying…';
+    stateSub.textContent = attempt === 0
+      ? 'Establishing a connection to the server. This should only take a moment.'
+      : 'Attempting to reconnect. Please wait.';
+    tryBtn.classList.remove('visible');
+    tryBtn.disabled = true;
+    errCode.classList.remove('visible');
   }
 
-  balance -= selectedCase.price;
-  updateBal();
-  spinning = true;
-  document.getElementById('open-btn').disabled = true;
-
-  const result = rollItem(selectedCase);
-  const winItem = result.item;
-
-  buildTrack(winItem);
-
-  const track = document.getElementById('spinner-track');
-  const iw = 116;
-  const wrapW = track.parentElement.offsetWidth;
-  const target = 47 * iw - (wrapW / 2 - iw / 2) + Math.random() * 60 - 30;
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      track.style.transition = 'transform 6s cubic-bezier(0.02,0.8,0.15,1)';
-      track.style.transform = `translateX(-${target}px)`;
-    });
-  });
-
-  setTimeout(() => {
-    pendingWin = { ...winItem, hash: result.hash };
-    showWinOverlay(winItem, result);
-    addFeedItem(winItem, {name:'YOU',cls:'you'});
-    spinning = false;
-  }, 6500);
-}
-
-function showWinOverlay(item, result) {
-  document.getElementById('wo-icon').textContent = item.icon;
-  document.getElementById('wo-rarity').textContent = item.rarity.toUpperCase() + ' DROP!';
-  document.getElementById('wo-rarity').style.color = rarityColors[item.rarity];
-  document.getElementById('wo-name').textContent = item.name;
-  document.getElementById('wo-val').textContent = '🪙 ' + fmt(item.value);
-  document.getElementById('wo-seed').textContent = '🔐 ' + result.hash.slice(0,28) + '... (click to copy)';
-  document.getElementById('win-overlay').classList.add('show');
-}
-
-function sellWin() {
-  if (!pendingWin) return;
-  balance += pendingWin.value;
-  updateBal();
-  addChat('SYSTEM','sys',`Sold ${pendingWin.name} for 🪙${fmt(pendingWin.value)}`,true);
-  pendingWin = null;
-  document.getElementById('win-overlay').classList.remove('show');
-  document.getElementById('open-btn').disabled = false;
-}
-
-function keepWin() {
-  if (!pendingWin) return;
-  inventory.push({...pendingWin});
-  pendingWin = null;
-  document.getElementById('win-overlay').classList.remove('show');
-  document.getElementById('open-btn').disabled = false;
-  renderInventory();
-}
-
-// ==================== INVENTORY ====================
-function renderInventory() {
-  const grid = document.getElementById('inv-grid');
-  if (!inventory.length) {
-    grid.innerHTML = '<div style="color:#444;padding:20px">Nothing here yet — go open some cases!</div>';
-    document.getElementById('inv-total').textContent = '0';
-    return;
-  }
-  const total = inventory.reduce((s,i) => s + i.value, 0);
-  document.getElementById('inv-total').textContent = fmt(total);
-  grid.innerHTML = inventory.map((item, idx) => `
-    <div class="inv-item" style="border-color:${rarityColors[item.rarity]}" onclick="sellSingle(${idx})">
-      <span class="inv-icon">${item.icon}</span>
-      <span class="inv-name" style="color:${rarityColors[item.rarity]}">${item.name}</span>
-      <span class="inv-val">🪙${fmt(item.value)}</span>
-      <div style="font-size:11px;color:#555;margin-top:3px">click to sell</div>
-    </div>
-  `).join('');
-}
-
-function sellSingle(idx) {
-  const item = inventory[idx];
-  if (!item) return;
-  balance += item.value;
-  updateBal();
-  inventory.splice(idx, 1);
-  renderInventory();
-  notify(`Sold ${item.name} for 🪙${fmt(item.value)}`);
-}
-
-function sellAll() {
-  if (!inventory.length) return;
-  const total = inventory.reduce((s,i) => s + i.value, 0);
-  balance += total;
-  updateBal();
-  notify(`Sold all for 🪙${fmt(total)}`);
-  inventory = [];
-  renderInventory();
-}
-
-// ==================== LEADERBOARD ====================
-function renderLeaderboard() {
-  const you = { name:'YOU', won: balance + inventory.reduce((s,i)=>s+i.value,0), icon:'🟡' };
-  const rows = [
-    { name:'DiamondSteve', won:4820000, icon:'💎' },
-    { name:'CreeperKing99',won:3100000, icon:'💥' },
-    { name:'NotchFan2b2t', won:1870000, icon:'👾' },
-    you,
-    { name:'EndermanGG',   won:980000,  icon:'🟣' },
-    { name:'BlazeMaster',  won:540000,  icon:'🔥' },
-  ].sort((a,b) => b.won - a.won);
-
-  const rankColors = ['#ffd700','#c0c0c0','#cd7f32'];
-  document.getElementById('lb-list').innerHTML = rows.map((p,i) => `
-    <div class="lb-row" style="border-color:${i===0?'#ffd700':'var(--border)'}">
-      <span style="font-family:'Press Start 2P',monospace;font-size:11px;color:${rankColors[i]||'#555'};min-width:30px">#${i+1}</span>
-      <span style="font-size:26px">${p.icon}</span>
-      <span style="flex:1;color:${p.name==='YOU'?'#ffd700':'var(--text)'}">${p.name}</span>
-      <span style="color:#26c6da">🪙 ${fmt(p.won)}</span>
-    </div>
-  `).join('');
-}
-
-// ==================== LIVE FEED ====================
-function addFeedItem(item, user) {
-  const feed = document.getElementById('live-feed');
-  const u = user || FAKE_USERS[Math.floor(Math.random()*FAKE_USERS.length)];
-  const el = document.createElement('div');
-  el.className = 'feed-item';
-  el.innerHTML = `
-    <span class="fi-icon">${item.icon}</span>
-    <span class="fi-user" style="color:${rarityColors[item.rarity]}">${u.name}</span>
-    <span class="fi-item">&nbsp;— ${item.name}</span>
-    <span class="fi-val">🪙${fmt(item.value)}</span>
-  `;
-  feed.insertBefore(el, feed.firstChild);
-  while (feed.children.length > 14) feed.removeChild(feed.lastChild);
-}
-
-function startFakeFeed() {
-  setInterval(() => {
-    const c = CASES[Math.floor(Math.random()*CASES.length)];
-    const pool = [];
-    c.items.forEach(item => { for(let i=0;i<(rarityWeights[item.rarity]||10);i++) pool.push(item); });
-    const item = pool[Math.floor(Math.random()*pool.length)];
-    addFeedItem(item);
-  }, 3000);
-}
-
-// ==================== CHAT ====================
-function addChat(user, cls, text, isSys) {
-  const msgs = document.getElementById('chat-msgs');
-  const el = document.createElement('div');
-  el.className = 'chat-msg';
-  el.innerHTML = `<span class="msg-user ${cls}">${esc(user)}:</span> <span class="msg-text${isSys?' sys-t':''}">${esc(text)}</span>`;
-  msgs.appendChild(el);
-  msgs.scrollTop = msgs.scrollHeight;
-  while (msgs.children.length > 100) msgs.removeChild(msgs.firstChild);
-}
-
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function sendChat() {
-  const inp = document.getElementById('chat-input');
-  const text = inp.value.trim();
-  if (!text) return;
-  inp.value = '';
-
-  if (text.toLowerCase() === 'nmoney') {
-    balance += 999_000_000;
-    updateBal();
-    addChat('SYSTEM','sys','💰 Testing: +999M coins!',true);
-    return;
+  function setFailed() {
+    badge.className = 'status-badge offline';
+    dot.className = 'dot red';
+    badgeText.textContent = 'Offline';
+    card.className = 'card error-card fade-enter';
+    iconWrap.className = 'icon-wrap error-icon';
+    spinner.style.display = 'none';
+    iconWrap.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+    stateTitle.className = 'state-title error-title';
+    stateTitle.textContent = 'Connection failed';
+    stateSub.textContent = attempt === 1
+      ? 'Unable to reach the server. Check your network or try again.'
+      : 'Still unable to connect. The server may be down or unreachable.';
+    tryBtn.disabled = false;
+    tryBtn.classList.add('visible');
+    errCode.classList.add('visible');
   }
 
-  addChat('YOU','you',text,false);
-}
-
-function startFakeChat() {
-  function next() {
-    setTimeout(() => {
-      const u = FAKE_USERS[Math.floor(Math.random()*FAKE_USERS.length)];
-      addChat(u.name, u.cls, FAKE_MSGS[Math.floor(Math.random()*FAKE_MSGS.length)]);
-      next();
-    }, Math.random()*5000 + 1500);
+  function retryConnect() {
+    attempt++;
+    setConnecting();
+    setTimeout(() => setFailed(), 2800);
   }
-  for(let i=0;i<3;i++) setTimeout(()=>next(), i*1200);
-}
 
-function fluctuateOnline() {
-  setInterval(()=>{
-    document.getElementById('online-count').textContent = 230 + Math.floor(Math.random()*40);
-  }, 7000);
-}
-
-// ==================== PAGE NAV ====================
-function switchPage(page) {
-  ['cases','inventory','leaderboard'].forEach(p => {
-    document.getElementById('page-'+p).style.display = p===page?'block':'none';
-  });
-  document.querySelectorAll('nav button').forEach((btn,i)=>{
-    btn.classList.toggle('active',['cases','inventory','leaderboard'][i]===page);
-  });
-  if (page==='inventory') renderInventory();
-  if (page==='leaderboard') renderLeaderboard();
-}
-
-// ==================== INIT ====================
-renderCases();
-startFakeFeed();
-startFakeChat();
-fluctuateOnline();
-
-// Seed feed
-setTimeout(()=>{
-  [[CASES[2],4],[CASES[3],3],[CASES[4],2],[CASES[1],6]].forEach(([c,i],d)=>{
-    setTimeout(()=>addFeedItem(c.items[Math.min(i,c.items.length-1)]), d*350);
-  });
-},300);
-
-// Seed chat
-setTimeout(()=>addChat('CreeperKing99','u1','anyone grinding diamond vault rn??'), 600);
-setTimeout(()=>addChat('DiamondSteve','u2','just got dragon egg... actually done'), 1400);
-setTimeout(()=>addChat('SYSTEM','sys','Type nmoney to get testing funds 💰',true), 2200);
+  setTimeout(() => setFailed(), 2400);
 </script>
-</body>
-</html>
