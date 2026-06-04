@@ -1,50 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>squeeze nuts</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Boogaloo&family=Titan+One&display=swap');
 
-<style>
-  .overlay {
-    min-height: 340px;
-    background: rgba(0,0,0,0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-  }
-  .popup {
-    background: #fff;
-    border-radius: 10px;
-    padding: 2rem 2.5rem;
-    max-width: 360px;
-    width: 100%;
-    text-align: center;
-    font-family: Arial, sans-serif;
-  }
-  .popup h2 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #111;
-    margin: 0 0 0.5rem;
-  }
-  .popup p {
-    font-size: 14px;
-    color: #666;
-    margin: 0 0 1.5rem;
-  }
-  .popup button {
-    background: #111;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 9px 24px;
-    font-size: 13px;
-    cursor: pointer;
-  }
-  .popup button:hover {
-    background: #333;
-  }
-</style>
-<div class="overlay">
-  <div class="popup">
-    <h2>TuesdayForYou</h2>
-    <p>An update is coming soon. Stay tuned!</p>
-    <button onclick="this.closest('.overlay').style.display='none'">Got it</button>
-  </div>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #FFE01B;
+      --orange: #FF6B00;
+      --red: #E8001D;
+      --dark: #1a0a00;
+      --cream: #FFF8E7;
+    }
+
+    body {
+      background-color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: none;
+      font-family: 'Titan One', cursive;
+    }
+
+    /* Animated background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 20% 50%, #3d1000 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 50%, #2a0a00 0%, transparent 60%),
+                  var(--dark);
+    }
+
+    .bg-squiggles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .squiggle {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.07;
+      animation: float linear infinite;
+      user-select: none;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(110vh) rotate(0deg); }
+      100% { transform: translateY(-20vh) rotate(720deg); }
+    }
+
+    /* Main content */
+    .container {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .main-text {
+      font-family: 'Titan One', cursive;
+      font-size: clamp(5rem, 18vw, 16rem);
+      line-height: 0.9;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: var(--yellow);
+      text-shadow:
+        6px 6px 0px var(--orange),
+        12px 12px 0px var(--red),
+        18px 18px 0px #7a0000,
+        0 0 80px rgba(255,180,0,0.4);
+      animation: wobble 0.4s ease-in-out infinite alternate, glow 2s ease-in-out infinite alternate;
+      display: block;
+      transform-origin: center;
+    }
+
+    @keyframes wobble {
+      0% { transform: rotate(-1.5deg) scale(1); }
+      100% { transform: rotate(1.5deg) scale(1.03); }
+    }
+
+    @keyframes glow {
+      0% { text-shadow: 6px 6px 0px var(--orange), 12px 12px 0px var(--red), 18px 18px 0px #7a0000, 0 0 40px rgba(255,180,0,0.3); }
+      100% { text-shadow: 6px 6px 0px var(--orange), 12px 12px 0px var(--red), 18px 18px 0px #7a0000, 0 0 120px rgba(255,220,0,0.7), 0 0 200px rgba(255,120,0,0.3); }
+    }
+
+    .subtitle {
+      font-family: 'Boogaloo', cursive;
+      font-size: clamp(1.2rem, 4vw, 2.5rem);
+      color: var(--cream);
+      opacity: 0.6;
+      margin-top: 1rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+    }
+
+    /* Music player */
+    .music-player {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,224,27,0.2);
+      backdrop-filter: blur(10px);
+      padding: 0.75rem 1.2rem;
+      border-radius: 100px;
+    }
+
+    .music-icon {
+      font-size: 1.4rem;
+      animation: spin 3s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .music-label {
+      font-family: 'Boogaloo', cursive;
+      font-size: 0.9rem;
+      color: var(--yellow);
+      letter-spacing: 0.1em;
+    }
+
+    .mute-btn {
+      background: none;
+      border: 1px solid rgba(255,224,27,0.4);
+      color: var(--yellow);
+      font-family: 'Boogaloo', cursive;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: background 0.2s;
+      letter-spacing: 0.05em;
+    }
+    .mute-btn:hover { background: rgba(255,224,27,0.15); }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: var(--yellow);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+      transition: transform 0.1s;
+    }
+
+    /* Bounce emojis on click */
+    .pop {
+      position: fixed;
+      font-size: 2.5rem;
+      pointer-events: none;
+      z-index: 9998;
+      animation: popAway 0.8s ease-out forwards;
+    }
+    @keyframes popAway {
+      0% { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+      50% { transform: translate(-50%, calc(-50% - 60px)) scale(1.4); opacity: 1; }
+      100% { transform: translate(-50%, calc(-50% - 120px)) scale(0.8); opacity: 0; }
+    }
+
+    /* hidden iframe */
+    #yt-player {
+      position: fixed;
+      top: -9999px;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="bg-squiggles" id="squiggles"></div>
+
+<div class="cursor" id="cursor"></div>
+
+<div class="container">
+  <span class="main-text">SQUEEZE<br>NUTS</span>
+  <p class="subtitle">🥜 &nbsp; squeeze &nbsp; •&nbsp; nuts &nbsp; •&nbsp; squeeze &nbsp; 🥜</p>
 </div>
+
+<div class="music-player">
+  <span class="music-icon">🥜</span>
+  <span class="music-label">NOW PLAYING</span>
+  <button class="mute-btn" id="muteBtn">MUTE</button>
+</div>
+
+<!-- Hidden YouTube iframe for background audio -->
+<iframe
+  id="yt-player"
+  src="https://www.youtube.com/embed/DzYp5uqixz0?autoplay=1&loop=1&playlist=DzYp5uqixz0&controls=0&mute=0&enablejsapi=1"
+  allow="autoplay; encrypted-media"
+  allowfullscreen
+></iframe>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+
+  // Click pops
+  const emojis = ['🥜','💥','✨','🔥','💛','😭','🥜','😤'];
+  document.addEventListener('click', e => {
+    const el = document.createElement('div');
+    el.className = 'pop';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = e.clientX + 'px';
+    el.style.top = e.clientY + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 800);
+  });
+
+  // Floating squiggles
+  const squigglesEl = document.getElementById('squiggles');
+  const icons = ['🥜','🔩','💛','✨','🔥'];
+  for (let i = 0; i < 25; i++) {
+    const s = document.createElement('div');
+    s.className = 'squiggle';
+    s.textContent = icons[Math.floor(Math.random() * icons.length)];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.animationDuration = (8 + Math.random() * 14) + 's';
+    s.style.animationDelay = (-Math.random() * 20) + 's';
+    s.style.fontSize = (1 + Math.random() * 2.5) + 'rem';
+    squigglesEl.appendChild(s);
+  }
+
+  // Mute button
+  let muted = false;
+  const iframe = document.getElementById('yt-player');
+  const muteBtn = document.getElementById('muteBtn');
+
+  muteBtn.addEventListener('click', () => {
+    muted = !muted;
+    // Reload iframe with mute toggle
+    const base = 'https://www.youtube.com/embed/DzYp5uqixz0?autoplay=1&loop=1&playlist=DzYp5uqixz0&controls=0&enablejsapi=1&mute=';
+    iframe.src = base + (muted ? '1' : '0');
+    muteBtn.textContent = muted ? 'UNMUTE' : 'MUTE';
+  });
+</script>
+
+</body>
+</html>
