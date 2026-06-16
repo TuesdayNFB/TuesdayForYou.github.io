@@ -10,15 +10,8 @@
     html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Inter', sans-serif; }
     #bg-video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; filter: brightness(0.4) grayscale(1); }
     .wash { position: fixed; inset: 0; z-index: 1; background: rgba(0,0,0,0.35); pointer-events: none; }
-    #enter-screen { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; transition: opacity 1s ease, visibility 1s ease; }
-    #enter-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-    .pre-name { font-family: 'EB Garamond', serif; font-size: clamp(2rem, 5vw, 3.8rem); font-weight: 400; color: #fff; letter-spacing: 0.04em; margin-bottom: 3rem; }
-    .pre-name i { font-style: italic; color: #999; }
-    #enter-btn { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: #fff; background: transparent; border: 1px solid rgba(255,255,255,0.4); padding: 0.8rem 2.4rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
-    #enter-btn:hover { border-color: #fff; color: #fff; }
 
-    #main { position: fixed; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 2s ease; pointer-events: none; }
-    #main.visible { opacity: 1; pointer-events: auto; }
+    #main { position: fixed; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
     .name {
       font-family: 'EB Garamond', serif;
@@ -34,8 +27,10 @@
       transform: translate(-50%, -50%);
       white-space: nowrap;
       z-index: 6;
-      transition: none;
+      opacity: 0;
+      transition: opacity 2s ease;
     }
+    .name.visible { opacity: 1; }
     .name i { font-style: italic; color: rgba(255,255,255,0.45); }
 
     #bottom { position: fixed; bottom: 0; left: 0; right: 0; z-index: 3; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 2rem 1.8rem; opacity: 0; transition: opacity 1.5s ease 1s; }
@@ -68,14 +63,8 @@
   <div class="wash"></div>
   <div id="yt-player"></div>
 
-  <div id="enter-screen">
-    <p class="pre-name">Tuesday<i>For</i>You</p>
-    <button id="enter-btn">enter</button>
-  </div>
-
   <div id="main"></div>
-
-  <h1 class="name" id="main-name" style="opacity:0;">Tuesday<i>For</i>You</h1>
+  <h1 class="name" id="main-name">Tuesday<i>For</i>You</h1>
 
   <div id="bottom">
     <span class="date-label" id="day-label"></span>
@@ -120,24 +109,21 @@
     window.onYouTubeIframeAPIReady = function () {
       player = new YT.Player('yt-player', {
         videoId: 'FPI1iRapBbM',
-        playerVars: { autoplay: 0, controls: 0, loop: 1, playlist: 'FPI1iRapBbM', rel: 0 },
-        events: { onReady: function() {} }
+        playerVars: { autoplay: 1, controls: 0, loop: 1, playlist: 'FPI1iRapBbM', rel: 0 },
+        events: {
+          onReady: function(e) {
+            e.target.playVideo();
+            e.target.setVolume(75);
+          }
+        }
       });
     };
 
-    document.getElementById('enter-btn').addEventListener('click', function () {
-      if (player && player.playVideo) {
-        player.playVideo();
-        player.setVolume(75);
-      }
-      document.getElementById('enter-screen').classList.add('hidden');
+    window.addEventListener('load', function () {
       setTimeout(() => {
-        document.getElementById('main').classList.add('visible');
+        document.getElementById('main-name').classList.add('visible');
         document.getElementById('bottom').classList.add('visible');
-        const nameEl = document.getElementById('main-name');
-        nameEl.style.transition = 'opacity 1s ease';
-        nameEl.style.opacity = '1';
-      }, 150);
+      }, 300);
 
       setTimeout(() => {
         if (transitioned) return;
@@ -148,30 +134,22 @@
 
     function animateToCorner() {
       const nameEl = document.getElementById('main-name');
-
       const startRect = nameEl.getBoundingClientRect();
       const startFontSize = parseFloat(window.getComputedStyle(nameEl).fontSize);
-
       const targetFontSize = Math.max(17, startFontSize * 0.27);
       const scale = targetFontSize / startFontSize;
-
       const targetX = 32;
       const targetY = 29;
-
       const startCenterX = startRect.left + startRect.width / 2;
       const startCenterY = startRect.top + startRect.height / 2;
-
       const scaledW = startRect.width * scale;
       const scaledH = startRect.height * scale;
       const targetCenterX = targetX + scaledW / 2;
       const targetCenterY = targetY + scaledH / 2;
-
       const dx = targetCenterX - startCenterX;
       const dy = targetCenterY - startCenterY;
-
-      nameEl.style.transition = 'transform 1s cubic-bezier(0.7,0,0.3,1), font-size 1s cubic-bezier(0.7,0,0.3,1)';
+      nameEl.style.transition = 'transform 1s cubic-bezier(0.7,0,0.3,1), opacity 0.5s ease';
       nameEl.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${scale})`;
-
       setTimeout(() => {
         document.getElementById('icons').classList.add('visible');
       }, 600);
