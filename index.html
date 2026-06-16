@@ -27,6 +27,12 @@
       filter: brightness(0.35) grayscale(1);
       border: none;
     }
+    #iframe-block {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: transparent;
+    }
 
     .wash { position: fixed; inset: 0; z-index: 1; background: rgba(0,0,0,0.4); pointer-events: none; }
 
@@ -114,6 +120,7 @@
       allow="autoplay; encrypted-media"
       allowfullscreen>
     </iframe>
+    <div id="iframe-block"></div>
   </div>
 
   <div class="wash"></div>
