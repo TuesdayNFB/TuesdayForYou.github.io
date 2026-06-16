@@ -8,35 +8,83 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Inter', sans-serif; }
-    #bg-video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; filter: brightness(0.4) grayscale(1); }
-    .wash { position: fixed; inset: 0; z-index: 1; background: rgba(0,0,0,0.35); pointer-events: none; }
 
-    #main { position: fixed; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #bg-iframe {
+      position: fixed;
+      inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    #bg-iframe iframe {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 177.78vh;
+      height: 56.25vw;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      filter: brightness(0.35) grayscale(1);
+      border: none;
+    }
+
+    .wash { position: fixed; inset: 0; z-index: 1; background: rgba(0,0,0,0.4); pointer-events: none; }
+
+    #enter-screen {
+      position: fixed; inset: 0; z-index: 10;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #000;
+      transition: opacity 1.4s ease, visibility 1.4s ease;
+    }
+    #enter-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .pre-name {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 400; color: #fff; letter-spacing: 0.06em;
+      margin-bottom: 3.5rem;
+      opacity: 0; transform: translateY(12px);
+      animation: fadeUp 1.2s cubic-bezier(0.4,0,0.2,1) 0.3s forwards;
+    }
+    .pre-name i { font-style: italic; color: rgba(255,255,255,0.35); }
+
+    #enter-btn {
+      font-family: 'Inter', sans-serif; font-weight: 300; font-size: 0.65rem;
+      letter-spacing: 0.3em; text-transform: uppercase; color: rgba(255,255,255,0.7);
+      background: transparent; border: 1px solid rgba(255,255,255,0.25);
+      padding: 0.9rem 2.8rem; cursor: pointer;
+      opacity: 0; transform: translateY(8px);
+      animation: fadeUp 1.2s cubic-bezier(0.4,0,0.2,1) 0.7s forwards;
+      transition: border-color 0.3s, color 0.3s, letter-spacing 0.3s;
+    }
+    #enter-btn:hover { border-color: rgba(255,255,255,0.7); color: #fff; letter-spacing: 0.4em; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .name {
       font-family: 'EB Garamond', serif;
       font-size: clamp(2.6rem, 7vw, 6rem);
-      font-weight: 400;
-      color: #fff;
-      letter-spacing: 0.06em;
-      line-height: 1;
-      text-align: center;
-      position: fixed;
-      top: 50%;
-      left: 50%;
+      font-weight: 400; color: #fff; letter-spacing: 0.06em;
+      line-height: 1; text-align: center;
+      position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      white-space: nowrap;
-      z-index: 6;
-      opacity: 0;
-      transition: opacity 2s ease;
+      white-space: nowrap; z-index: 6;
+      opacity: 0; transition: opacity 2s ease;
     }
     .name.visible { opacity: 1; }
-    .name i { font-style: italic; color: rgba(255,255,255,0.45); }
+    .name i { font-style: italic; color: rgba(255,255,255,0.4); }
 
-    #bottom { position: fixed; bottom: 0; left: 0; right: 0; z-index: 3; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 2rem 1.8rem; opacity: 0; transition: opacity 1.5s ease 1s; }
+    #bottom {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 3;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      padding: 0 2rem 1.8rem;
+      opacity: 0; transition: opacity 2s ease 1.2s;
+    }
     #bottom.visible { opacity: 1; }
-    .date-label { font-family: 'Inter', sans-serif; font-size: 0.62rem; font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
-    #mute-btn { background: transparent; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.35); font-family: 'Inter', sans-serif; font-size: 0.62rem; font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase; transition: color 0.2s; }
+    .date-label { font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
+    #mute-btn { background: transparent; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.3); font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; transition: color 0.2s; }
     #mute-btn:hover { color: rgba(255,255,255,0.8); }
     .bars { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
     .bars span { display: block; width: 2px; background: currentColor; border-radius: 1px; animation: pulse 1.4s ease-in-out infinite; }
@@ -48,30 +96,40 @@
     .bars.paused span { animation-play-state: paused; }
     @keyframes pulse { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.25); } }
 
-    #icons { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4; display: flex; justify-content: center; align-items: center; gap: 3rem; padding-bottom: 1.6rem; opacity: 0; pointer-events: none; transition: opacity 0.8s ease; }
+    #icons { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4; display: flex; justify-content: center; align-items: center; gap: 3rem; padding-bottom: 1.6rem; opacity: 0; pointer-events: none; transition: opacity 1s ease; }
     #icons.visible { opacity: 1; pointer-events: auto; }
-    .icon-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; background: transparent; border: none; cursor: pointer; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
+    .icon-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; background: transparent; border: none; cursor: pointer; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.3s; }
     .icon-btn:hover { color: rgba(255,255,255,0.9); }
     .icon-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .icon-label { font-family: 'Inter', sans-serif; font-size: 0.55rem; font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase; }
 
-    #yt-player { position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; }
+    #yt-audio { position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; }
   </style>
 </head>
 <body>
-  <video id="bg-video" autoplay muted loop playsinline src="https://www.w3schools.com/html/mov_bbb.mp4"></video>
-  <div class="wash"></div>
-  <div id="yt-player"></div>
 
-  <div id="main"></div>
+  <div id="bg-iframe">
+    <iframe id="bg-video-iframe"
+      src="https://www.youtube.com/embed/jBwfaktStt8?autoplay=1&mute=1&loop=1&playlist=jBwfaktStt8&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <div class="wash"></div>
+  <div id="yt-audio"></div>
+
+  <div id="enter-screen">
+    <p class="pre-name">Tuesday<i>For</i>You</p>
+    <button id="enter-btn">enter</button>
+  </div>
+
   <h1 class="name" id="main-name">Tuesday<i>For</i>You</h1>
 
   <div id="bottom">
     <span class="date-label" id="day-label"></span>
     <button id="mute-btn">
-      <div class="bars" id="bars">
-        <span></span><span></span><span></span><span></span><span></span>
-      </div>
+      <div class="bars" id="bars"><span></span><span></span><span></span><span></span><span></span></div>
       <span id="mute-label">playing</span>
     </button>
   </div>
@@ -97,9 +155,8 @@
     const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
     document.getElementById('day-label').textContent = days[new Date().getDay()];
 
-    let player = null;
+    let audioPlayer = null;
     let muted = false;
-    let iconMuted = false;
     let transitioned = false;
 
     const tag = document.createElement('script');
@@ -107,23 +164,23 @@
     document.head.appendChild(tag);
 
     window.onYouTubeIframeAPIReady = function () {
-      player = new YT.Player('yt-player', {
+      audioPlayer = new YT.Player('yt-audio', {
         videoId: 'FPI1iRapBbM',
-        playerVars: { autoplay: 1, controls: 0, loop: 1, playlist: 'FPI1iRapBbM', rel: 0 },
-        events: {
-          onReady: function(e) {
-            e.target.playVideo();
-            e.target.setVolume(75);
-          }
-        }
+        playerVars: { autoplay: 0, controls: 0, loop: 1, playlist: 'FPI1iRapBbM', rel: 0 },
+        events: { onReady: function() {} }
       });
     };
 
-    window.addEventListener('load', function () {
+    document.getElementById('enter-btn').addEventListener('click', function () {
+      if (audioPlayer && audioPlayer.playVideo) {
+        audioPlayer.playVideo();
+        audioPlayer.setVolume(75);
+      }
+      document.getElementById('enter-screen').classList.add('hidden');
       setTimeout(() => {
         document.getElementById('main-name').classList.add('visible');
         document.getElementById('bottom').classList.add('visible');
-      }, 300);
+      }, 200);
 
       setTimeout(() => {
         if (transitioned) return;
@@ -148,26 +205,27 @@
       const targetCenterY = targetY + scaledH / 2;
       const dx = targetCenterX - startCenterX;
       const dy = targetCenterY - startCenterY;
-      nameEl.style.transition = 'transform 1s cubic-bezier(0.7,0,0.3,1), opacity 0.5s ease';
+      nameEl.style.transition = 'transform 1.2s cubic-bezier(0.7,0,0.3,1)';
       nameEl.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${scale})`;
       setTimeout(() => {
         document.getElementById('icons').classList.add('visible');
-      }, 600);
+      }, 700);
     }
 
     document.getElementById('mute-btn').addEventListener('click', function () {
-      if (!player) return;
+      if (!audioPlayer) return;
       muted = !muted;
-      muted ? player.mute() : player.unMute();
+      muted ? audioPlayer.mute() : audioPlayer.unMute();
       document.getElementById('bars').classList.toggle('paused', muted);
       document.getElementById('mute-label').textContent = muted ? 'muted' : 'playing';
     });
 
     document.getElementById('icon-mute-btn').addEventListener('click', function () {
-      if (!player) return;
-      iconMuted = !iconMuted;
-      iconMuted ? player.mute() : player.unMute();
-      document.getElementById('icon-mute-label').textContent = iconMuted ? 'muted' : 'music';
+      if (!audioPlayer) return;
+      muted = !muted;
+      audioPlayer[muted ? 'mute' : 'unMute']();
+      document.getElementById('bars').classList.toggle('paused', muted);
+      document.getElementById('icon-mute-label').textContent = muted ? 'muted' : 'music';
     });
 
     document.getElementById('icon-info-btn').addEventListener('click', function () {
