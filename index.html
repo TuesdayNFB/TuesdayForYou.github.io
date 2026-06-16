@@ -16,15 +16,28 @@
     .pre-name i { font-style: italic; color: #999; }
     #enter-btn { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: #fff; background: transparent; border: 1px solid rgba(255,255,255,0.4); padding: 0.8rem 2.4rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
     #enter-btn:hover { border-color: #fff; color: #fff; }
+
     #main { position: fixed; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 2s ease; pointer-events: none; }
     #main.visible { opacity: 1; pointer-events: auto; }
-    .name { font-family: 'EB Garamond', serif; font-size: clamp(2.6rem, 7vw, 6rem); font-weight: 400; color: #fff; letter-spacing: 0.06em; line-height: 1; text-align: center; transition: opacity 0.8s ease; }
+
+    .name {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(2.6rem, 7vw, 6rem);
+      font-weight: 400;
+      color: #fff;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      text-align: center;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      z-index: 6;
+      transition: none;
+    }
     .name i { font-style: italic; color: rgba(255,255,255,0.45); }
-    .name.gone { opacity: 0; pointer-events: none; }
-    #top-left { position: fixed; top: 1.8rem; left: 2rem; z-index: 5; opacity: 0; pointer-events: none; transition: opacity 0.8s ease 0.3s; }
-    #top-left.visible { opacity: 1; pointer-events: auto; }
-    .name-small { font-family: 'EB Garamond', serif; font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 400; color: #fff; letter-spacing: 0.06em; line-height: 1; }
-    .name-small i { font-style: italic; color: rgba(255,255,255,0.45); }
+
     #bottom { position: fixed; bottom: 0; left: 0; right: 0; z-index: 3; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 2rem 1.8rem; opacity: 0; transition: opacity 1.5s ease 1s; }
     #bottom.visible { opacity: 1; }
     .date-label { font-family: 'Inter', sans-serif; font-size: 0.62rem; font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
@@ -39,12 +52,14 @@
     .bars span:nth-child(5) { height: 6px; animation-delay: 0.3s; }
     .bars.paused span { animation-play-state: paused; }
     @keyframes pulse { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.25); } }
-    #icons { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4; display: flex; justify-content: center; align-items: center; gap: 3rem; padding-bottom: 1.6rem; opacity: 0; pointer-events: none; transition: opacity 0.8s ease 0.3s; }
+
+    #icons { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4; display: flex; justify-content: center; align-items: center; gap: 3rem; padding-bottom: 1.6rem; opacity: 0; pointer-events: none; transition: opacity 0.8s ease; }
     #icons.visible { opacity: 1; pointer-events: auto; }
     .icon-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; background: transparent; border: none; cursor: pointer; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
     .icon-btn:hover { color: rgba(255,255,255,0.9); }
     .icon-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .icon-label { font-family: 'Inter', sans-serif; font-size: 0.55rem; font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase; }
+
     #yt-player { position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; }
   </style>
 </head>
@@ -58,13 +73,9 @@
     <button id="enter-btn">enter</button>
   </div>
 
-  <div id="main">
-    <h1 class="name" id="main-name">Tuesday<i>For</i>You</h1>
-  </div>
+  <div id="main"></div>
 
-  <div id="top-left">
-    <span class="name-small">Tuesday<i>For</i>You</span>
-  </div>
+  <h1 class="name" id="main-name" style="opacity:0;">Tuesday<i>For</i>You</h1>
 
   <div id="bottom">
     <span class="date-label" id="day-label"></span>
@@ -123,18 +134,48 @@
       setTimeout(() => {
         document.getElementById('main').classList.add('visible');
         document.getElementById('bottom').classList.add('visible');
+        const nameEl = document.getElementById('main-name');
+        nameEl.style.transition = 'opacity 1s ease';
+        nameEl.style.opacity = '1';
       }, 150);
 
       setTimeout(() => {
         if (transitioned) return;
         transitioned = true;
-        document.getElementById('main-name').classList.add('gone');
-        setTimeout(() => {
-          document.getElementById('top-left').classList.add('visible');
-          document.getElementById('icons').classList.add('visible');
-        }, 500);
+        animateToCorner();
       }, 10000);
     });
+
+    function animateToCorner() {
+      const nameEl = document.getElementById('main-name');
+
+      const startRect = nameEl.getBoundingClientRect();
+      const startFontSize = parseFloat(window.getComputedStyle(nameEl).fontSize);
+
+      const targetFontSize = Math.max(17, startFontSize * 0.27);
+      const scale = targetFontSize / startFontSize;
+
+      const targetX = 32;
+      const targetY = 29;
+
+      const startCenterX = startRect.left + startRect.width / 2;
+      const startCenterY = startRect.top + startRect.height / 2;
+
+      const scaledW = startRect.width * scale;
+      const scaledH = startRect.height * scale;
+      const targetCenterX = targetX + scaledW / 2;
+      const targetCenterY = targetY + scaledH / 2;
+
+      const dx = targetCenterX - startCenterX;
+      const dy = targetCenterY - startCenterY;
+
+      nameEl.style.transition = 'transform 1s cubic-bezier(0.7,0,0.3,1), font-size 1s cubic-bezier(0.7,0,0.3,1)';
+      nameEl.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${scale})`;
+
+      setTimeout(() => {
+        document.getElementById('icons').classList.add('visible');
+      }, 600);
+    }
 
     document.getElementById('mute-btn').addEventListener('click', function () {
       if (!player) return;
