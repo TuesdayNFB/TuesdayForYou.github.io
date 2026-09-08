@@ -1,1 +1,377 @@
-<script>document.write(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CjxtZXRhIGNoYXJzZXQ9IlVURi04Ij4KPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xLjAiPgo8dGl0bGU+QWNjZXNzIEJsb2NrZWQ8L3RpdGxlPgoKPHN0eWxlPgoqewogICAgbWFyZ2luOjA7CiAgICBwYWRkaW5nOjA7CiAgICBib3gtc2l6aW5nOmJvcmRlci1ib3g7Cn0KCmJvZHl7CiAgICBmb250LWZhbWlseTotYXBwbGUtc3lzdGVtLEJsaW5rTWFjU3lzdGVtRm9udCwiU2Vnb2UgVUkiLFJvYm90byxBcmlhbCxzYW5zLXNlcmlmOwogICAgYmFja2dyb3VuZDojZjVmNWY1OwogICAgY29sb3I6IzMzMzsKfQoKLnRvcHsKICAgIGJhY2tncm91bmQ6d2hpdGU7CiAgICBwYWRkaW5nOjYwcHggMjBweCAzNXB4OwogICAgdGV4dC1hbGlnbjpjZW50ZXI7CiAgICBib3JkZXItYm90dG9tOjFweCBzb2xpZCAjZGRkOwp9CgoudG9wIGgxewogICAgZm9udC13ZWlnaHQ6MzAwOwogICAgZm9udC1zaXplOjU4cHg7CiAgICBjb2xvcjojNDQ0Owp9CgoudG9wIHB7CiAgICBtYXJnaW4tdG9wOjEwcHg7CiAgICBmb250LXNpemU6MjhweDsKICAgIGZvbnQtd2VpZ2h0OjMwMDsKICAgIGNvbG9yOiM2NjY7Cn0KCi5tb2NrLWJyb3dzZXJ7CiAgICB3aWR0aDo5MDBweDsKICAgIG1heC13aWR0aDo5NSU7CiAgICBtYXJnaW46NTVweCBhdXRvOwogICAgYmFja2dyb3VuZDp3aGl0ZTsKICAgIGJvcmRlci1yYWRpdXM6NHB4OwogICAgYm94LXNoYWRvdzowIDJweCA4cHggcmdiYSgwLDAsMCwuMDgpOwogICAgb3ZlcmZsb3c6aGlkZGVuOwp9CgouYmFyewogICAgaGVpZ2h0OjQycHg7CiAgICBiYWNrZ3JvdW5kOiNhOWE5YTk7CiAgICBkaXNwbGF5OmZsZXg7CiAgICBhbGlnbi1pdGVtczpjZW50ZXI7CiAgICBwYWRkaW5nLWxlZnQ6MTVweDsKfQoKLmRvdHsKICAgIHdpZHRoOjEycHg7CiAgICBoZWlnaHQ6MTJweDsKICAgIGJvcmRlci1yYWRpdXM6NTAlOwogICAgYmFja2dyb3VuZDojZWNlY2VjOwogICAgbWFyZ2luLXJpZ2h0OjdweDsKfQoKLmNvbnRlbnR7CiAgICBoZWlnaHQ6MzYwcHg7CiAgICBkaXNwbGF5OmZsZXg7CiAgICBqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyOwogICAgYWxpZ24taXRlbXM6Y2VudGVyOwp9CgouY2lyY2xlewogICAgd2lkdGg6MTUwcHg7CiAgICBoZWlnaHQ6MTUwcHg7CiAgICBiYWNrZ3JvdW5kOiNiZjMwMjY7CiAgICBib3JkZXItcmFkaXVzOjUwJTsKICAgIHBvc2l0aW9uOnJlbGF0aXZlOwp9CgouY2lyY2xlOmJlZm9yZSwKLmNpcmNsZTphZnRlcnsKICAgIGNvbnRlbnQ6IiI7CiAgICBwb3NpdGlvbjphYnNvbHV0ZTsKICAgIHdpZHRoOjgycHg7CiAgICBoZWlnaHQ6MTZweDsKICAgIGJhY2tncm91bmQ6d2hpdGU7CiAgICB0b3A6NjdweDsKICAgIGxlZnQ6MzRweDsKICAgIGJvcmRlci1yYWRpdXM6MTBweDsKfQoKLmNpcmNsZTpiZWZvcmV7CiAgICB0cmFuc2Zvcm06cm90YXRlKDQ1ZGVnKTsKfQoKLmNpcmNsZTphZnRlcnsKICAgIHRyYW5zZm9ybTpyb3RhdGUoLTQ1ZGVnKTsKfQoKLmluZm97CiAgICB3aWR0aDo5MDBweDsKICAgIG1heC13aWR0aDo5NSU7CiAgICBtYXJnaW46MzBweCBhdXRvIDYwcHg7CiAgICBkaXNwbGF5OmZsZXg7CiAgICBnYXA6NjBweDsKfQoKLmJveHsKICAgIGZsZXg6MTsKfQoKLmJveCBoMnsKICAgIGZvbnQtd2VpZ2h0OjMwMDsKICAgIGZvbnQtc2l6ZTo0MnB4OwogICAgbWFyZ2luLWJvdHRvbToyMHB4Owp9CgouYm94IHB7CiAgICBsaW5lLWhlaWdodDoxLjc7CiAgICBjb2xvcjojNTU1OwogICAgZm9udC1zaXplOjE4cHg7Cn0KPC9zdHlsZT4KPC9oZWFkPgoKPGJvZHk+Cgo8ZGl2IGNsYXNzPSJ0b3AiPgogICAgPGgxPlNvcnJ5LCB5b3UgaGF2ZSBiZWVuIGJsb2NrZWQ8L2gxPgogICAgPHA+WW91IGFyZSB1bmFibGUgdG8gYWNjZXNzIDxzdHJvbmc+dHVlc2RheWZvcnlvdS5jb208L3N0cm9uZz48L3A+CjwvZGl2PgoKPGRpdiBjbGFzcz0ibW9jay1icm93c2VyIj4KICAgIDxkaXYgY2xhc3M9ImJhciI+CiAgICAgICAgPGRpdiBjbGFzcz0iZG90Ij48L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzPSJkb3QiPjwvZGl2PgogICAgICAgIDxkaXYgY2xhc3M9ImRvdCI+PC9kaXY+CiAgICA8L2Rpdj4KCiAgICA8ZGl2IGNsYXNzPSJjb250ZW50Ij4KICAgICAgICA8ZGl2IGNsYXNzPSJjaXJjbGUiPjwvZGl2PgogICAgPC9kaXY+CjwvZGl2PgoKPGRpdiBjbGFzcz0iaW5mbyI+CgogICAgPGRpdiBjbGFzcz0iYm94Ij4KICAgICAgICA8aDI+V2h5IGhhdmUgSSBiZWVuIGJsb2NrZWQ/PC9oMj4KCiAgICAgICAgPHA+CiAgICAgICAgICAgIFRoaXMgd2Vic2l0ZSB1c2VzIGF1dG9tYXRlZCBzZWN1cml0eSBzeXN0ZW1zIHRvIHByb3RlY3QgaXRzZWxmIGZyb20KICAgICAgICAgICAgYWJ1c2l2ZSB0cmFmZmljIGFuZCBtYWxpY2lvdXMgcmVxdWVzdHMuCiAgICAgICAgICAgIFRoZSBhY3Rpb24geW91IGF0dGVtcHRlZCB0cmlnZ2VyZWQgb25lIG9mIG91ciBwcm90ZWN0aW9uIHJ1bGVzLgogICAgICAgIDwvcD4KICAgIDwvZGl2PgoKICAgIDxkaXYgY2xhc3M9ImJveCI+CiAgICAgICAgPGgyPldoYXQgY2FuIEkgZG8/PC9oMj4KCiAgICAgICAgPHA+CiAgICAgICAgICAgIElmIHlvdSBiZWxpZXZlIHRoaXMgd2FzIGEgbWlzdGFrZSwgY29udGFjdCB0aGUgc2l0ZSBhZG1pbmlzdHJhdG9yCiAgICAgICAgICAgIGFuZCBpbmNsdWRlIGRldGFpbHMgYWJvdXQgd2hhdCB5b3Ugd2VyZSBkb2luZyB3aGVuIHRoaXMgcGFnZQogICAgICAgICAgICBhcHBlYXJlZC4KICAgICAgICA8L3A+CiAgICA8L2Rpdj4KCjwvZGl2PgoKPC9ib2R5Pgo8L2h0bWw+"))));</script>
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TuesdayForYou — Reaction Time</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0b0b0f;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      width: 100%;
+      padding: 22px 35px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #202027;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: #7777ff;
+    }
+
+    .header-text {
+      color: #777;
+      font-size: 14px;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 850px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+      letter-spacing: -2px;
+    }
+
+    .subtitle {
+      color: #888;
+      margin-bottom: 35px;
+      font-size: 16px;
+    }
+
+    #reactionBox {
+      width: 100%;
+      height: 400px;
+      border-radius: 20px;
+      background: #18181f;
+      border: 2px solid #292932;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.08s ease, transform 0.08s ease;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.35);
+    }
+
+    #reactionBox:hover {
+      border-color: #383844;
+    }
+
+    #reactionBox.waiting {
+      background: #b82f3f;
+      border-color: #d94355;
+    }
+
+    #reactionBox.go {
+      background: #28b56a;
+      border-color: #45d985;
+    }
+
+    #reactionBox.result {
+      background: #7777ff;
+      border-color: #9999ff;
+    }
+
+    #message {
+      font-size: 30px;
+      font-weight: 700;
+    }
+
+    #subMessage {
+      margin-top: 12px;
+      color: rgba(255,255,255,0.7);
+      font-size: 15px;
+    }
+
+    .stats {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      background: #141419;
+      border: 1px solid #24242d;
+      padding: 15px 25px;
+      border-radius: 12px;
+      min-width: 150px;
+    }
+
+    .stat-label {
+      color: #777;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 13px 25px;
+      border: none;
+      border-radius: 10px;
+      background: #7777ff;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    button:hover {
+      background: #6262ed;
+      transform: translateY(-2px);
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #555;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 38px;
+      }
+
+      #reactionBox {
+        height: 320px;
+      }
+
+      #message {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Tuesday<span>ForYou</span></div>
+  <div class="header-text">Reaction Time Test</div>
+</header>
+
+<main>
+  <div class="container">
+
+    <h1>How fast are you?</h1>
+    <p class="subtitle">
+      Click the box as soon as it turns green.
+    </p>
+
+    <div id="reactionBox">
+      <div>
+        <div id="message">Click to start</div>
+        <div id="subMessage">Wait for the green.</div>
+      </div>
+    </div>
+
+    <div class="stats">
+
+      <div class="stat">
+        <div class="stat-label">Last</div>
+        <div class="stat-value" id="lastTime">—</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Best</div>
+        <div class="stat-value" id="bestTime">—</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Attempts</div>
+        <div class="stat-value" id="attempts">0</div>
+      </div>
+
+    </div>
+
+    <button onclick="resetStats()">Reset Stats</button>
+
+  </div>
+</main>
+
+<footer>
+  TuesdayForYou © 2026
+</footer>
+
+<script>
+  const box = document.getElementById("reactionBox");
+  const message = document.getElementById("message");
+  const subMessage = document.getElementById("subMessage");
+
+  const lastTime = document.getElementById("lastTime");
+  const bestTime = document.getElementById("bestTime");
+  const attemptsDisplay = document.getElementById("attempts");
+
+  let state = "idle";
+  let startTime = 0;
+  let timeout;
+
+  let best = localStorage.getItem("tuesdayBest");
+  let attempts = Number(localStorage.getItem("tuesdayAttempts")) || 0;
+
+  if (best) {
+    bestTime.textContent = best + " ms";
+  }
+
+  attemptsDisplay.textContent = attempts;
+
+  box.addEventListener("click", () => {
+
+    // Start
+    if (state === "idle" || state === "result") {
+      startTest();
+      return;
+    }
+
+    // Clicked too early
+    if (state === "waiting") {
+      clearTimeout(timeout);
+
+      state = "result";
+      box.className = "";
+      box.classList.add("result");
+
+      message.textContent = "Too early!";
+      subMessage.textContent = "Click to try again.";
+
+      return;
+    }
+
+    // Successful reaction
+    if (state === "go") {
+      const reaction = Math.round(performance.now() - startTime);
+
+      state = "result";
+
+      box.className = "";
+      box.classList.add("result");
+
+      message.textContent = reaction + " ms";
+
+      let rating;
+
+      if (reaction < 180) {
+        rating = "INSANE ⚡";
+      } else if (reaction < 220) {
+        rating = "Excellent!";
+      } else if (reaction < 280) {
+        rating = "Great reaction!";
+      } else if (reaction < 350) {
+        rating = "Pretty good!";
+      } else if (reaction < 450) {
+        rating = "Not bad.";
+      } else {
+        rating = "You can do better!";
+      }
+
+      subMessage.textContent = rating + " Click to try again.";
+
+      lastTime.textContent = reaction + " ms";
+
+      attempts++;
+      attemptsDisplay.textContent = attempts;
+
+      localStorage.setItem("tuesdayAttempts", attempts);
+
+      if (!best || reaction < Number(best)) {
+        best = reaction;
+        bestTime.textContent = reaction + " ms";
+        localStorage.setItem("tuesdayBest", reaction);
+      }
+    }
+
+  });
+
+  function startTest() {
+    state = "waiting";
+
+    box.className = "";
+    box.classList.add("waiting");
+
+    message.textContent = "WAIT...";
+    subMessage.textContent = "Don't click yet!";
+
+    const delay = Math.floor(Math.random() * 3000) + 1500;
+
+    timeout = setTimeout(() => {
+
+      state = "go";
+
+      box.className = "";
+      box.classList.add("go");
+
+      message.textContent = "CLICK!";
+      subMessage.textContent = "GO GO GO!";
+
+      startTime = performance.now();
+
+    }, delay);
+  }
+
+  function resetStats() {
+    best = null;
+    attempts = 0;
+
+    localStorage.removeItem("tuesdayBest");
+    localStorage.removeItem("tuesdayAttempts");
+
+    lastTime.textContent = "—";
+    bestTime.textContent = "—";
+    attemptsDisplay.textContent = "0";
+
+    state = "idle";
+
+    box.className = "";
+
+    message.textContent = "Click to start";
+    subMessage.textContent = "Wait for the green.";
+  }
+</script>
+
+</body>
+</html>
+```
