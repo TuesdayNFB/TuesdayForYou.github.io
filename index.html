@@ -1,358 +1,661 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TuesdayForYou — Reaction Time</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TuesdayForYou — Reaction Time</title>
 
-  <style>
+<style>
     * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        width: 100%;
+        min-height: 100%;
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #0b0b0f;
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #0b0b0f;
+        color: #f5f5f7;
+        overflow-x: hidden;
+    }
+
+    /* subtle background */
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(circle at 50% 35%, rgba(117, 112, 255, 0.055), transparent 32%),
+            linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+        background-size: auto, 45px 45px, 45px 45px;
+        mask-image: linear-gradient(to bottom, black, transparent 80%);
     }
 
     header {
-      width: 100%;
-      padding: 22px 35px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #202027;
+        height: 58px;
+        border-bottom: 1px solid #1c1c22;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        position: relative;
+        z-index: 2;
     }
 
     .logo {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: -.3px;
     }
 
     .logo span {
-      color: #7777ff;
+        color: #7772ff;
     }
 
-    .header-text {
-      color: #777;
-      font-size: 14px;
+    .header-right {
+        font-size: 11px;
+        color: #55555d;
+        letter-spacing: .4px;
     }
 
     main {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 20px;
+        min-height: calc(100vh - 58px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 18px 70px;
+        position: relative;
+        z-index: 1;
     }
 
-    .container {
-      width: 100%;
-      max-width: 850px;
-      text-align: center;
+    .game {
+        width: min(720px, 100%);
+        text-align: center;
     }
 
-    h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
-      letter-spacing: -2px;
+    .title {
+        margin-bottom: 22px;
+        animation: fadeUp .6s ease both;
     }
 
-    .subtitle {
-      color: #888;
-      margin-bottom: 35px;
-      font-size: 16px;
+    .title h1 {
+        font-size: 29px;
+        line-height: 1;
+        margin: 0 0 9px;
+        font-weight: 750;
+        letter-spacing: -1.1px;
     }
+
+    .title p {
+        margin: 0;
+        color: #65656d;
+        font-size: 12px;
+    }
+
+    /* GAME AREA */
 
     #reactionBox {
-      width: 100%;
-      height: 400px;
-      border-radius: 20px;
-      background: #18181f;
-      border: 2px solid #292932;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.08s ease, transform 0.08s ease;
-      box-shadow: 0 15px 50px rgba(0,0,0,0.35);
+        height: 350px;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        border-radius: 13px;
+        border: 1px solid #292930;
+        background: #151519;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+
+        box-shadow:
+            0 18px 60px rgba(0,0,0,.28),
+            inset 0 1px rgba(255,255,255,.025);
+
+        transition:
+            background .22s ease,
+            border-color .22s ease,
+            transform .12s ease,
+            box-shadow .22s ease;
     }
 
     #reactionBox:hover {
-      border-color: #383844;
+        border-color: #35353e;
+    }
+
+    #reactionBox:active {
+        transform: scale(.995);
+    }
+
+    /* little moving highlight */
+    #reactionBox::after {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.025);
+        filter: blur(45px);
+        transform: translate(-130px, -90px);
+        opacity: 0;
+        transition: opacity .4s;
+    }
+
+    #reactionBox:hover::after {
+        opacity: 1;
     }
 
     #reactionBox.waiting {
-      background: #b82f3f;
-      border-color: #d94355;
+        background: #35171c;
+        border-color: #6f2933;
+        box-shadow:
+            0 0 0 1px rgba(255,50,70,.03),
+            0 20px 70px rgba(255,30,50,.07);
+        animation: waitingPulse 1.2s ease-in-out infinite;
     }
 
     #reactionBox.go {
-      background: #28b56a;
-      border-color: #45d985;
+        background: #25b968;
+        border-color: #52e28f;
+        box-shadow:
+            0 0 0 1px rgba(110,255,160,.12),
+            0 0 80px rgba(37,185,104,.18);
+        animation: greenPop .16s ease-out;
     }
 
     #reactionBox.result {
-      background: #7777ff;
-      border-color: #9999ff;
+        background: #17171d;
+        border-color: #303039;
+    }
+
+    #reactionBox.tooEarly {
+        animation: shake .32s ease;
+        background: #35171c;
+        border-color: #8d303c;
+    }
+
+    .inside {
+        position: relative;
+        z-index: 2;
     }
 
     #message {
-      font-size: 30px;
-      font-weight: 700;
+        font-size: 27px;
+        font-weight: 750;
+        letter-spacing: -.7px;
+        transition: transform .18s ease, opacity .18s ease;
     }
 
     #subMessage {
-      margin-top: 12px;
-      color: rgba(255,255,255,0.7);
-      font-size: 15px;
+        margin-top: 8px;
+        color: rgba(255,255,255,.48);
+        font-size: 11px;
+        transition: opacity .18s ease;
     }
 
+    #reactionBox.go #message {
+        font-size: 31px;
+        letter-spacing: -1px;
+        text-shadow: 0 0 25px rgba(255,255,255,.22);
+    }
+
+    /* countdown dots */
+
+    .dots {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+        margin-top: 15px;
+        opacity: 0;
+        transition: opacity .2s;
+    }
+
+    .waiting .dots {
+        opacity: 1;
+    }
+
+    .dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.35);
+        animation: dotPulse 1s ease-in-out infinite;
+    }
+
+    .dot:nth-child(2) {
+        animation-delay: .15s;
+    }
+
+    .dot:nth-child(3) {
+        animation-delay: .3s;
+    }
+
+    /* ripple */
+
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple .55s ease-out forwards;
+        background: rgba(255,255,255,.18);
+        pointer-events: none;
+    }
+
+    /* stats */
+
     .stats {
-      margin-top: 25px;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 12px;
+        animation: fadeUp .7s .1s ease both;
     }
 
     .stat {
-      background: #141419;
-      border: 1px solid #24242d;
-      padding: 15px 25px;
-      border-radius: 12px;
-      min-width: 150px;
+        min-width: 112px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        background: #121216;
+        border: 1px solid #202026;
+        transition: border-color .2s, transform .2s;
+    }
+
+    .stat:hover {
+        border-color: #30303a;
+        transform: translateY(-2px);
     }
 
     .stat-label {
-      color: #777;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 5px;
+        font-size: 8px;
+        color: #505058;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
     }
 
     .stat-value {
-      font-size: 22px;
-      font-weight: bold;
+        font-size: 14px;
+        font-weight: 700;
+        color: #dddde3;
+    }
+
+    .controls {
+        margin-top: 13px;
     }
 
     button {
-      margin-top: 25px;
-      padding: 13px 25px;
-      border: none;
-      border-radius: 10px;
-      background: #7777ff;
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.15s;
+        appearance: none;
+        border: 1px solid #292930;
+        background: #17171c;
+        color: #8a8a93;
+        padding: 8px 13px;
+        border-radius: 7px;
+        font-size: 10px;
+        cursor: pointer;
+        transition: .18s ease;
     }
 
     button:hover {
-      background: #6262ed;
-      transform: translateY(-2px);
+        color: #fff;
+        border-color: #41414b;
+        background: #1c1c22;
+        transform: translateY(-1px);
+    }
+
+    button:active {
+        transform: translateY(1px);
     }
 
     footer {
-      text-align: center;
-      padding: 20px;
-      color: #555;
-      font-size: 13px;
+        position: fixed;
+        bottom: 14px;
+        width: 100%;
+        text-align: center;
+        color: #393940;
+        font-size: 9px;
+        pointer-events: none;
+    }
+
+    /* animations */
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes waitingPulse {
+        0%, 100% {
+            box-shadow: 0 0 0 rgba(255,30,50,0);
+        }
+        50% {
+            box-shadow: 0 0 35px rgba(255,30,50,.07);
+        }
+    }
+
+    @keyframes greenPop {
+        0% {
+            transform: scale(.985);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        20% { transform: translateX(-7px); }
+        40% { transform: translateX(6px); }
+        60% { transform: translateX(-4px); }
+        80% { transform: translateX(3px); }
+    }
+
+    @keyframes dotPulse {
+        0%,100% {
+            opacity: .25;
+            transform: scale(.8);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+    }
+
+    @keyframes ripple {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
     }
 
     @media (max-width: 600px) {
-      h1 {
-        font-size: 38px;
-      }
+        #reactionBox {
+            height: 310px;
+        }
 
-      #reactionBox {
-        height: 320px;
-      }
+        .title h1 {
+            font-size: 26px;
+        }
 
-      #message {
-        font-size: 24px;
-      }
+        .stat {
+            min-width: 95px;
+        }
     }
-  </style>
+</style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo">Tuesday<span>ForYou</span></div>
-  <div class="header-text">Reaction Time Test</div>
+    <div class="logo">Tuesday<span>ForYou</span></div>
+    <div class="header-right">REACTION TEST</div>
 </header>
 
 <main>
-  <div class="container">
+    <div class="game">
 
-    <h1>How fast are you?</h1>
-    <p class="subtitle">
-      Click the box as soon as it turns green.
-    </p>
+        <div class="title">
+            <h1>How fast are you?</h1>
+            <p>Click anywhere when the box turns green.</p>
+        </div>
 
-    <div id="reactionBox">
-      <div>
-        <div id="message">Click to start</div>
-        <div id="subMessage">Wait for the green.</div>
-      </div>
+        <div id="reactionBox">
+
+            <div class="inside">
+                <div id="message">Click to start</div>
+                <div id="subMessage">Your reaction time will be measured.</div>
+
+                <div class="dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-label">Last</div>
+                <div class="stat-value" id="lastTime">—</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Best</div>
+                <div class="stat-value" id="bestTime">—</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Attempts</div>
+                <div class="stat-value" id="attempts">0</div>
+            </div>
+
+        </div>
+
+        <div class="controls">
+            <button onclick="resetStats()">Reset stats</button>
+        </div>
+
     </div>
-
-    <div class="stats">
-
-      <div class="stat">
-        <div class="stat-label">Last</div>
-        <div class="stat-value" id="lastTime">—</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-label">Best</div>
-        <div class="stat-value" id="bestTime">—</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-label">Attempts</div>
-        <div class="stat-value" id="attempts">0</div>
-      </div>
-
-    </div>
-
-    <button onclick="resetStats()">Reset Stats</button>
-
-  </div>
 </main>
 
-<footer>
-  TuesdayForYou © 2026
-</footer>
+<footer>TuesdayForYou © 2026</footer>
 
 <script>
-  const box = document.getElementById("reactionBox");
-  const message = document.getElementById("message");
-  const subMessage = document.getElementById("subMessage");
 
-  const lastTime = document.getElementById("lastTime");
-  const bestTime = document.getElementById("bestTime");
-  const attemptsDisplay = document.getElementById("attempts");
+const box = document.getElementById("reactionBox");
+const message = document.getElementById("message");
+const subMessage = document.getElementById("subMessage");
 
-  let state = "idle";
-  let startTime = 0;
-  let timeout;
+const lastTime = document.getElementById("lastTime");
+const bestTime = document.getElementById("bestTime");
+const attemptsDisplay = document.getElementById("attempts");
 
-  let best = localStorage.getItem("tuesdayBest");
-  let attempts = Number(localStorage.getItem("tuesdayAttempts")) || 0;
+let state = "idle";
+let startTime = 0;
+let timeout;
 
-  if (best) {
+let best = localStorage.getItem("tuesdayBest");
+let attempts = Number(localStorage.getItem("tuesdayAttempts")) || 0;
+
+if (best) {
     bestTime.textContent = best + " ms";
-  }
+}
 
-  attemptsDisplay.textContent = attempts;
+attemptsDisplay.textContent = attempts;
 
-  box.addEventListener("click", () => {
 
-    // Start
+/* click ripple */
+
+function createRipple(e) {
+
+    const rect = box.getBoundingClientRect();
+
+    const ripple = document.createElement("span");
+
+    ripple.className = "ripple";
+
+    const size = Math.max(rect.width, rect.height);
+
+    ripple.style.width = size + "px";
+    ripple.style.height = size + "px";
+
+    ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+    ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+
+    box.appendChild(ripple);
+
+    setTimeout(() => ripple.remove(), 600);
+}
+
+
+/* main game */
+
+box.addEventListener("click", function(e) {
+
+    createRipple(e);
+
+    /* Start */
+
     if (state === "idle" || state === "result") {
-      startTest();
-      return;
+        startTest();
+        return;
     }
 
-    // Clicked too early
+    /* Too early */
+
     if (state === "waiting") {
-      clearTimeout(timeout);
 
-      state = "result";
-      box.className = "";
-      box.classList.add("result");
+        clearTimeout(timeout);
 
-      message.textContent = "Too early!";
-      subMessage.textContent = "Click to try again.";
+        state = "result";
 
-      return;
+        box.className = "tooEarly";
+
+        message.textContent = "Too early";
+        subMessage.textContent = "You have to wait for green.";
+
+        setTimeout(() => {
+            box.className = "result";
+            message.textContent = "Try again";
+            subMessage.textContent = "Click to start another round.";
+        }, 500);
+
+        return;
     }
 
-    // Successful reaction
+
+    /* Successful click */
+
     if (state === "go") {
-      const reaction = Math.round(performance.now() - startTime);
 
-      state = "result";
+        const reaction = Math.round(performance.now() - startTime);
 
-      box.className = "";
-      box.classList.add("result");
+        state = "result";
 
-      message.textContent = reaction + " ms";
+        box.className = "result";
 
-      let rating;
+        message.textContent = reaction + " ms";
 
-      if (reaction < 180) {
-        rating = "INSANE ⚡";
-      } else if (reaction < 220) {
-        rating = "Excellent!";
-      } else if (reaction < 280) {
-        rating = "Great reaction!";
-      } else if (reaction < 350) {
-        rating = "Pretty good!";
-      } else if (reaction < 450) {
-        rating = "Not bad.";
-      } else {
-        rating = "You can do better!";
-      }
+        let rating;
 
-      subMessage.textContent = rating + " Click to try again.";
+        if (reaction < 170) {
+            rating = "Unreal.";
+        }
+        else if (reaction < 200) {
+            rating = "Insanely fast.";
+        }
+        else if (reaction < 250) {
+            rating = "Excellent reaction.";
+        }
+        else if (reaction < 300) {
+            rating = "Very good.";
+        }
+        else if (reaction < 400) {
+            rating = "Not bad.";
+        }
+        else {
+            rating = "Room for improvement.";
+        }
 
-      lastTime.textContent = reaction + " ms";
+        subMessage.textContent = rating;
 
-      attempts++;
-      attemptsDisplay.textContent = attempts;
+        lastTime.textContent = reaction + " ms";
 
-      localStorage.setItem("tuesdayAttempts", attempts);
+        attempts++;
 
-      if (!best || reaction < Number(best)) {
-        best = reaction;
-        bestTime.textContent = reaction + " ms";
-        localStorage.setItem("tuesdayBest", reaction);
-      }
+        attemptsDisplay.textContent = attempts;
+
+        localStorage.setItem("tuesdayAttempts", attempts);
+
+
+        /* new best */
+
+        if (!best || reaction < Number(best)) {
+
+            best = reaction;
+
+            bestTime.textContent = reaction + " ms";
+
+            localStorage.setItem("tuesdayBest", reaction);
+
+            bestTime.parentElement.animate(
+                [
+                    { transform: "scale(1)" },
+                    { transform: "scale(1.12)" },
+                    { transform: "scale(1)" }
+                ],
+                {
+                    duration: 350,
+                    easing: "ease-out"
+                }
+            );
+        }
+
+        /* little result animation */
+
+        message.animate(
+            [
+                { opacity: 0, transform: "translateY(7px)" },
+                { opacity: 1, transform: "translateY(0)" }
+            ],
+            {
+                duration: 220,
+                easing: "ease-out"
+            }
+        );
     }
 
-  });
+});
 
-  function startTest() {
+
+/* start round */
+
+function startTest() {
+
     state = "waiting";
 
-    box.className = "";
-    box.classList.add("waiting");
+    box.className = "waiting";
 
-    message.textContent = "WAIT...";
-    subMessage.textContent = "Don't click yet!";
+    message.textContent = "Wait...";
+    subMessage.textContent = "Don't click yet.";
 
-    const delay = Math.floor(Math.random() * 3000) + 1500;
+    const delay = Math.floor(Math.random() * 3500) + 1200;
 
     timeout = setTimeout(() => {
 
-      state = "go";
+        state = "go";
 
-      box.className = "";
-      box.classList.add("go");
+        box.className = "go";
 
-      message.textContent = "CLICK!";
-      subMessage.textContent = "GO GO GO!";
+        message.textContent = "CLICK";
+        subMessage.textContent = "";
 
-      startTime = performance.now();
+        startTime = performance.now();
 
     }, delay);
-  }
+}
 
-  function resetStats() {
+
+/* reset */
+
+function resetStats() {
+
+    clearTimeout(timeout);
+
     best = null;
     attempts = 0;
 
@@ -368,10 +671,10 @@
     box.className = "";
 
     message.textContent = "Click to start";
-    subMessage.textContent = "Wait for the green.";
-  }
+    subMessage.textContent = "Your reaction time will be measured.";
+}
+
 </script>
 
 </body>
 </html>
-```
